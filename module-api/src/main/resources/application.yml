@@ -1,0 +1,6 @@
+spring.profiles.include:
+    - database
+
+spring.config.activate.on-profile: local
+server:
+    port: 8080

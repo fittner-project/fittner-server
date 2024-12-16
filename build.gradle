@@ -48,6 +48,7 @@ project(':module-database') {
     bootJar { enabled = false }
     jar { enabled = true }
     dependencies {
+        implementation 'com.mysql:mysql-connector-j'
     }
 }
 

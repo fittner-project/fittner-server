@@ -1,1 +1,5 @@
 rootProject.name = 'fittner-server'
+include 'module-database'
+include 'module-api'
+include 'module-redis'
+

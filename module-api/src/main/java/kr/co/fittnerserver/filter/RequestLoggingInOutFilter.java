@@ -4,8 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.co.fittnerserver.util.Util;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -48,7 +48,7 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
         String contentStr = URLDecoder.decode(new String(content, wrapperRequest.getCharacterEncoding()),String.valueOf(StandardCharsets.UTF_8));
 
         log.info(REQUEST_INFO_PRI_FIX);
-        log.info("{} client ip ::: {}", RESPONSE_PRI_FIX, "----");
+        log.info("{} client ip ::: {}", RESPONSE_PRI_FIX, Util.getClientIp(wrapperRequest));
         log.info("{} url ::: {}", REQUEST_PRI_FIX, wrapperRequest.getRequestURI());
         log.info("{} method ::: {}", REQUEST_PRI_FIX, wrapperRequest.getMethod());
         log.info("{} content-type ::: {}", REQUEST_PRI_FIX, wrapperRequest.getContentType());

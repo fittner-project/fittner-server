@@ -13,8 +13,6 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @Component
@@ -51,16 +49,12 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
     protected void beforeRequest(ContentCachingRequestWrapper wrapperRequest, boolean logChkeck) throws IOException{
 
         if(logChkeck){
-            wrapperRequest.getParameterNames();
-            byte[] content = wrapperRequest.getContentAsByteArray();
-            String contentStr = URLDecoder.decode(new String(content, wrapperRequest.getCharacterEncoding()),String.valueOf(StandardCharsets.UTF_8));
-
             log.info(REQUEST_INFO_PRI_FIX);
-            log.info("{} client ip ::: {}", RESPONSE_PRI_FIX, Util.getClientIp(wrapperRequest));
+            log.info("{} client ip ::: {}", REQUEST_PRI_FIX, Util.getClientIp(wrapperRequest));
             log.info("{} url ::: {}", REQUEST_PRI_FIX, wrapperRequest.getRequestURI());
             log.info("{} method ::: {}", REQUEST_PRI_FIX, wrapperRequest.getMethod());
             log.info("{} content-type ::: {}", REQUEST_PRI_FIX, wrapperRequest.getContentType());
-            log.info("{} content ::: {}", REQUEST_PRI_FIX, contentStr);
+            log.info("{} content ::: {}", REQUEST_PRI_FIX, Util.getClientParams(wrapperRequest));
         }
     }
 
@@ -70,7 +64,7 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
             byte[] content = wrapperResponse.getContentAsByteArray();
             String contentStr = new String(content, wrapperResponse.getCharacterEncoding());
             if(wrapperResponse.getContentType() != null){
-                //log 출력제외
+                //응답 log 출력제외(html,image)
                 if(wrapperResponse.getContentType().startsWith("text/html")){
                     contentStr = "html result";
                 }

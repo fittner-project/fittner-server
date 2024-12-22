@@ -27,7 +27,7 @@ pipeline {
                     steps {
                         echo '[build start] ${MODULE_API}'
                         sh './gradlew ${MODULE_API}:build -x test'
-                        sh "sudo mv ${CURRENT_LOCATION}/module-api/build/libs/module-api-0.0.1-SNAPSHOT.jar /app/health"
+                        sh "sudo mv ${CURRENT_LOCATION}/module-api/build/libs/module-api-0.0.1-SNAPSHOT.jar /app/fittner"
                         echo '[build end] ${MODULE_API}'
                     }
                 }
@@ -63,7 +63,7 @@ pipeline {
                             }
 
                             echo '[deploy start] ${MODULE_API}'
-                            sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8080 -Duser.timezone=Asia/Seoul /app/health/module-api-0.0.1-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                            sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8080 -Duser.timezone=Asia/Seoul /app/fittner/module-api-0.0.1-SNAPSHOT.jar 1>/dev/null 2>&1 &"
 
                             while (status) {
                                 echo "1번 서버 구동 중..."
@@ -106,7 +106,7 @@ pipeline {
                             }
 
                             echo '[deploy start] ${MODULE_API}'
-                            sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8081 -Duser.timezone=Asia/Seoul /app/health/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                            sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8081 -Duser.timezone=Asia/Seoul /app/fittner/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
 
                             while (status) {
                                 echo "2번 서버 구동 중..."

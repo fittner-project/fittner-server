@@ -3,6 +3,7 @@ package kr.co.fittnerserver.controller.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.LoginRequestDto;
+import kr.co.fittnerserver.results.ObjectResult;
 import kr.co.fittnerserver.service.user.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +29,11 @@ public class AuthController {
         log.info("test@@@@ : {}",customUserDetails);
         loginService.logoutProcess(request, customUserDetails);
         return ResponseEntity.ok().build();
-
     }
 
 
     @GetMapping("/test")
-    public void get(){
-        log.info("test");
+    public ResponseEntity<?> get(){
+        return ObjectResult.build(loginService.test());
     }
 }

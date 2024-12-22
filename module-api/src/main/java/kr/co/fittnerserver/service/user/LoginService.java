@@ -2,7 +2,10 @@ package kr.co.fittnerserver.service.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.LoginRequestDto;
+import kr.co.fittnerserver.dto.user.TestDto;
 import kr.co.fittnerserver.dto.user.TokenResDto;
 import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.common.RefreshToken;
@@ -14,6 +17,7 @@ import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,5 +62,11 @@ public class LoginService {
         } else {
             new RuntimeException("로그아웃 실패");
         }
+    }
+
+    public TestDto test() {
+        TestDto testDto =new TestDto();
+        testDto.setTest("test");
+        throw new CommonException(CommonErrorCode.NOT_JOIN_USER.getCode(), CommonErrorCode.NOT_JOIN_USER.getMessage());
     }
 }

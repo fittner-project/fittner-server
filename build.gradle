@@ -45,6 +45,9 @@ subprojects {
         runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
         implementation 'com.auth0:java-jwt:4.2.1'
         implementation 'commons-codec:commons-codec:1.15'
+        implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+        implementation group: 'org.json', name: 'json', version: '20220320'
+        implementation 'com.google.code.gson:gson'
     }
     test {
         useJUnitPlatform()

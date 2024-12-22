@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class ModuleApiApplication {
 
     public static void main(String[] args) throws Exception {
+        //배포 테스트
         SpringApplication.run(ModuleApiApplication.class, args);
     }
 

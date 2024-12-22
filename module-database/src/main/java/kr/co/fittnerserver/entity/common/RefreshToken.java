@@ -29,6 +29,16 @@ public class RefreshToken extends BaseTimeEntity {
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
+    public RefreshToken(String refreshToken, Trainer trainer) {
+        this.refreshToken = refreshToken;
+        this.trainer = trainer;
+    }
+
+    public void updateToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+
     //TODO 대표 테이블 매핑
 
 }

@@ -5,3 +5,5 @@ spring.profiles.include:
 spring.config.activate.on-profile: local
 server:
     port: 8080
+jwt:
+    secret-key: ${JWT_SECRET_KEY}

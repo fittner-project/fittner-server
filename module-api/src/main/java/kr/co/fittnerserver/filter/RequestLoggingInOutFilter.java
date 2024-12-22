@@ -27,8 +27,9 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 요청을 CustomHttpServletRequestWrapper로 감싸기
-        CustomHttpServletRequestWrapper wrappedRequest = new CustomHttpServletRequestWrapper(request);
+        //requset(custom), response(caching)
+        CustomHttpServletRequestWrapper wrappedRequest = new CustomHttpServletRequestWrapper(request); //요청을 CustomHttpServletRequestWrapper로 감싸기
+        ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
         //log출력 여부
         boolean logChkeck = Arrays.stream(NOT_ALLOW_LOG)
@@ -38,10 +39,10 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
         beforeRequest(wrappedRequest, !logChkeck);
 
         // 필터 체인 실행
-        filterChain.doFilter(wrappedRequest, response);
+        filterChain.doFilter(wrappedRequest, wrappedResponse);
 
         //response log
-        afterRequest(response, !logChkeck);
+        afterRequest(wrappedResponse, !logChkeck);
     }
 
     protected void beforeRequest(CustomHttpServletRequestWrapper wrapperRequest, boolean logChkeck) throws IOException {
@@ -56,34 +57,30 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
         }
     }
 
-    protected void afterRequest(HttpServletResponse response, boolean logChkeck) throws IOException{
+    protected void afterRequest(ContentCachingResponseWrapper wrappedResponse, boolean logChkeck) throws IOException{
 
         if(logChkeck){
-            // HttpServletResponse를 ContentCachingResponseWrapper로 래핑
-            ContentCachingResponseWrapper wrapperResponse = new ContentCachingResponseWrapper(response);
 
-            if (logChkeck) {
-                byte[] content = wrapperResponse.getContentAsByteArray();
-                String contentStr = new String(content, wrapperResponse.getCharacterEncoding());
+            byte[] content = wrappedResponse.getContentAsByteArray();
+            String contentStr = new String(content, wrappedResponse.getCharacterEncoding());
 
-                if (wrapperResponse.getContentType() != null) {
-                    // 응답 log 출력 제외 (html, image)
-                    if (wrapperResponse.getContentType().startsWith("text/html")) {
-                        contentStr = "html result";
-                    }
-                    if (wrapperResponse.getContentType().startsWith("image/")) {
-                        contentStr = "image result";
-                    }
+            if (wrappedResponse.getContentType() != null) {
+                // 응답 log 출력 제외 (html, image)
+                if (wrappedResponse.getContentType().startsWith("text/html")) {
+                    contentStr = "html result";
                 }
-
-                log.info(RESPONSE_INFO_PRI_FIX);
-                log.info("{} http status ::: {}", RESPONSE_PRI_FIX, wrapperResponse.getStatus());
-                log.info("{} result ::: {}", RESPONSE_PRI_FIX, contentStr);
+                if (wrappedResponse.getContentType().startsWith("image/")) {
+                    contentStr = "image result";
+                }
             }
 
-            // 응답 본문을 원본 응답으로 복사
-            wrapperResponse.copyBodyToResponse();
+            log.info(RESPONSE_INFO_PRI_FIX);
+            log.info("{} http status ::: {}", RESPONSE_PRI_FIX, wrappedResponse.getStatus());
+            log.info("{} result ::: {}", RESPONSE_PRI_FIX, contentStr);
         }
+
+        // 응답 본문을 원본 응답으로 복사
+        wrappedResponse.copyBodyToResponse();
     }
 
 

@@ -8,7 +8,21 @@ pipeline {
         CURRENT_LOCATION = '/var/lib/jenkins/workspace/fittner-server'
     }
 
+
     stages {
+        stage('Load Secrets') {
+            steps {
+                script {
+                    // Jenkins Credentials 로드
+                    withCredentials([string(credentialsId: 'app-secrets', variable: 'SECRETS')]) {
+                        def secrets = SECRETS.split(';')
+                        env.DB_PASSWORD = secrets[0].split('=')[1]
+                        env.JWT_SECRET_KEY = secrets[1].split('=')[1]
+                        env.REDIS_PASSWORD = secrets[2].split('=')[1]
+                    }
+                }
+            }
+
         stage('database build') {
             steps {
                 sh './gradlew ${MODULE_DATABASE}:build -x test'

@@ -8,7 +8,6 @@ pipeline {
         CURRENT_LOCATION = '/var/lib/jenkins/workspace/fittner-server'
     }
 
-
     stages {
         stage('Load Secrets') {
             steps {
@@ -22,6 +21,7 @@ pipeline {
                     }
                 }
             }
+        }
 
         stage('database build') {
             steps {
@@ -120,7 +120,7 @@ pipeline {
                             }
 
                             echo '[deploy start] ${MODULE_API}'
-                            sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8081 -Duser.timezone=Asia/Seoul /app/fittner/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                            sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8081 -Duser.timezone=Asia/Seoul /app/health/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
 
                             while (status) {
                                 echo "2번 서버 구동 중..."

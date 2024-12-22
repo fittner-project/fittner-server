@@ -1,6 +1,11 @@
 spring.profiles.include:
     - database
     - redis
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
 ---
 spring.config.activate.on-profile: local
 server:

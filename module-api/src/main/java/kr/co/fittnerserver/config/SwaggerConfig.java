@@ -14,7 +14,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("1")
                 .displayName("인증")
-                .pathsToMatch("/api/v1/auth/**")
+                .pathsToMatch("/api/v1/test/**")
                 .build();
     }
 

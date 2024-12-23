@@ -2,10 +2,9 @@ package kr.co.fittnerserver.service.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.common.CommonErrorCode;
-import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.LoginRequestDto;
 import kr.co.fittnerserver.dto.user.TestDto;
+import kr.co.fittnerserver.dto.user.TestPageDto;
 import kr.co.fittnerserver.dto.user.TokenResDto;
 import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.common.RefreshToken;
@@ -13,11 +12,14 @@ import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
 import kr.co.fittnerserver.repository.common.RefreshTokenRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
+import kr.co.fittnerserver.results.CacheablePage;
+import kr.co.fittnerserver.results.MtnPageable;
 import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,9 +66,20 @@ public class LoginService {
         }
     }
 
-    public TestDto test() {
+    public TestDto listTest() {
         TestDto testDto =new TestDto();
         testDto.setTest("test");
-        throw new CommonException(CommonErrorCode.NOT_JOIN_USER.getCode(), CommonErrorCode.NOT_JOIN_USER.getMessage());
+        return testDto;
+    }
+
+    public Page<Object> pageTest(Pageable pageable) {
+        Page<Trainer> all = trainerRepository.findAll(pageable);
+        return new CacheablePage<>(
+                all.map(trainer -> {
+                    return TestPageDto.builder()
+                            .trainerName(trainer.getTrainerName())
+                            .build();
+                })
+        );
     }
 }

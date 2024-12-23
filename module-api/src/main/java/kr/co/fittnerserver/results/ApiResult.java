@@ -1,7 +1,6 @@
 package kr.co.fittnerserver.results;
 
 import org.springframework.util.Assert;
-
 import java.util.HashMap;
 
 public class ApiResult extends HashMap<String, Object> {

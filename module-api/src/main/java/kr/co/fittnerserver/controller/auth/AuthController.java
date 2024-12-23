@@ -3,7 +3,8 @@ package kr.co.fittnerserver.controller.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.LoginRequestDto;
-import kr.co.fittnerserver.results.ObjectResult;
+import kr.co.fittnerserver.results.MtnPageable;
+import kr.co.fittnerserver.results.MtnResponse;
 import kr.co.fittnerserver.service.user.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +32,13 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/list-test")
+    public ResponseEntity<?> listTest(){
+        return MtnResponse.build(loginService.listTest());
+    }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> get(){
-        return ObjectResult.build(loginService.test());
+    @GetMapping("/page-test")
+    public ResponseEntity<?> pageTest(@ModelAttribute MtnPageable pageable){
+        return MtnResponse.buildPage(loginService.pageTest(pageable.getPageable()),pageable);
     }
 }

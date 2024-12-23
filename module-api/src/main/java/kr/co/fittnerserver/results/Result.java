@@ -1,6 +1,8 @@
 package kr.co.fittnerserver.results;
 
-import kr.co.fittnerserver.common.ApiResponseMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.fittnerserver.util.AES256Cipher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +27,30 @@ public final class Result {
     return ok(ApiResult.message(message));
   }
 
-  public static ResponseEntity<?> ok(ApiResponseMessage message) {
-    return ResponseEntity.ok(message);
-  }
-
   public static ResponseEntity<ApiResult> ok(ApiResult payload) {
     Assert.notNull(payload, "Parameter `payload` must not be null");
     return ResponseEntity.ok(payload);
+  }
+
+  public static <T> ResponseEntity<ApiResponseMessage<T>> ok(ApiResponseMessage<T> apiResponseMessage) {
+    return new ResponseEntity<>(apiResponseMessage, HttpStatus.OK);
+  }
+
+  public static ResponseEntity<?> ok_enc(ApiResult payload) throws Exception {
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonString = null;
+    try {
+      jsonString = mapper.writeValueAsString(payload);
+    } catch (JsonProcessingException e) {
+      log.error(e.getMessage());
+    }
+    log.info(">> jsonString : {}", jsonString);
+    //jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(payload);
+
+    String encString = AES256Cipher.encrypt(jsonString);
+    log.info(">> encString : {}", encString);
+    log.info(">> decString : {}", AES256Cipher.decrypt(encString));
+    return ResponseEntity.ok(encString);
   }
 
   public static ResponseEntity<ApiResult> failure(String message) {

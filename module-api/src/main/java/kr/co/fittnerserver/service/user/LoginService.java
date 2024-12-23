@@ -2,6 +2,8 @@ package kr.co.fittnerserver.service.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.LoginRequestDto;
 import kr.co.fittnerserver.dto.user.TestDto;
 import kr.co.fittnerserver.dto.user.TestPageDto;
@@ -36,7 +38,7 @@ public class LoginService {
     @Transactional
     public TokenResDto loginProcess(LoginRequestDto loginRequestDto) throws Exception {
         Trainer trainer = trainerRepository.findByTrainerEmail(AES256Cipher.encrypt(loginRequestDto.getTrainerEmail()))
-                .orElseThrow(() -> new RuntimeException("유저 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
         //엑세스 토큰 생성
         String accessToken = jwtTokenUtil.generateAccessToken(trainer.getTrainerId());

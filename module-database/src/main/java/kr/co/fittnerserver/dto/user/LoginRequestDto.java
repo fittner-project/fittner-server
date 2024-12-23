@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class LoginRequestDto {
-    //jenkins ci/cd test
     @Schema(description = "이메일", example = "newy12@naver.com")
     private String trainerEmail;
 }

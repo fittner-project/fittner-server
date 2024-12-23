@@ -10,5 +10,9 @@ management:
 spring.config.activate.on-profile: local
 server:
     port: 8080
+    shutdown: graceful
+spring:
+    lifecycle:
+        timeout-per-shutdown-phase: 5s
 jwt:
     secret-key: ${JWT_SECRET_KEY}

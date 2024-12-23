@@ -6,6 +6,8 @@ management:
         web:
             exposure:
                 include: "*"
+springdoc:
+    override-with-generic-response: false
 ---
 spring.config.activate.on-profile: local
 server:

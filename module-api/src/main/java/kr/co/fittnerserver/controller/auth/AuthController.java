@@ -22,12 +22,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) throws Exception {
-        return ResponseEntity.ok(loginService.loginProcess(loginRequestDto));
+        return MtnResponse.build(loginService.loginProcess(loginRequestDto));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        log.info("test@@@@ : {}",customUserDetails);
         loginService.logoutProcess(request, customUserDetails);
         return ResponseEntity.ok().build();
     }

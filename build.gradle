@@ -15,6 +15,7 @@ buildscript {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
+    apply plugin: 'java-library'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
@@ -48,6 +49,7 @@ subprojects {
         implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
         implementation group: 'org.json', name: 'json', version: '20220320'
         implementation 'com.google.code.gson:gson'
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     }
     test {
         useJUnitPlatform()
@@ -78,7 +80,6 @@ project(':module-api') {
     dependencies {
         implementation project(':module-database')
         implementation project(':module-redis')
-        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
     }
 }

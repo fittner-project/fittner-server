@@ -40,4 +40,9 @@ public class AuthController {
     public ResponseEntity<?> pageTest(@ModelAttribute MtnPageable pageable){
         return MtnResponse.buildPage(loginService.pageTest(pageable.getPageable()),pageable);
     }
+
+    @GetMapping("/mybatis-test")
+    public ResponseEntity<?> mybatisTest(){
+        return MtnResponse.build(loginService.mybatisTest());
+    }
 }

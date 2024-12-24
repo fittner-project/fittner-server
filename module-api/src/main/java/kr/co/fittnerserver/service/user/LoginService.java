@@ -11,11 +11,11 @@ import kr.co.fittnerserver.dto.user.TokenResDto;
 import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.common.RefreshToken;
 import kr.co.fittnerserver.entity.user.Trainer;
+import kr.co.fittnerserver.mapper.user.TrainerMapper;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
 import kr.co.fittnerserver.repository.common.RefreshTokenRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
 import kr.co.fittnerserver.results.CacheablePage;
-import kr.co.fittnerserver.results.MtnPageable;
 import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,7 @@ public class LoginService {
     private final TrainerRepository trainerRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final BlackListTokenRepository blackListTokenRepository;
+    private final TrainerMapper trainerMapper;
 
     @Transactional
     public TokenResDto loginProcess(LoginRequestDto loginRequestDto) throws Exception {
@@ -70,7 +73,7 @@ public class LoginService {
 
     public TestDto listTest() {
         TestDto testDto =new TestDto();
-        testDto.setTest("test");
+        testDto.setTrainerName("test");
         return testDto;
     }
 
@@ -83,5 +86,9 @@ public class LoginService {
                             .build();
                 })
         );
+    }
+
+    public List<TestDto> mybatisTest() {
+        return trainerMapper.selectTrainerInfo();
     }
 }

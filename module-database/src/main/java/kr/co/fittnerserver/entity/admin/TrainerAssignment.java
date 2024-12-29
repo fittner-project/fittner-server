@@ -1,9 +1,7 @@
 package kr.co.fittnerserver.entity.admin;
 
 import jakarta.persistence.*;
-import kr.co.fittnerserver.entity.admin.enums.CenterType;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
-import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Trainer;
 import lombok.AccessLevel;
@@ -17,13 +15,13 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class TrainerChange extends BaseTimeEntity {
+public class TrainerAssignment extends BaseTimeEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "트레이너 변경 키값")
-    private String trainerChangeId;
+    private String trainerAssignmentId;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id")
@@ -42,5 +40,5 @@ public class TrainerChange extends BaseTimeEntity {
 
     @Comment(value = "트레이너 변경 노출 여부")
     @Column(length = 1, columnDefinition = "char(1) default 'Y'")
-    private String trainerChangeShowYn;
+    private String trainerAssignmentShowYn;
 }

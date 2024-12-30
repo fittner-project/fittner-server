@@ -1,11 +1,17 @@
 package kr.co.fittnerserver.filter;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.fittnerserver.auth.CustomUserDetailsService;
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
+import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
 import kr.co.fittnerserver.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +35,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+        final String authorizationHeader = request.getHeader("Authorization");
         String token = null;
         String trainerId = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-            //블랙리스트 토큰 확인
-            if(blackListTokenRepository.existsByAccessToken(token)){
-                throw new RuntimeException("블랙리스트에 들어있는 토큰입니다.");
+
+        try {
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                token = authorizationHeader.substring(7);
+                //블랙리스트 토큰 확인
+                if(blackListTokenRepository.existsByAccessToken(token)){
+                    throw new JwtException(CommonErrorCode.EXIST_BLACKLIST_TOKEN.getCode(), CommonErrorCode.EXIST_BLACKLIST_TOKEN.getMessage());
+                }
+                trainerId = jwtTokenUtil.validateTokenAndGetTrainerId(token);
+                if(trainerId == null) {
+                    throw new JwtException(CommonErrorCode.INVALID_TOKEN.getCode(), CommonErrorCode.INVALID_TOKEN.getMessage());
+                }
             }
-            trainerId = jwtTokenUtil.validateTokenAndGetTrainerId(token);
+        } catch (MalformedJwtException e) {
+            throw new JwtException(CommonErrorCode.WRONG_TOKEN.getCode(), CommonErrorCode.WRONG_TOKEN.getMessage(), e);
+        } catch(IllegalArgumentException e) {
+            throw new JwtException(CommonErrorCode.INVALID_TOKEN.getCode(), CommonErrorCode.INVALID_TOKEN.getMessage());
+        } catch(ExpiredJwtException e) {
+            throw new JwtException(CommonErrorCode.EXPIRED_TOKEN.getCode(), CommonErrorCode.EXPIRED_TOKEN.getMessage());
+        } catch(SignatureException e) {
+            throw new JwtException(CommonErrorCode.AUTHENTICATION_FAILED.getCode(), CommonErrorCode.AUTHENTICATION_FAILED.getMessage(), e);
         }
 
         if (trainerId != null && SecurityContextHolder.getContext().getAuthentication() == null) {

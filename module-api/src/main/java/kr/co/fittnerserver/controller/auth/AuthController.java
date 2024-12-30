@@ -31,6 +31,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+
     @GetMapping("/list-test")
     public ResponseEntity<?> listTest(){
         return MtnResponse.build(loginService.listTest());

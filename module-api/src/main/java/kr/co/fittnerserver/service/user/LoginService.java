@@ -11,6 +11,7 @@ import kr.co.fittnerserver.dto.user.TokenResDto;
 import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.common.RefreshToken;
 import kr.co.fittnerserver.entity.user.Trainer;
+import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.mapper.user.TrainerMapper;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
 import kr.co.fittnerserver.repository.common.RefreshTokenRepository;

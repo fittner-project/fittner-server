@@ -1,7 +1,7 @@
 package kr.co.fittnerserver.common;
 
 import com.google.gson.Gson;
-import io.jsonwebtoken.JwtException;
+import kr.co.fittnerserver.exception.JwtException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -46,6 +46,7 @@ public class ApiControllerAdvice {
         apiResponseMessage.setErrorMessage(ex.getMessage());
         return ResponseEntity.status(HttpStatus.OK).body(apiResponseMessage);
     }
+
 
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ApiResponseMessage> handleValidationExceptions(kr.co.fittnerserver.exception.JwtException ex){

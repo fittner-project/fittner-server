@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
-import kr.co.fittnerserver.dto.user.LoginRequestDto;
-import kr.co.fittnerserver.dto.user.TestDto;
-import kr.co.fittnerserver.dto.user.TestPageDto;
-import kr.co.fittnerserver.dto.user.TokenResDto;
+import kr.co.fittnerserver.dto.user.*;
 import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.common.RefreshToken;
 import kr.co.fittnerserver.entity.user.Trainer;
@@ -68,12 +65,12 @@ public class LoginService {
             String accessToken = authorizationHeader.substring(7); // "Bearer " 부분을 제거
             blackListTokenRepository.save(new BlackListToken(accessToken, customUserDetails.getTrainerEmail()));
         } else {
-            new RuntimeException("로그아웃 실패");
+            throw new JwtException(CommonErrorCode.LOGOUT_FAIL.getCode(), CommonErrorCode.LOGOUT_FAIL.getMessage());
         }
     }
 
     public TestDto listTest() {
-        TestDto testDto =new TestDto();
+        TestDto testDto = new TestDto();
         testDto.setTrainerName("test");
         return testDto;
     }
@@ -91,5 +88,27 @@ public class LoginService {
 
     public List<TestDto> mybatisTest() {
         return trainerMapper.selectTrainerInfo();
+    }
+
+
+    @Transactional
+    public TokenResDto makeToken(AccessTokenReqDto accessTokenReqDto) {
+        String trainerId = jwtTokenUtil.validateTokenAndGetTrainerId(accessTokenReqDto.getAccessToken());
+        if (trainerId != null) {
+            throw new JwtException(CommonErrorCode.GOOD_TOKEN.getCode(), CommonErrorCode.GOOD_TOKEN.getMessage());
+        }
+
+        RefreshToken refreshToken = refreshTokenRepository.findById(accessTokenReqDto.getRefreshTokenId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_REFRESH_TOKEN_INFO.getCode(), CommonErrorCode.NOT_FOUND_REFRESH_TOKEN_INFO.getMessage()));
+
+        //리프레시 토큰 유효 검증
+        String refreshTrainerId = jwtTokenUtil.validateTokenAndGetTrainerId(refreshToken.getRefreshToken());
+
+        if (refreshTrainerId == null) {
+            String newRefreshToken = jwtTokenUtil.generateRefreshToken(refreshToken.getTrainer().getTrainerId());
+            refreshToken.updateToken(newRefreshToken);
+        }
+        String newAccessToken = jwtTokenUtil.generateAccessToken(refreshToken.getTrainer().getTrainerId());
+        return new TokenResDto(newAccessToken, refreshToken.getRefreshTokenId());
     }
 }

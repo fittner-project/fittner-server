@@ -11,7 +11,12 @@ public enum CommonErrorCode {
     WRONG_TOKEN("H003","토큰이 유효하지 않거나 잘못되었습니다."),
     INVALID_TOKEN("H004","토큰이 유효하지 않거나 잘못되었습니다."),
     EXPIRED_TOKEN("H005","토큰이 만료되었습니다"),
-    AUTHENTICATION_FAILED("H006","인증에 실패하였습니다.");
+    AUTHENTICATION_FAILED("H006","인증에 실패하였습니다."),
+    NOT_FOUND_AUTH_HEADER("H007","헤더에 인증정보가 없습니다."),
+    LOGOUT_FAIL("H008","로그아웃에 실패하였습니다."),
+    NOT_NEED_AUTH_HEADER("H009","인증정보가 필요 없는 요청입니다."),
+    NOT_FOUND_REFRESH_TOKEN_INFO("H010","리프레시 토큰 정보를 찾을 수 없습니다."),
+    GOOD_TOKEN("H011","유효한 토큰입니다.");
 
     private final String code;
     private final String message;

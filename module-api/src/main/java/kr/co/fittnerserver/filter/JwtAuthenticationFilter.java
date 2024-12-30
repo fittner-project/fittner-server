@@ -1,16 +1,12 @@
 package kr.co.fittnerserver.filter;
 
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.fittnerserver.auth.CustomUserDetailsService;
 import kr.co.fittnerserver.common.CommonErrorCode;
-import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
 import kr.co.fittnerserver.util.JwtTokenUtil;
@@ -20,9 +16,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +29,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService userDetailsService;
     private final BlackListTokenRepository blackListTokenRepository;
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private static final List<String> EXCLUDED_URLS = Arrays.asList(
+            "/api/v1/auth/login",
+            "/api/v1/auth/refresh-token",
+            "/actuator/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -39,27 +47,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
         String trainerId = null;
 
-        try {
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                token = authorizationHeader.substring(7);
-                //블랙리스트 토큰 확인
-                if(blackListTokenRepository.existsByAccessToken(token)){
-                    throw new JwtException(CommonErrorCode.EXIST_BLACKLIST_TOKEN.getCode(), CommonErrorCode.EXIST_BLACKLIST_TOKEN.getMessage());
-                }
-                trainerId = jwtTokenUtil.validateTokenAndGetTrainerId(token);
-                if(trainerId == null) {
-                    throw new JwtException(CommonErrorCode.INVALID_TOKEN.getCode(), CommonErrorCode.INVALID_TOKEN.getMessage());
-                }
-            }
-        } catch (MalformedJwtException e) {
-            throw new JwtException(CommonErrorCode.WRONG_TOKEN.getCode(), CommonErrorCode.WRONG_TOKEN.getMessage(), e);
-        } catch(IllegalArgumentException e) {
-            throw new JwtException(CommonErrorCode.INVALID_TOKEN.getCode(), CommonErrorCode.INVALID_TOKEN.getMessage());
-        } catch(ExpiredJwtException e) {
-            throw new JwtException(CommonErrorCode.EXPIRED_TOKEN.getCode(), CommonErrorCode.EXPIRED_TOKEN.getMessage());
-        } catch(SignatureException e) {
-            throw new JwtException(CommonErrorCode.AUTHENTICATION_FAILED.getCode(), CommonErrorCode.AUTHENTICATION_FAILED.getMessage(), e);
+        String requestURI = request.getRequestURI();
+        boolean isExcluded = EXCLUDED_URLS.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
+
+        if (authorizationHeader == null && !isExcluded) {
+            throw new JwtException(CommonErrorCode.NOT_FOUND_AUTH_HEADER.getCode(), CommonErrorCode.NOT_FOUND_AUTH_HEADER.getMessage());
         }
+
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            if (isExcluded) {
+                throw new JwtException(CommonErrorCode.NOT_NEED_AUTH_HEADER.getCode(), CommonErrorCode.NOT_NEED_AUTH_HEADER.getMessage());
+            }
+            token = authorizationHeader.substring(7);
+            //블랙리스트 토큰 확인
+            if (blackListTokenRepository.existsByAccessToken(token)) {
+                throw new JwtException(CommonErrorCode.EXIST_BLACKLIST_TOKEN.getCode(), CommonErrorCode.EXIST_BLACKLIST_TOKEN.getMessage());
+            }
+            trainerId = jwtTokenUtil.validateTokenAndGetTrainerId(token);
+            if (trainerId == null) {
+                throw new JwtException(CommonErrorCode.INVALID_TOKEN.getCode(), CommonErrorCode.INVALID_TOKEN.getMessage());
+            }
+        }
+
 
         if (trainerId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(trainerId);

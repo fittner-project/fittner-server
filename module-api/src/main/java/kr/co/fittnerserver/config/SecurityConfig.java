@@ -66,7 +66,8 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*"); // 모든 도메인 허용 (보안상 주의 필요)
+        config.addAllowedOrigin("https://api.fittner.co.kr"); // 실제 도메인으로 변경
+        config.addAllowedOrigin("http://localhost:8080"); // 로컬 테스트용
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

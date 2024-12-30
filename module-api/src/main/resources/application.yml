@@ -8,6 +8,10 @@ management:
                 include: "*"
 springdoc:
     override-with-generic-response: false
+jwt:
+    secret-key: ${JWT_SECRET_KEY}
+swagger:
+    cors-url: ${SWAGGER_CORS_URL}
 ---
 spring.config.activate.on-profile: local
 server:
@@ -18,3 +22,5 @@ spring:
         timeout-per-shutdown-phase: 5s
 jwt:
     secret-key: ${JWT_SECRET_KEY}
+swagger:
+    cors-url: ${SWAGGER_CORS_URL}

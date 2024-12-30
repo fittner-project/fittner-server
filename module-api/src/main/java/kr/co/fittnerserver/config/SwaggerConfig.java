@@ -4,12 +4,17 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
+    @Value("${swagger.cors-url}")
+    private String corsUrl;
 
     @Bean
     public GroupedOpenApi authGroupApi() {
@@ -54,6 +59,9 @@ public class SwaggerConfig {
                         .title("Fittner API")
                         .version("1.0.0")
                         .description("Fittner API with Spring Boot"))
+                .addServersItem(new Server()
+                        .url(corsUrl)
+                        .description("server"))
                 .components(
                         new Components().addSecuritySchemes(
                                 "Authorization",

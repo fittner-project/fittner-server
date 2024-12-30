@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface TrainerRepository extends JpaRepository<Trainer,String> {
     Optional<Trainer> findByTrainerEmail(String trainerEmail);
+
+    boolean existsByTrainerEmail(String encrypt);
 }

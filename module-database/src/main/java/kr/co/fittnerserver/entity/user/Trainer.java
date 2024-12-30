@@ -1,9 +1,10 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.JoinReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.admin.CenterGroup;
-import kr.co.fittnerserver.entity.common.BaseTimeEntity;
+import kr.co.fittnerserver.entity.common.BaseTimeOnlyEntity;
 import kr.co.fittnerserver.entity.user.enums.TrainerSnsKind;
 import kr.co.fittnerserver.entity.user.enums.TrainerStatus;
 import lombok.AccessLevel;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Trainer extends BaseTimeEntity {
+public class Trainer extends BaseTimeOnlyEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -26,7 +27,7 @@ public class Trainer extends BaseTimeEntity {
     @Comment(value = "트레이너 키값")
     private String trainerId;
     @Comment(value = "트레이너 휴대폰")
-    @Column(length = 30)
+    @Column(length = 100)
     private String trainerPhone;
     @Comment(value = "트레이너 이름")
     @Column(length = 30)
@@ -58,4 +59,16 @@ public class Trainer extends BaseTimeEntity {
     @JoinColumn(name = "center_group_id")
     private CenterGroup centerGroup;
 
+    public Trainer(JoinReqDto joinReqDto,Center center) throws Exception {
+        this.trainerPhone = joinReqDto.getTrainerPhone();
+        this.trainerName = joinReqDto.getTrainerName();
+        this.trainerEmail = joinReqDto.getTrainerEmail();
+        this.trainerSnsKind = joinReqDto.getTrainerSnsKind();
+        this.trainerStatus = TrainerStatus.INACTIVE;
+        this.trainerDropYn = "N";
+        this.trainerProductChangeYn = "N";
+        this.trainerFcmToken = joinReqDto.getTrainerFcmToken();
+        this.trainerCiNo = joinReqDto.getTrainerCiNo();
+        this.centerGroup = center.getCenterGroup();
+    }
 }

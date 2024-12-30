@@ -33,4 +33,12 @@ public class TrainerRefreshToken extends BaseTimeEntity implements Serializable 
     @OneToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
+
+    public void updateToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+    public TrainerRefreshToken(Trainer trainer, String refreshToken) {
+        this.trainer = trainer;
+        this.refreshToken = refreshToken;
+    }
 }

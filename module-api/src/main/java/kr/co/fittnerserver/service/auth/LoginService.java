@@ -1,4 +1,4 @@
-package kr.co.fittnerserver.service.user;
+package kr.co.fittnerserver.service.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
@@ -6,12 +6,12 @@ import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.*;
 import kr.co.fittnerserver.entity.BlackListToken;
-import kr.co.fittnerserver.entity.common.RefreshToken;
 import kr.co.fittnerserver.entity.user.Trainer;
+import kr.co.fittnerserver.entity.user.TrainerRefreshToken;
 import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.mapper.user.TrainerMapper;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
-import kr.co.fittnerserver.repository.common.RefreshTokenRepository;
+import kr.co.fittnerserver.repository.user.TrainerRefreshTokenRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
 import kr.co.fittnerserver.results.CacheablePage;
 import kr.co.fittnerserver.util.AES256Cipher;
@@ -32,7 +32,7 @@ public class LoginService {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final TrainerRepository trainerRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TrainerRefreshTokenRepository trainerRefreshTokenRepository;
     private final BlackListTokenRepository blackListTokenRepository;
     private final TrainerMapper trainerMapper;
 
@@ -46,13 +46,13 @@ public class LoginService {
         //리프레시 토큰 생성
         String refreshToken = jwtTokenUtil.generateRefreshToken(trainer.getTrainerId());
 
-        RefreshToken refreshTokenByTrainer = refreshTokenRepository.findByTrainer(trainer).orElse(null);
-        if (refreshTokenByTrainer != null) {
-            refreshTokenByTrainer.updateToken(refreshToken);
-            return new TokenResDto(accessToken, refreshTokenByTrainer.getRefreshTokenId());
+        TrainerRefreshToken trainerRefreshTokenByTrainer = trainerRefreshTokenRepository.findByTrainer(trainer).orElse(null);
+        if (trainerRefreshTokenByTrainer != null) {
+            trainerRefreshTokenByTrainer.updateToken(refreshToken);
+            return new TokenResDto(accessToken, trainerRefreshTokenByTrainer.getRefreshTokenId());
         } else {
-            RefreshToken refreshTokenInfo = refreshTokenRepository.save(new RefreshToken(refreshToken, trainer));
-            return new TokenResDto(accessToken, refreshTokenInfo.getRefreshTokenId());
+            TrainerRefreshToken trainerRefreshTokenInfo = trainerRefreshTokenRepository.save(new TrainerRefreshToken(trainer, refreshToken));
+            return new TokenResDto(accessToken, trainerRefreshTokenInfo.getRefreshTokenId());
         }
     }
 
@@ -98,17 +98,17 @@ public class LoginService {
             throw new JwtException(CommonErrorCode.GOOD_TOKEN.getCode(), CommonErrorCode.GOOD_TOKEN.getMessage());
         }
 
-        RefreshToken refreshToken = refreshTokenRepository.findById(accessTokenReqDto.getRefreshTokenId())
+        TrainerRefreshToken trainerRefreshToken = trainerRefreshTokenRepository.findById(accessTokenReqDto.getRefreshTokenId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_REFRESH_TOKEN_INFO.getCode(), CommonErrorCode.NOT_FOUND_REFRESH_TOKEN_INFO.getMessage()));
 
         //리프레시 토큰 유효 검증
-        String refreshTrainerId = jwtTokenUtil.validateTokenAndGetTrainerId(refreshToken.getRefreshToken());
+        String refreshTrainerId = jwtTokenUtil.validateTokenAndGetTrainerId(trainerRefreshToken.getRefreshToken());
 
         if (refreshTrainerId == null) {
-            String newRefreshToken = jwtTokenUtil.generateRefreshToken(refreshToken.getTrainer().getTrainerId());
-            refreshToken.updateToken(newRefreshToken);
+            String newRefreshToken = jwtTokenUtil.generateRefreshToken(trainerRefreshToken.getTrainer().getTrainerId());
+            trainerRefreshToken.updateToken(newRefreshToken);
         }
-        String newAccessToken = jwtTokenUtil.generateAccessToken(refreshToken.getTrainer().getTrainerId());
-        return new TokenResDto(newAccessToken, refreshToken.getRefreshTokenId());
+        String newAccessToken = jwtTokenUtil.generateAccessToken(trainerRefreshToken.getTrainer().getTrainerId());
+        return new TokenResDto(newAccessToken, trainerRefreshToken.getRefreshTokenId());
     }
 }

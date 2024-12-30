@@ -1,0 +1,18 @@
+### 정상 회원가입
+POST http://localhost:8080/api/v1/user/join
+Content-Type: application/json
+
+{
+  "trainerPhone": "01012345678",
+  "trainerName": "홍길동",
+  "trainerEmail": "newy12@naverd.com",
+  "trainerSnsKind": "KAKAO",
+  "trainerCiNo": "",
+  "trainerFcmToken": "",
+  "centerId": "1"
+}
+
+
+
+
+

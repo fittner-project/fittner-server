@@ -16,7 +16,9 @@ public enum CommonErrorCode {
     LOGOUT_FAIL("H008","로그아웃에 실패하였습니다."),
     NOT_NEED_AUTH_HEADER("H009","인증정보가 필요 없는 요청입니다."),
     NOT_FOUND_REFRESH_TOKEN_INFO("H010","리프레시 토큰 정보를 찾을 수 없습니다."),
-    GOOD_TOKEN("H011","유효한 토큰입니다.");
+    GOOD_TOKEN("H011","유효한 토큰입니다."),
+    ALREADY_TRAINER("H012","이미 가입된 트레이너입니다."),
+    NOT_FOUND_CENTER("H013","센터를 찾을 수 없습니다.");
 
     private final String code;
     private final String message;

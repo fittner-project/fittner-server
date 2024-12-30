@@ -10,7 +10,7 @@ import kr.co.fittnerserver.dto.user.TokenResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.MtnPageable;
 import kr.co.fittnerserver.results.MtnResponse;
-import kr.co.fittnerserver.service.user.LoginService;
+import kr.co.fittnerserver.service.auth.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

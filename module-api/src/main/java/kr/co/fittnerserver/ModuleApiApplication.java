@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ModuleApiApplication {
 
     public static void main(String[] args) throws Exception {
+        //배포
         SpringApplication.run(ModuleApiApplication.class, args);
     }
 

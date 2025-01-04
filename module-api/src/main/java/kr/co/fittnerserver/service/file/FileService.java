@@ -77,6 +77,7 @@ public class FileService {
 
             //실제 파일명
             String fileName = mFile.getOriginalFilename();
+            saveFileName = fileName;
 
             //키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 8자리)
             String fileId = RandomStringUtils.randomAlphanumeric(10);
@@ -181,7 +182,11 @@ public class FileService {
 
         kr.co.fittnerserver.entity.common.File fileInfo =  fileMapper.selectFile(fileId);
 
-        File file = new File(fileInfo.getFilePath()+File.separator+fileInfo.getFileName());
+        File file = new File(uploadPath+File.separator+"non-file.jpg");
+
+        if(fileInfo != null){
+            file = new File(fileInfo.getFilePath()+File.separator+fileInfo.getFileName());
+        }
 
         if(!file.isFile()){
             throw new Exception();

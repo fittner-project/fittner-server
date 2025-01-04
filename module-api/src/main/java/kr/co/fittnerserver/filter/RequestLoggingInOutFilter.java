@@ -38,8 +38,6 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
             CustomHttpServletRequestWrapper wrappedRequest = new CustomHttpServletRequestWrapper(request); //요청을 CustomHttpServletRequestWrapper로 감싸기
             ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
-            filterChain.doFilter(wrappedRequest, wrappedResponse);
-
             //request log
             beforeRequest(wrappedRequest);
 

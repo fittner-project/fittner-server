@@ -12,6 +12,16 @@ jwt:
     secret-key: ${JWT_SECRET_KEY}
 swagger:
     cors-url: ${SWAGGER_CORS_URL}
+server:
+    port: 8080
+    shutdown: graceful
+spring:
+    lifecycle:
+        timeout-per-shutdown-phase: 5s
+file:
+    uploadPath: ${FILE_UPLOAD_PATH}
+    url: ${FILE_URL}
+
 ---
 spring.config.activate.on-profile: local
 server:

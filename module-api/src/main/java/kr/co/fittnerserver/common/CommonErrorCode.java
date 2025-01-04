@@ -18,7 +18,8 @@ public enum CommonErrorCode {
     NOT_FOUND_REFRESH_TOKEN_INFO("H010","리프레시 토큰 정보를 찾을 수 없습니다."),
     GOOD_TOKEN("H011","유효한 토큰입니다."),
     ALREADY_TRAINER("H012","이미 가입된 트레이너입니다."),
-    NOT_FOUND_CENTER("H013","센터를 찾을 수 없습니다.");
+    NOT_FOUND_CENTER("H013","센터를 찾을 수 없습니다."),
+    NOT_ALLOW_FILE("H013","허용되지 않은 확장자입니다.");
 
     private final String code;
     private final String message;

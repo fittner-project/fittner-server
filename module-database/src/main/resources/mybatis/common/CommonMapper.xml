@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.fittnerserver.mapper.common.CommonMapper">
+
+    <select id="selectUUID" resultType="String">
+        /* CommonMapper.selectUUID */
+        select UUID() from dual
+    </select>
+
+    <select id="reservationId" resultType="String">
+        /* CommonMapper.reservationId */
+        select concat('R',CONCAT(DATE_FORMAT(NOW(3), '%y%m%d%H%i%s'), LPAD(MICROSECOND(NOW(3)) DIV 1000, 3, '0'))) from dual
+    </select>
+
+
+</mapper>
+
+
+
+
+
+
+
+

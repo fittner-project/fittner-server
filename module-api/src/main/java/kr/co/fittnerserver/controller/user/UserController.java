@@ -3,10 +3,13 @@ package kr.co.fittnerserver.controller.user;
 import io.swagger.v3.oas.annotations.Operation;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.JoinReqDto;
+import kr.co.fittnerserver.dto.user.MemberListResDto;
 import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.UserCenterListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
+import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
+import kr.co.fittnerserver.results.PageResponseDto;
 import kr.co.fittnerserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,5 +45,11 @@ public class UserController {
     public ResponseEntity<ApiResponseMessage<Object>> register(@RequestBody MemberRegisterReqDto memberRegisterReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         userService.registerUser(memberRegisterReqDto,customUserDetails);
         return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "회원 목록 조회 API", description = "회원 목록 조회 API 입니다.")
+    @GetMapping("/members")
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<MemberListResDto>>> members(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildPage(userService.getMembers(customUserDetails,pageable.getPageable()),pageable);
     }
 }

@@ -4,9 +4,7 @@ package kr.co.fittnerserver.service.user;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
-import kr.co.fittnerserver.dto.user.JoinReqDto;
-import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
-import kr.co.fittnerserver.dto.user.UserCenterListResDto;
+import kr.co.fittnerserver.dto.user.*;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.user.*;
 import kr.co.fittnerserver.repository.common.CenterJoinRepository;
@@ -15,12 +13,20 @@ import kr.co.fittnerserver.repository.user.MemberRepository;
 import kr.co.fittnerserver.repository.user.TicketRepository;
 import kr.co.fittnerserver.repository.user.TrainerProductRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
+import kr.co.fittnerserver.results.CacheablePage;
 import kr.co.fittnerserver.util.AES256Cipher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,5 +97,51 @@ public class UserService {
 
         //ticket 테이블 추가
         ticketRepository.save(new Ticket(memberRegisterReqDto, trainerProduct, trainer, member));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MemberListResDto> getMembers(CustomUserDetails customUserDetails, Pageable pageable) {
+
+        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
+
+        Page<Member> members = memberRepository.findAllByTrainer(trainer, pageable);
+
+        return new CacheablePage<>(
+                members.map(member -> MemberListResDto.builder()
+                                .memberId(member.getMemberId())
+                                .memberName(member.getMemberName())
+                                .memberPhone(member.getMemberPhone())
+                                .memberAge(ageCalculate(member.getMemberBirth()))
+                                .memberTotalCount(members.getTotalElements())
+                                .build())
+        );
+    }
+
+    private String ageCalculate(String memberBirth) {
+        // 생년월일 포맷 처리 (yyMMdd)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+        LocalDate birthDate = LocalDate.parse(memberBirth, formatter);
+
+        // 2000년 이전 생년월일 처리
+        if (birthDate.getYear() > LocalDate.now().getYear()) {
+            birthDate = birthDate.minusYears(100); // 1900년대로 변환
+        }
+
+        // 현재 날짜 가져오기
+        LocalDate currentDate = LocalDate.now();
+
+        // 나이 계산
+        int age = currentDate.getYear() - birthDate.getYear();
+
+        // 생일이 지나지 않은 경우 나이 1 감소
+        if (currentDate.getMonthValue() < birthDate.getMonthValue() ||
+                (currentDate.getMonthValue() == birthDate.getMonthValue() &&
+                        currentDate.getDayOfMonth() < birthDate.getDayOfMonth())) {
+            age--;
+        }
+
+        // 결과 반환 (String 타입)
+        return String.valueOf(age);
     }
 }

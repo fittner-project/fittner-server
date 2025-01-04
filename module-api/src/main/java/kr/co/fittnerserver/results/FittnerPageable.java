@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.results;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,13 +15,15 @@ import java.util.Objects;
 public class FittnerPageable {
     @Schema(hidden = true)
     private Pageable pageable;
-    @Schema(description = "페이지당 레코드 수", example = "15")
+    @Schema(description = "페이지당 레코드 수", example = "15", hidden = true)
     private Integer recordsPerPage;
     @Schema(description = "현재 페이지 번호", example = "1")
     private Integer currentPageNo;
-    @Schema(description = "페이지 개수", example = "10")
+    @Schema(description = "페이지 개수", example = "10", hidden = true)
+    @Hidden
     private Integer pageSize;
-    @Schema(description = "정렬", example = "payDate,desc")
+    @Schema(description = "정렬", example = "payDate,desc", hidden = true)
+    @Hidden
     private String sort;
 
     public FittnerPageable(Integer currentPageNo, Integer recordsPerPage, Integer pageSize, String sort) {
@@ -31,7 +34,7 @@ public class FittnerPageable {
 
         Sort sortObject = Sort.unsorted();
 
-        if ( sort != null && !sort.isEmpty()) {
+        if (sort != null && !sort.isEmpty()) {
             sortObject = parseSortString(this.sort);
         }
 

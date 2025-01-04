@@ -33,8 +33,8 @@ public class UserController {
 
     @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
     @GetMapping("/centers")
-    public ResponseEntity<ApiResponseMessage<List<UserCenterListResDto>>> centerList(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.build(userService.getCenterListByTrainer(customUserDetails));
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildPage(userService.getCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
     }
 
     @Operation(summary = "트레이너가 회원을 등록하는 API", description = "트레이너가 회원을 등록하는 API 입니다.")

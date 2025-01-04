@@ -64,4 +64,10 @@ public class UserService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void registerUser(CustomUserDetails customUserDetails) {
+
+        //
+    }
 }

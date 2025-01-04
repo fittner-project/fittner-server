@@ -34,7 +34,7 @@ public class ApiResponseMessage<T> {
     }
 
 
-    public void setError(MtnErrorCode errorCode) {
+    public void setError(FittnerErrorCode errorCode) {
         this.errorCode = errorCode.getCode();
         this.errorMessage = errorCode.getMessage();
     }

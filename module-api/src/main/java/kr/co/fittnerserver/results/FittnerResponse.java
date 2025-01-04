@@ -9,7 +9,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class MtnResponse<T> {
+public class FittnerResponse<T> {
 
     public static <T> ResponseEntity<ApiResponseMessage<T>> build(T resultObject) {
         return Result.ok(new ApiResponseMessage<>(resultObject));
@@ -48,7 +48,7 @@ public class MtnResponse<T> {
         return Result.ok(responseMessage);
     }
 
-    public static <T> ResponseEntity<ApiResponseMessage<PageResponseDto<T>>> buildPage(Page<T> page, MtnPageable pageInfo) {
+    public static <T> ResponseEntity<ApiResponseMessage<PageResponseDto<T>>> buildPage(Page<T> page, FittnerPageable pageInfo) {
 
         int firstPage = ((page.getNumber()) / pageInfo.getPageSize()) * pageInfo.getPageSize() + 1;
         int lastPage = firstPage + pageInfo.getPageSize() - 1;

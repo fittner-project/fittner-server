@@ -3,7 +3,7 @@ package kr.co.fittnerserver.controller.user;
 import io.swagger.v3.oas.annotations.Operation;
 import kr.co.fittnerserver.dto.user.CenterListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
-import kr.co.fittnerserver.results.MtnResponse;
+import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.user.CenterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class CenterController {
     @Operation(summary = "센터 목록 조회 API", description = "센터 목록 조회 API 입니다.")
     @GetMapping("/list")
     public ResponseEntity<ApiResponseMessage<List<CenterListResDto>>> centerList() throws Exception {
-        return MtnResponse.build(centerService.getCenterList());
+        return FittnerResponse.build(centerService.getCenterList());
     }
 
 }

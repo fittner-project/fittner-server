@@ -5,7 +5,7 @@ import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.JoinReqDto;
 import kr.co.fittnerserver.dto.user.UserCenterListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
-import kr.co.fittnerserver.results.MtnResponse;
+import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +27,21 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<ApiResponseMessage<Object>> login(@RequestBody JoinReqDto joinReqDto) throws Exception {
         userService.joinProcess(joinReqDto);
-        return MtnResponse.ok();
+        return FittnerResponse.ok();
     }
 
     @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
     @GetMapping("/centers")
     public ResponseEntity<ApiResponseMessage<List<UserCenterListResDto>>> centerList(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return MtnResponse.build(userService.getCenterList(customUserDetails));
+        return FittnerResponse.build(userService.getCenterList(customUserDetails));
     }
+
+    @Operation(summary = "트레이너가 회원을 등록하는 API", description = "트레이너가 회원을 등록하는 API 입니다.")
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponseMessage<Object>> register(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        userService.registerUser(customUserDetails);
+        return FittnerResponse.ok();
+    }
+
 
 }

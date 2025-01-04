@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class MtnPageable {
+public class FittnerPageable {
     @Schema(hidden = true)
     private Pageable pageable;
     @Schema(description = "페이지당 레코드 수", example = "15")
@@ -23,7 +23,7 @@ public class MtnPageable {
     @Schema(description = "정렬", example = "payDate,desc")
     private String sort;
 
-    public MtnPageable(Integer currentPageNo, Integer recordsPerPage, Integer pageSize, String sort) {
+    public FittnerPageable(Integer currentPageNo, Integer recordsPerPage, Integer pageSize, String sort) {
         this.pageSize = Objects.requireNonNullElse(pageSize, 10);
         this.recordsPerPage = Objects.requireNonNullElse(recordsPerPage, 10);
         this.currentPageNo = Objects.requireNonNullElse(currentPageNo, 1);

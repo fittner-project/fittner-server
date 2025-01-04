@@ -86,5 +86,9 @@ public class Reservation extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
+
 
 }

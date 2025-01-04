@@ -20,7 +20,10 @@ server:
 spring:
     lifecycle:
         timeout-per-shutdown-phase: 5s
-
+    servlet:
+         multipart:
+             max-file-size: 10MB
+             max-request-size: 10MB
 
 ---
 spring.config.activate.on-profile: local
@@ -30,6 +33,11 @@ server:
 spring:
     lifecycle:
         timeout-per-shutdown-phase: 5s
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+
 jwt:
     secret-key: ${JWT_SECRET_KEY}
 swagger:

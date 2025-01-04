@@ -47,7 +47,10 @@
 
     <select id="selectFile" resultType="File">
         /* FileMapper.selectFile */
-        select *
+        select file_name
+             , file_path
+             , file_url
+             , file_delete_yn
           from file
          where file_id = #{fileId}
     </select>

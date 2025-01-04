@@ -18,7 +18,7 @@ public class CenterJoin extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "센터 등록 키값")
     private String centerJoinId;
@@ -36,4 +36,11 @@ public class CenterJoin extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
+
+    public CenterJoin(Center center, Trainer trainer) {
+        this.centerJoinApprovalYn = "N";
+        this.centerJoinMainYn = "N";
+        this.center = center;
+        this.trainer = trainer;
+    }
 }

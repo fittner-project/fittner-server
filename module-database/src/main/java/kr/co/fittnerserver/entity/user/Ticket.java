@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
 import kr.co.fittnerserver.entity.user.enums.MemberGender;
@@ -57,4 +58,14 @@ public class Ticket extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+/*    public Ticket(MemberRegisterReqDto memberRegisterReqDto, TrainerProduct, Trainer trainer, Member member) {
+        this.ticketStartDate = LocalDate.parse(memberRegisterReqDto.getProductStartDate());
+        this.ticketEndDate = memberRegisterReqDto.getTicketEndDate();
+        this.ticketCode = memberRegisterReqDto.getTicketCode();
+        this.trainerProduct = trainerProduct;
+        this.trainer = trainer;
+        this.member = member;
+
+    }*/
 }

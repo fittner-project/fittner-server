@@ -11,8 +11,8 @@ import java.io.Serializable;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileGroup extends BaseTimeEntity implements Serializable {
 
     @Id
@@ -20,5 +20,5 @@ public class FileGroup extends BaseTimeEntity implements Serializable {
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "파일 키값")
-    private String groupFileId;
+    private String fileGroupId;
 }

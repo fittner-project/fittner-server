@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCenterListResDto {
-    private String centerId;
+    private String centerJoinId;
     private String centerName;
 }

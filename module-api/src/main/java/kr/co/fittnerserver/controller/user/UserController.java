@@ -3,6 +3,7 @@ package kr.co.fittnerserver.controller.user;
 import io.swagger.v3.oas.annotations.Operation;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.JoinReqDto;
+import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.UserCenterListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerResponse;
@@ -38,8 +39,8 @@ public class UserController {
 
     @Operation(summary = "트레이너가 회원을 등록하는 API", description = "트레이너가 회원을 등록하는 API 입니다.")
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseMessage<Object>> register(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        userService.registerUser(customUserDetails);
+    public ResponseEntity<ApiResponseMessage<Object>> register(@RequestBody MemberRegisterReqDto memberRegisterReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        userService.registerUser(memberRegisterReqDto,customUserDetails);
         return FittnerResponse.ok();
     }
 

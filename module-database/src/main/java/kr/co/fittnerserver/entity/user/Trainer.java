@@ -56,8 +56,8 @@ public class Trainer extends BaseTimeOnlyEntity {
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
     private String trainerProductChangeYn;
     @ManyToOne
-    @JoinColumn(name = "center_group_id")
-    private CenterGroup centerGroup;
+    @JoinColumn(name = "center_id")
+    private Center center;
 
     public Trainer(JoinReqDto joinReqDto,Center center) throws Exception {
         this.trainerPhone = joinReqDto.getTrainerPhone();
@@ -69,6 +69,6 @@ public class Trainer extends BaseTimeOnlyEntity {
         this.trainerProductChangeYn = "N";
         this.trainerFcmToken = joinReqDto.getTrainerFcmToken();
         this.trainerCiNo = joinReqDto.getTrainerCiNo();
-        this.centerGroup = center.getCenterGroup();
+        this.center = center;
     }
 }

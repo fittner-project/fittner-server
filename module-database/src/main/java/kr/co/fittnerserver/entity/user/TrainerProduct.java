@@ -1,9 +1,11 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.admin.CenterProduct;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
+import kr.co.fittnerserver.repository.user.TrainerProductRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,8 +27,6 @@ public class TrainerProduct extends BaseTimeEntity {
     @Comment(value = "트레이너 상품명")
     @Column(length = 100)
     private String trainerProductName;
-    @Comment(value = "트레이너 상품 기간(개월)")
-    private int trainerProductPeriod;
     @Comment(value = "트레이너 상품 횟수")
     private int trainerProductCount;
     @Comment(value = "트레이너 상품 가격")
@@ -34,10 +34,6 @@ public class TrainerProduct extends BaseTimeEntity {
     @Comment(value = "트레이너 상품 삭제여부")
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
     private String trainerProductDeleteYn;
-
-    @ManyToOne
-    @JoinColumn(name = "center_product_id")
-    private CenterProduct centerProduct;
 
     @ManyToOne
     @JoinColumn(name = "center_id")
@@ -50,4 +46,13 @@ public class TrainerProduct extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public TrainerProduct(MemberRegisterReqDto memberRegisterReqDto, Trainer trainer, Member member) {
+        this.trainerProductName = memberRegisterReqDto.getProductName();
+        this.trainerProductCount = memberRegisterReqDto.getProductCount();
+        this.trainerProductPrice = memberRegisterReqDto.getProductPrice();
+        this.center = trainer.getCenter();
+        this.trainer = trainer;
+        this.member = member;
+    }
 }

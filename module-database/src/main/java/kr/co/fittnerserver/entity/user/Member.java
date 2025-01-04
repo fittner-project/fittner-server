@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
 import kr.co.fittnerserver.entity.user.enums.MemberGender;
@@ -46,6 +47,10 @@ public class Member extends BaseTimeEntity {
     private String memberDeleteYn;
     @Comment(value = "회원 삭제일시")
     private LocalDateTime memberDeleteDatetime;
+    @Comment(value = "회원 메모")
+    private String memberMemo;
+    @Comment(value = "가입 경로")
+    private String memberJoinPath;
 
     @ManyToOne
     @JoinColumn(name = "center_id")
@@ -54,4 +59,16 @@ public class Member extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
+
+    public Member(MemberRegisterReqDto memberRegisterReqDto, Trainer trainer){
+        this.memberName = memberRegisterReqDto.getMemberName();
+        this.memberPhone = memberRegisterReqDto.getMemberPhone();
+        this.memberGender = MemberGender.valueOf(memberRegisterReqDto.getMemberGender());
+        this.memberBirth = memberRegisterReqDto.getMemberBirth();
+        this.memberAddress = memberRegisterReqDto.getMemberAddress();
+        this.memberMemo = memberRegisterReqDto.getMemberMemo();
+        this.memberJoinPath = memberRegisterReqDto.getMemberJoinPath();
+        this.trainer = trainer;
+        this.center = trainer.getCenter();
+    }
 }

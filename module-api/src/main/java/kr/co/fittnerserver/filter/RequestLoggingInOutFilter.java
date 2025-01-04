@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @Component
@@ -62,7 +63,7 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
         if(logChkeck){
 
             byte[] content = wrappedResponse.getContentAsByteArray();
-            String contentStr = new String(content, wrappedResponse.getCharacterEncoding());
+            String contentStr = new String(content, StandardCharsets.UTF_8);
 
             if (wrappedResponse.getContentType() != null) {
                 // 응답 log 출력 제외 (html, image)

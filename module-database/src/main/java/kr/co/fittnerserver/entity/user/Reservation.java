@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.admin.TrainerSettlement;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
-import kr.co.fittnerserver.entity.user.enums.MemberGender;
 import kr.co.fittnerserver.entity.user.enums.ReservationPush;
 import kr.co.fittnerserver.entity.user.enums.ReservationStatus;
 import lombok.AccessLevel;
@@ -13,9 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -31,10 +27,10 @@ public class Reservation extends BaseTimeEntity {
     private String reservationId;
 
     @Comment(value = "예약 시작일자")
-    private LocalDate reservationStartDate;
+    private String reservationStartDate;
 
     @Comment(value = "예약 종료일자")
-    private LocalDate reservationEndDate;
+    private String reservationEndDate;
 
     @Comment(value = "예약 시작시간")
     @Column(length = 4)

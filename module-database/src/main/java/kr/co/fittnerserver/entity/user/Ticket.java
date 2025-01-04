@@ -1,10 +1,7 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
-import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
-import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
-import kr.co.fittnerserver.entity.user.enums.MemberGender;
 import kr.co.fittnerserver.entity.user.enums.TicketCode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,9 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -29,9 +23,9 @@ public class Ticket extends BaseTimeEntity {
     @Comment(value = "티켓 키값")
     private String ticketId;
     @Comment(value = "티켓 시작일자")
-    private LocalDate ticketStartDate;
+    private String ticketStartDate;
     @Comment(value = "티켓 종료일자")
-    private LocalDate ticketEndDate;
+    private String ticketEndDate;
     @Comment(value = "티켓 삭제여부")
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
     private String ticketDeleteYn;
@@ -43,9 +37,9 @@ public class Ticket extends BaseTimeEntity {
     @Column(length = 10)
     private TicketCode ticketCode;
     @Comment(value = "티켓 일시정지 시작일자")
-    private LocalDate ticketSuspendStartDate;
+    private String ticketSuspendStartDate;
     @Comment(value = "티켓 일시정지 종료일자")
-    private LocalDate ticketSuspendEndDate;
+    private String ticketSuspendEndDate;
 
     @ManyToOne
     @JoinColumn(name = "trainer_product_id")
@@ -59,13 +53,12 @@ public class Ticket extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-/*    public Ticket(MemberRegisterReqDto memberRegisterReqDto, TrainerProduct, Trainer trainer, Member member) {
-        this.ticketStartDate = LocalDate.parse(memberRegisterReqDto.getProductStartDate());
+    /*public Ticket(MemberRegisterReqDto memberRegisterReqDto, TrainerProduct, Trainer trainer, Member member) {
+        this.ticketStartDate = memberRegisterReqDto.getProductStartDate());
         this.ticketEndDate = memberRegisterReqDto.getTicketEndDate();
         this.ticketCode = memberRegisterReqDto.getTicketCode();
         this.trainerProduct = trainerProduct;
         this.trainer = trainer;
         this.member = member;
-
     }*/
 }

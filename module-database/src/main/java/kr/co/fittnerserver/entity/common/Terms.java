@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.time.LocalDate;
-
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,10 +42,10 @@ public class Terms extends BaseTimeEntity {
     private TermsState termsState;
 
     @Comment(value = "약관 시작일")
-    private LocalDate termsStartDate;
+    private String termsStartDate;
 
     @Comment(value = "약관 종료일")
-    private LocalDate termsEndDate;
+    private String termsEndDate;
 
     @OneToOne
     @JoinColumn(name = "file_group_id")

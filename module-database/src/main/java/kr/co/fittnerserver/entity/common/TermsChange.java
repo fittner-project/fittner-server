@@ -10,7 +10,6 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -36,10 +35,10 @@ public class TermsChange extends BaseTimeEntity {
     private TermsKind termsKind;
 
     @Comment(value = "약관 변경 시작일")
-    private LocalDate termsChangeStartDate;
+    private String termsChangeStartDate;
 
     @Comment(value = "약관 변경 종료일")
-    private LocalDate termsChangeEndDate;
+    private String termsChangeEndDate;
 
     @Comment(value = "약관 변경 삭제유무")
     @Column(length = 1, columnDefinition = "char(1) default 'N'")

@@ -68,6 +68,7 @@ public class Member extends BaseTimeEntity {
         this.memberAddress = memberRegisterReqDto.getMemberAddress();
         this.memberMemo = memberRegisterReqDto.getMemberMemo();
         this.memberJoinPath = memberRegisterReqDto.getMemberJoinPath();
+        this.memberDeleteYn = "N";
         this.trainer = trainer;
         this.center = trainer.getCenter();
     }

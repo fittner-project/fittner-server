@@ -29,8 +29,4 @@ public class MemberRegisterReqDto {
     private String memberMemo;
     @Schema(description = "가입 경로", example = "지인 소개")
     private String memberJoinPath;
-
-
-
-
 }

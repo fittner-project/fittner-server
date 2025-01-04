@@ -3,13 +3,13 @@ POST http://localhost:8080/api/v1/user/join
 Content-Type: application/json
 
 {
-  "trainerPhone": "01012345678",
+  "trainerPhone": "01057212058",
   "trainerName": "홍길동",
-  "trainerEmail": "newy12@naverd.com",
+  "trainerEmail": "newy12@naver.com",
   "trainerSnsKind": "KAKAO",
   "trainerCiNo": "",
   "trainerFcmToken": "",
-  "centerId": "1"
+  "centerId": "123"
 }
 
 
@@ -20,5 +20,25 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 
+
+### 트레이너가 지정한 센터 리스트 조회
+POST http://localhost:8080/api/v1/user/register
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "memberName": "홍길동",
+    "memberPhone": "01012345678",
+    "memberGender": "M",
+    "memberBirth": "960615",
+    "memberAddress": "서울시 강남구",
+    "productName": "프리미엄PT20",
+    "productStartDate": "20210101",
+    "productEndDate": "20211231",
+    "productCount": 20,
+    "productPrice": 100000,
+    "memberMemo": "특이사항 없음",
+    "memberJoinPath": "지인 소개"
+}
 
 

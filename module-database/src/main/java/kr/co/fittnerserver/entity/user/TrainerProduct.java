@@ -51,6 +51,7 @@ public class TrainerProduct extends BaseTimeEntity {
         this.trainerProductName = memberRegisterReqDto.getProductName();
         this.trainerProductCount = memberRegisterReqDto.getProductCount();
         this.trainerProductPrice = memberRegisterReqDto.getProductPrice();
+        this.trainerProductDeleteYn = "N";
         this.center = trainer.getCenter();
         this.trainer = trainer;
         this.member = member;

@@ -43,6 +43,4 @@ public class UserController {
         userService.registerUser(memberRegisterReqDto,customUserDetails);
         return FittnerResponse.ok();
     }
-
-
 }

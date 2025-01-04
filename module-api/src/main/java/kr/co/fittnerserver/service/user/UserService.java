@@ -78,22 +78,18 @@ public class UserService {
     }
 
     @Transactional
-    public void registerUser(MemberRegisterReqDto memberRegisterReqDto, CustomUserDetails customUserDetails) {
+    public void registerUser(MemberRegisterReqDto memberRegisterReqDto, CustomUserDetails customUserDetails) throws Exception {
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
-        //member 테이블 추가
+        //member 테이블 추가, 전화번호 암호화
+        memberRegisterReqDto.setMemberPhone(AES256Cipher.encrypt(memberRegisterReqDto.getMemberPhone()));
         Member member = memberRepository.save(new Member(memberRegisterReqDto, trainer));
 
         //trainerproduct 테이블 추가
         TrainerProduct trainerProduct = trainerProductRepository.save(new TrainerProduct(memberRegisterReqDto, trainer, member));
 
         //ticket 테이블 추가
-        //ticketRepository.save(new Ticket(memberRegisterReqDto,trainerProduct, trainer , member));
-
-        //member insert
-        //trainerproduct insert
-        //ticket
-
+        ticketRepository.save(new Ticket(memberRegisterReqDto, trainerProduct, trainer, member));
     }
 }

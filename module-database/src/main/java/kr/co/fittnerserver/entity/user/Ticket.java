@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
 import kr.co.fittnerserver.entity.user.enums.TicketCode;
 import lombok.AccessLevel;
@@ -53,12 +54,14 @@ public class Ticket extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    /*public Ticket(MemberRegisterReqDto memberRegisterReqDto, TrainerProduct, Trainer trainer, Member member) {
-        this.ticketStartDate = memberRegisterReqDto.getProductStartDate());
-        this.ticketEndDate = memberRegisterReqDto.getTicketEndDate();
-        this.ticketCode = memberRegisterReqDto.getTicketCode();
+    public Ticket(MemberRegisterReqDto memberRegisterReqDto, TrainerProduct trainerProduct, Trainer trainer, Member member) {
+        this.ticketStartDate = memberRegisterReqDto.getProductStartDate();
+        this.ticketEndDate = memberRegisterReqDto.getProductEndDate();
+        this.ticketCode = TicketCode.ING;
         this.trainerProduct = trainerProduct;
+        this.ticketEndYn = "N";
+        this.ticketDeleteYn = "N";
         this.trainer = trainer;
         this.member = member;
-    }*/
+    }
 }

@@ -1,9 +1,11 @@
 package kr.co.fittnerserver.service.user;
 
 
+import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.JoinReqDto;
+import kr.co.fittnerserver.dto.user.UserCenterListResDto;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.repository.common.CenterRepository;
@@ -13,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +48,20 @@ public class UserService {
         if(trainerRepository.existsByTrainerEmail(AES256Cipher.encrypt(joinReqDto.getTrainerEmail()))) {
             throw new CommonException(CommonErrorCode.ALREADY_TRAINER.getCode(), CommonErrorCode.ALREADY_TRAINER.getMessage());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserCenterListResDto> getCenterList(CustomUserDetails customUserDetails) {
+        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
+
+
+        return centerRepository.findAllByCenterGroupAndCenterDeleteYn(trainer.getCenterGroup(), "N")
+                .stream()
+                .map(userCenter -> UserCenterListResDto.builder()
+                        .centerId(userCenter.getCenterId())
+                        .centerName(userCenter.getCenterName())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

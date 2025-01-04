@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/user")
+@RequestMapping(value = "/api/v1/center")
 @RequiredArgsConstructor
 @Slf4j
 public class CenterController {
@@ -21,7 +21,7 @@ public class CenterController {
     private final CenterService centerService;
 
     @Operation(summary = "센터 목록 조회 API", description = "센터 목록 조회 API 입니다.")
-    @GetMapping("/centers")
+    @GetMapping("/list")
     public ResponseEntity<ApiResponseMessage<List<CenterListResDto>>> centerList() throws Exception {
         return MtnResponse.build(centerService.getCenterList());
     }

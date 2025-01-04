@@ -4,7 +4,7 @@ Content-Type: application/json
 
 
 {
-  "trainerEmail" : "newy12@naver.com"
+  "trainerEmail" : "newy12@naverd.com"
 }
 > {% client.global.set("auth_token", response.body.result.accessToken); %}
 

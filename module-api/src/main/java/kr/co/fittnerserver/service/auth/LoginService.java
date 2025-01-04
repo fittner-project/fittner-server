@@ -104,6 +104,7 @@ public class LoginService {
         //리프레시 토큰 유효 검증
         String refreshTrainerId = jwtTokenUtil.validateTokenAndGetTrainerId(trainerRefreshToken.getRefreshToken());
 
+        //리프레시 토큰이 유효하지 않을때 리프레시 토큰 재생성
         if (refreshTrainerId == null) {
             String newRefreshToken = jwtTokenUtil.generateRefreshToken(trainerRefreshToken.getTrainer().getTrainerId());
             trainerRefreshToken.updateToken(newRefreshToken);

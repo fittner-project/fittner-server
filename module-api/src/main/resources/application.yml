@@ -15,12 +15,11 @@ swagger:
 file:
     uploadPath: ${FILE_UPLOAD_PATH}
     url: ${FILE_URL}
-#server:
-#   port: 8080
-#   shutdown: graceful
-#spring:
-#    lifecycle:
-#        timeout-per-shutdown-phase: 5s
+server:
+   shutdown: graceful
+spring:
+    lifecycle:
+        timeout-per-shutdown-phase: 5s
 
 
 ---

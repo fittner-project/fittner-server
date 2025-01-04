@@ -21,8 +21,13 @@ public class MybatisConfig {
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
-        sqlSessionFactoryBean.setTypeAliasesPackage("kr.co.fittnerserver.domain");
+        sqlSessionFactoryBean.setTypeAliasesPackage("kr.co.fittnerserver.domain,kr.co.fittnerserver.dto,kr.co.fittnerserver.entity");
         sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mybatis/*/*.xml"));
+
+        // snake_case -> camelCase 매핑 활성화
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setMapUnderscoreToCamelCase(true);
+        sqlSessionFactoryBean.setConfiguration(configuration);
         return sqlSessionFactoryBean.getObject();
     }
 

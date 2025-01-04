@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.fittnerserver.mapper.user.UserCommonMapper">
+    <select id="selectAppVersionByAppOs" resultType="appVersion">
+        select hard_update_yn
+             , update_url
+          from app_version
+         where app_os = #{appOsType}
+           and REGEXP_REPLACE(minimum_version, '[^0-9]', '') > REGEXP_REPLACE(#{appVersion}, '[^0-9]', '')
+    </select>
+</mapper>
+
+
+
+
+
+
+
+

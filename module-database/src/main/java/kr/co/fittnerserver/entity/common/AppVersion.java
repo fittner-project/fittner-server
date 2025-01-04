@@ -31,7 +31,7 @@ public class AppVersion extends BaseTimeEntity {
 
     @Comment(value = "강제업데이트 여부")
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
-    private boolean hardUpdateYn;
+    private String hardUpdateYn;
 
     @Comment(value = "업데이트 url")
     @Column(length = 100)

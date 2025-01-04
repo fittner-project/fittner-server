@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,7 +66,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserCenterListResDto> getCenterList(CustomUserDetails customUserDetails) {
+    public List<UserCenterListResDto> getCenterListByTrainer(CustomUserDetails customUserDetails) {
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
@@ -109,12 +106,12 @@ public class UserService {
 
         return new CacheablePage<>(
                 members.map(member -> MemberListResDto.builder()
-                                .memberId(member.getMemberId())
-                                .memberName(member.getMemberName())
-                                .memberPhone(member.getMemberPhone())
-                                .memberAge(ageCalculate(member.getMemberBirth()))
-                                .memberTotalCount(members.getTotalElements())
-                                .build())
+                        .memberId(member.getMemberId())
+                        .memberName(member.getMemberName())
+                        .memberPhone(member.getMemberPhone())
+                        .memberAge(ageCalculate(member.getMemberBirth()))
+                        .memberTotalCount(members.getTotalElements())
+                        .build())
         );
     }
 
@@ -143,5 +140,19 @@ public class UserService {
 
         // 결과 반환 (String 타입)
         return String.valueOf(age);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CenterListResDto> getCenterList() {
+        return centerRepository.findAllByCenterDeleteYn("N")
+                .stream()
+                .map(center -> CenterListResDto.builder()
+                        .centerId(center.getCenterId())
+                        .centerName(center.getCenterName())
+                        .centerAddress(center.getCenterAddress())
+                        .centerTel(center.getCenterTel())
+                        .centerImage("")
+                        .build())
+                .collect(Collectors.toList());
     }
 }

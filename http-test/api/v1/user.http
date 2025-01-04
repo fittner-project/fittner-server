@@ -46,3 +46,8 @@ Authorization: Bearer {{auth_token}}
 GET http://localhost:8080/api/v1/user/members
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
+
+
+### 센터 리스트 조회
+GET http://localhost:8080/api/v1/user/center/list
+Content-Type: application/json

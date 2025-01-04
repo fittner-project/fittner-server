@@ -30,7 +30,7 @@ public class Member extends BaseTimeEntity {
     @Column(length = 30)
     private String memberName;
     @Comment(value = "회원 휴대폰")
-    @Column(length = 30)
+    @Column(length = 200)
     private String memberPhone;
     @Enumerated(EnumType.STRING)
     @Comment(value = "회원 성별")

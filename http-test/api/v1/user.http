@@ -9,7 +9,7 @@ Content-Type: application/json
   "trainerSnsKind": "KAKAO",
   "trainerCiNo": "",
   "trainerFcmToken": "",
-  "centerId": "123"
+  "centerId": "1"
 }
 
 

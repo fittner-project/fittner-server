@@ -23,62 +23,64 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
     private String RESPONSE_INFO_PRI_FIX = "-----------------------[RESPONSE-INFO]-----------------------";
     private String REQUEST_PRI_FIX = "--->";
     private String RESPONSE_PRI_FIX = "<---";
-    private String[] NOT_ALLOW_LOG = {"/swagger-ui","/v3/api-docs"};
+    private String[] NOT_ALLOW_LOG = {"/swagger-ui","/v3/api-docs","/api/v1/common/file/upload"};
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        //requset(custom), response(caching)
-        CustomHttpServletRequestWrapper wrappedRequest = new CustomHttpServletRequestWrapper(request); //요청을 CustomHttpServletRequestWrapper로 감싸기
-        ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
-
         //log출력 여부
         boolean logChkeck = Arrays.stream(NOT_ALLOW_LOG)
-                .anyMatch(item -> wrappedRequest.getRequestURI().contains(item));
+                .anyMatch(item -> request.getRequestURI().contains(item));
 
-        //request log
-        beforeRequest(wrappedRequest, !logChkeck);
+        if(!logChkeck){
 
-        // 필터 체인 실행
-        filterChain.doFilter(wrappedRequest, wrappedResponse);
+            //requset(custom), response(caching)
+            CustomHttpServletRequestWrapper wrappedRequest = new CustomHttpServletRequestWrapper(request); //요청을 CustomHttpServletRequestWrapper로 감싸기
+            ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
-        //response log
-        afterRequest(wrappedResponse, !logChkeck);
-    }
+            filterChain.doFilter(wrappedRequest, wrappedResponse);
 
-    protected void beforeRequest(CustomHttpServletRequestWrapper wrapperRequest, boolean logChkeck) throws IOException {
+            //request log
+            beforeRequest(wrappedRequest);
 
-        if(logChkeck){
-            log.info(REQUEST_INFO_PRI_FIX);
-            log.info("{} client ip ::: {}", REQUEST_PRI_FIX, RequestLogingUtil.getClientIp(wrapperRequest));
-            log.info("{} url ::: {}", REQUEST_PRI_FIX, wrapperRequest.getRequestURI());
-            log.info("{} method ::: {}", REQUEST_PRI_FIX, wrapperRequest.getMethod());
-            log.info("{} content-type ::: {}", REQUEST_PRI_FIX, RequestLogingUtil.getContentType(wrapperRequest));
-            log.info("{} content ::: {}", REQUEST_PRI_FIX, RequestLogingUtil.getClientParams(wrapperRequest));
+            // 필터 체인 실행
+            filterChain.doFilter(wrappedRequest, wrappedResponse);
+
+            //response log
+            afterRequest(wrappedResponse);
+
+        }else {
+            filterChain.doFilter(request, response);
         }
     }
 
-    protected void afterRequest(ContentCachingResponseWrapper wrappedResponse, boolean logChkeck) throws IOException{
+    protected void beforeRequest(CustomHttpServletRequestWrapper wrapperRequest) throws IOException {
+        log.info(REQUEST_INFO_PRI_FIX);
+        log.info("{} client ip ::: {}", REQUEST_PRI_FIX, RequestLogingUtil.getClientIp(wrapperRequest));
+        log.info("{} url ::: {}", REQUEST_PRI_FIX, wrapperRequest.getRequestURI());
+        log.info("{} method ::: {}", REQUEST_PRI_FIX, wrapperRequest.getMethod());
+        log.info("{} content-type ::: {}", REQUEST_PRI_FIX, RequestLogingUtil.getContentType(wrapperRequest));
+        log.info("{} content ::: {}", REQUEST_PRI_FIX, RequestLogingUtil.getClientParams(wrapperRequest));
+    }
 
-        if(logChkeck){
+    protected void afterRequest(ContentCachingResponseWrapper wrappedResponse) throws IOException{
 
-            byte[] content = wrappedResponse.getContentAsByteArray();
-            String contentStr = new String(content, StandardCharsets.UTF_8);
+        byte[] content = wrappedResponse.getContentAsByteArray();
+        String contentStr = new String(content, StandardCharsets.UTF_8);
 
-            if (wrappedResponse.getContentType() != null) {
-                // 응답 log 출력 제외 (html, image)
-                if (wrappedResponse.getContentType().startsWith("text/html")) {
-                    contentStr = "html result";
-                }
-                if (wrappedResponse.getContentType().startsWith("image/")) {
-                    contentStr = "image result";
-                }
+        if (wrappedResponse.getContentType() != null) {
+            // 응답 log 출력 제외 (html, image)
+            if (wrappedResponse.getContentType().startsWith("text/html")) {
+                contentStr = "html result";
             }
-
-            log.info(RESPONSE_INFO_PRI_FIX);
-            log.info("{} http status ::: {}", RESPONSE_PRI_FIX, wrappedResponse.getStatus());
-            log.info("{} result ::: {}", RESPONSE_PRI_FIX, contentStr);
+            if (wrappedResponse.getContentType().startsWith("image/")) {
+                contentStr = "image result";
+            }
         }
+
+        log.info(RESPONSE_INFO_PRI_FIX);
+        log.info("{} http status ::: {}", RESPONSE_PRI_FIX, wrappedResponse.getStatus());
+        log.info("{} result ::: {}", RESPONSE_PRI_FIX, contentStr);
 
         // 응답 본문을 원본 응답으로 복사
         wrappedResponse.copyBodyToResponse();

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.fittnerserver.mapper.file.FileMapper">
+
+    <insert id="insertFileGroup">
+        /* FileMapper.insertFileGroup */
+        insert into file_group (
+                    file_group_id
+                  , created_by
+                  , created_date
+                  , modified_by
+                  , modified_date
+        ) values (
+                   #{fileGroupId}
+                 , 'system'
+                 , CURRENT_TIMESTAMP
+                 , 'system'
+                 , CURRENT_TIMESTAMP
+                 )
+    </insert>
+
+    <insert id="insertFile">
+        /* FileMapper.insertFile */
+        insert into file (
+                    file_id
+                  , file_group_id
+                  , file_url
+                  , file_name
+                  , file_path
+                  , created_by
+                  , created_date
+                  , modified_by
+                  , modified_date
+        ) values (
+                   #{fileId}
+                 , #{fileGroupId}
+                 , #{fileUrl}
+                 , #{fileName}
+                 , #{filePath}
+                 , 'system'
+                 , CURRENT_TIMESTAMP
+                 , 'system'
+                 , CURRENT_TIMESTAMP
+                 )
+    </insert>
+
+    <select id="selectFile" resultType="File">
+        /* FileMapper.selectFile */
+        select *
+          from file
+         where file_id = #{fileId}
+    </select>
+
+    <select id="selectFileGroup" resultType="FileGroup">
+        /* FileMapper.selectFileGroup */
+        select *
+          from file_group
+         where file_group_id = #{fileGroupId}
+    </select>
+
+    <delete id="deleteFileGroup">
+        /* FileMapper.selectFileGroup */
+        delete
+          from file_group
+         where file_group_id = #{fileGroupId}
+    </delete>
+
+    <update id="updateFile">
+        /* FileMapper.updateFile */
+        update file
+           set file_group_id = #{fileGroupId}
+         where file_id = #{fileId}
+    </update>
+
+    <select id="selectClauseByClauseKind" resultType="File">
+        /* FileMapper.selectClauseByClauseKind */
+        select c.*
+          from clause a
+     left join file_group b
+            on a.file_group_id = b.file_group_id
+     left join file c
+            on b.file_group_id = c.file_group_id
+         where a.clause_kind = #{clauseKind}
+    </select>
+</mapper>
+
+
+
+
+
+
+
+

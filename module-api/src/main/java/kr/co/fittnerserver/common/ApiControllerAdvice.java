@@ -48,6 +48,7 @@ public class ApiControllerAdvice {
     }
 
 
+
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ApiResponseMessage> handleValidationExceptions(kr.co.fittnerserver.exception.JwtException ex){
         ApiResponseMessage apiResponseMessage = new ApiResponseMessage();

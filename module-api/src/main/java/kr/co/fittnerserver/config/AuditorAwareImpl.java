@@ -20,7 +20,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
                         CustomUserDetails userDetails = (CustomUserDetails) principal;
                         return userDetails.getTrainerId();
                     } else {
-                        return null; // principal이 예상 타입이 아닌 경우 null 반환
+                        return "SYSTEM";
                     }
                 });
     }

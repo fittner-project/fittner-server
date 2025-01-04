@@ -1,5 +1,7 @@
 package kr.co.fittnerserver.auth;
 
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
 import kr.co.fittnerserver.util.AES256Cipher;
@@ -22,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Trainer trainer = null;
         try {
             trainer = trainerRepository.findById(trainerId)
-                    .orElseThrow(() -> new RuntimeException("유저 정보를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

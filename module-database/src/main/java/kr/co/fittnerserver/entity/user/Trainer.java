@@ -3,8 +3,7 @@ package kr.co.fittnerserver.entity.user;
 import jakarta.persistence.*;
 import kr.co.fittnerserver.dto.user.JoinReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
-import kr.co.fittnerserver.entity.admin.CenterGroup;
-import kr.co.fittnerserver.entity.common.BaseTimeOnlyEntity;
+import kr.co.fittnerserver.entity.common.BaseTimeEntity;
 import kr.co.fittnerserver.entity.user.enums.TrainerSnsKind;
 import kr.co.fittnerserver.entity.user.enums.TrainerStatus;
 import lombok.AccessLevel;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Trainer extends BaseTimeOnlyEntity {
+public class Trainer extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")

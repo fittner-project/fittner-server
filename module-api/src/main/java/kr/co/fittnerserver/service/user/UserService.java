@@ -100,7 +100,7 @@ public class UserService {
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
-        Page<Member> members = memberRepository.findAllByTrainer(trainer, pageable);
+        Page<Member> members = memberRepository.findAllByTrainerAndMemberDeleteYn(trainer, "N", pageable);
 
         return new CacheablePage<>(
                 members.map(member -> MemberListResDto.builder()

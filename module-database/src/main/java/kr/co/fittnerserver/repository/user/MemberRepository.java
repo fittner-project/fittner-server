@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface MemberRepository extends JpaRepository<Member, String> {
-    Page<Member> findAllByTrainer(Trainer trainer, Pageable pageable);
+    Page<Member> findAllByTrainerAndMemberDeleteYn(Trainer trainer, String memberDeleteYn, Pageable pageable);
 }

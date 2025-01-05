@@ -44,7 +44,7 @@ public class UserController {
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "회원 목록 조회 API", description = "회원 목록 조회 API 입니다.")
+    @Operation(summary = "트레이너의 회원 목록 조회 API", description = "트레이너의 회원 목록 조회 API 입니다.")
     @GetMapping("/members")
     public ResponseEntity<ApiResponseMessage<PageResponseDto<MemberListResDto>>> members(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildPage(userService.getMembers(customUserDetails, pageable.getPageable()), pageable);

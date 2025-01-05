@@ -5,6 +5,7 @@ public enum CommonErrorCode {
     // common
     SUCCESS("SUCCESS", "정상처리"),
     FAIL("FAIL", "실패"),
+    EXCEPTION("9999","관리자에게 문의해주세요."),
     COMMON_FAIL("A000", "실패"),
     NOT_FOUND_TRAINER("H001","트레이너를 찾을 수 없습니다."),
     EXIST_BLACKLIST_TOKEN("H002","블랙리스트 토큰이 존재합니다."),

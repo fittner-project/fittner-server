@@ -2,8 +2,10 @@ package kr.co.fittnerserver.service.user.sign;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.sign.response.SignResrvationDto;
+import kr.co.fittnerserver.dto.user.sign.response.SignResrvationForMemberResDto;
 import kr.co.fittnerserver.dto.user.sign.response.SignResrvationResDto;
 import kr.co.fittnerserver.mapper.user.sign.SignMapper;
+import kr.co.fittnerserver.results.FittnerPageable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,10 @@ public class SignService {
         r.setReservationList(reservationDtoList);
 
         return r;
+    }
+
+    public SignResrvationForMemberResDto getReservationsForMember(String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable){
+        return signMapper.selectReservationByTicketId(customUserDetails.getTrainerId(), ticketId, pageable.getCurrentPageNo());
     }
 
 }

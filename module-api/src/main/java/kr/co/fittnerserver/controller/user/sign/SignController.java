@@ -4,18 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.user.sign.response.SignResrvationForMemberResDto;
 import kr.co.fittnerserver.dto.user.sign.response.SignResrvationResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
+import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.user.sign.SignService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/user/sign")
@@ -26,11 +25,20 @@ public class SignController {
 
     private final SignService signService;
 
-    @Operation(summary = "예약 리스트 조회 API", description = "예약 리스트 조회 API 입니다.")
+    @Operation(summary = "전체 예약 리스트 조회 API", description = "전체 예약 리스트 조회 API 입니다.")
     @GetMapping("/reservations")
     public ResponseEntity<ApiResponseMessage<SignResrvationResDto>> getReservations(@Parameter(description = "예약 시작 일자", example = "20250101")
                                                                                     @RequestParam(value = "reservationStartDate") String reservationStartDate,
                                                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.build(signService.getReservations(reservationStartDate,customUserDetails));
+    }
+
+    @Operation(summary = "회원 예약 리스트 조회 API", description = "회원 예약 리스트 조회 API 입니다.")
+    @GetMapping("/reservations/{ticketId}")
+    public ResponseEntity<ApiResponseMessage<SignResrvationForMemberResDto>> getReservationsForMember(@Parameter(description = "이용권ID", example = "55531c95-cb79-11ef-b7c9-0242ac190002")
+                                                                                                      @PathVariable(name = "ticketId") String ticketId,
+                                                                                                      @ModelAttribute FittnerPageable pageable,
+                                                                                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.build(signService.getReservationsForMember(ticketId,customUserDetails,pageable));
     }
 }

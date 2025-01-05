@@ -9,5 +9,7 @@ public class SignResrvationDto {
     private String reservationUseCnt;
     private String reservationTime;
     private String reservationMemo;
+    private String ticketId;
+    private String reservationStartDate;
 
 }

@@ -1,7 +1,7 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
-import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
+import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
 import kr.co.fittnerserver.entity.user.enums.TicketCode;
 import lombok.AccessLevel;

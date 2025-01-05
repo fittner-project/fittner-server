@@ -1,13 +1,18 @@
-package kr.co.fittnerserver.controller.user;
+package kr.co.fittnerserver.controller.user.user;
 
 import io.swagger.v3.oas.annotations.Operation;
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.dto.user.*;
+import kr.co.fittnerserver.dto.user.user.*;
+import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
+import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
+import kr.co.fittnerserver.dto.user.user.response.CenterListResDto;
+import kr.co.fittnerserver.dto.user.user.response.MemberListResDto;
+import kr.co.fittnerserver.dto.user.user.response.UserCenterListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.results.PageResponseDto;
-import kr.co.fittnerserver.service.user.UserService;
+import kr.co.fittnerserver.service.user.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

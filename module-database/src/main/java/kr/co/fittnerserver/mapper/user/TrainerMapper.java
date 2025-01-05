@@ -1,6 +1,6 @@
 package kr.co.fittnerserver.mapper.user;
 
-import kr.co.fittnerserver.dto.user.TestDto;
+import kr.co.fittnerserver.dto.user.user.TestDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

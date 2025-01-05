@@ -1,11 +1,9 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
-import kr.co.fittnerserver.dto.user.MemberRegisterReqDto;
+import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
-import kr.co.fittnerserver.entity.admin.CenterProduct;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
-import kr.co.fittnerserver.repository.user.TrainerProductRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

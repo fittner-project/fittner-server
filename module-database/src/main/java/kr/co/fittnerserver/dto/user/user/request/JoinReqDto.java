@@ -1,4 +1,4 @@
-package kr.co.fittnerserver.dto.user;
+package kr.co.fittnerserver.dto.user.user.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.co.fittnerserver.entity.user.enums.TrainerSnsKind;

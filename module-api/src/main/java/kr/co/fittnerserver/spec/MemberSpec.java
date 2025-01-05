@@ -1,8 +1,7 @@
 package kr.co.fittnerserver.spec;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Predicate;
-import kr.co.fittnerserver.dto.user.MemberListSearchDto;
+import kr.co.fittnerserver.dto.user.user.MemberListSearchDto;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Trainer;
 import org.springframework.data.jpa.domain.Specification;

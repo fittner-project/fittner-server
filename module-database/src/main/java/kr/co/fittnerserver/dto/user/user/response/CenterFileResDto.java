@@ -1,4 +1,4 @@
-package kr.co.fittnerserver.dto.user;
+package kr.co.fittnerserver.dto.user.user.response;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

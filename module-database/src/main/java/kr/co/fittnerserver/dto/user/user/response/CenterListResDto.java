@@ -1,4 +1,4 @@
-package kr.co.fittnerserver.dto.user;
+package kr.co.fittnerserver.dto.user.user.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

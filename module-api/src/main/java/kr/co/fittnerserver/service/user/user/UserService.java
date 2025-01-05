@@ -1,11 +1,16 @@
-package kr.co.fittnerserver.service.user;
+package kr.co.fittnerserver.service.user.user;
 
 
-import jakarta.persistence.EntityManager;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
-import kr.co.fittnerserver.dto.user.*;
+import kr.co.fittnerserver.dto.user.user.*;
+import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
+import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
+import kr.co.fittnerserver.dto.user.user.response.CenterFileResDto;
+import kr.co.fittnerserver.dto.user.user.response.CenterListResDto;
+import kr.co.fittnerserver.dto.user.user.response.MemberListResDto;
+import kr.co.fittnerserver.dto.user.user.response.UserCenterListResDto;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.entity.user.*;

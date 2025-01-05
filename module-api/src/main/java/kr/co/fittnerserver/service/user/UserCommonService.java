@@ -1,7 +1,9 @@
 package kr.co.fittnerserver.service.user;
 
+import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.CenterListResDto;
 import kr.co.fittnerserver.dto.user.response.HardUpdateResDto;
+import kr.co.fittnerserver.dto.user.response.StatusChkResDto;
 import kr.co.fittnerserver.entity.common.AppVersion;
 import kr.co.fittnerserver.mapper.user.UserCommonMapper;
 import kr.co.fittnerserver.repository.common.CenterRepository;
@@ -34,5 +36,9 @@ public class UserCommonService {
         }
 
         return r;
+    }
+
+    public StatusChkResDto statusChk(CustomUserDetails customUserDetails) throws Exception{
+        return userCommonMapper.statusChk(customUserDetails.getTrainerId());
     }
 }

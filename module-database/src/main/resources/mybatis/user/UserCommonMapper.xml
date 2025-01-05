@@ -10,6 +10,13 @@
          where app_os = #{appOsType}
            and REGEXP_REPLACE(minimum_version, '[^0-9]', '') > REGEXP_REPLACE(#{appVersion}, '[^0-9]', '')
     </select>
+
+    <select id="statusChk" resultType="StatusChkResDto">
+        /* UserCommonMapper.statusChk */
+        select trainer_status
+          from trainer
+         where trainer_id = #{trainerId}
+    </select>
 </mapper>
 
 

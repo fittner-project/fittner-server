@@ -17,11 +17,11 @@ public class SignService {
 
     private final SignMapper signMapper;
 
-    public SignResrvationResDto getReservations(CustomUserDetails customUserDetails) throws Exception {
+    public SignResrvationResDto getReservations(String reservationStartDate, CustomUserDetails customUserDetails) throws Exception {
 
         SignResrvationResDto r = new SignResrvationResDto();
 
-        List<SignResrvationDto> reservationDtoList = signMapper.selectReservationByTrainerId(customUserDetails.getTrainerId(), "");
+        List<SignResrvationDto> reservationDtoList = signMapper.selectReservationByTrainerId(customUserDetails.getTrainerId(), reservationStartDate);
 
         r.setReservationTotalCnt(String.valueOf(reservationDtoList.size()));
         r.setReservationList(reservationDtoList);

@@ -1,8 +1,10 @@
 package kr.co.fittnerserver.controller.user.common;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
 import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerResponse;
@@ -24,8 +26,10 @@ public class UserCommonController {
 
     @Operation(summary = "앱 버전 확인 조회 API", description = "앱 버전 확인 API 입니다.")
     @GetMapping("/app/version-chk")
-    public ResponseEntity<?> hardUpdate(@RequestParam(value = "appOsType") String appOsType,
-                                        @RequestParam(value = "appVersion") String appVersion) throws Exception {
+    public ResponseEntity<ApiResponseMessage<HardUpdateResDto>> hardUpdate(@Parameter(description = "앱os종류 (AOS | IOS)", example = "AOS")
+                                                                           @RequestParam(value = "appOsType") String appOsType,
+                                                                           @Parameter(description = "앱버전", example = "1.0.1")
+                                                                           @RequestParam(value = "appVersion") String appVersion) throws Exception {
         return FittnerResponse.build(userCommonService.hardUpdate(appOsType, appVersion));
     }
 

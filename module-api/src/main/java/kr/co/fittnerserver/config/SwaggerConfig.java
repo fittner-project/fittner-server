@@ -3,6 +3,7 @@ package kr.co.fittnerserver.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
@@ -59,6 +60,7 @@ public class SwaggerConfig {
                         .title("Fittner API")
                         .version("1.0.0")
                         .description("Fittner API with Spring Boot"))
+                .addSecurityItem(new SecurityRequirement().addList("Authorization"))
                 .addServersItem(new Server()
                         .url(corsUrl)
                         .description("server"))

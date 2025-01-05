@@ -20,6 +20,7 @@ import kr.co.fittnerserver.repository.user.TrainerRepository;
 import kr.co.fittnerserver.results.CacheablePage;
 import kr.co.fittnerserver.spec.MemberSpec;
 import kr.co.fittnerserver.util.AES256Cipher;
+import kr.co.fittnerserver.util.PhoneFormatUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -114,13 +115,19 @@ public class UserService {
         Page<Member> members = memberRepository.findAll(MemberSpec.searchMember(memberListSearchDto,trainer), pageable);
 
         return new CacheablePage<>(
-                members.map(member -> MemberListResDto.builder()
-                        .memberId(member.getMemberId())
-                        .memberName(member.getMemberName())
-                        .memberPhone(member.getMemberPhone())
-                        .memberAge(ageCalculate(member.getMemberBirth()))
-                        .memberTotalCount(members.getTotalElements())
-                        .build())
+                members.map(member -> {
+                    try {
+                        return MemberListResDto.builder()
+                                .memberId(member.getMemberId())
+                                .memberName(member.getMemberName())
+                                .memberPhone(PhoneFormatUtil.formatPhoneNumber(AES256Cipher.decrypt(member.getMemberPhone())))
+                                .memberAge(ageCalculate(member.getMemberBirth()))
+                                .memberTotalCount(members.getTotalElements())
+                                .build();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
         );
     }
 

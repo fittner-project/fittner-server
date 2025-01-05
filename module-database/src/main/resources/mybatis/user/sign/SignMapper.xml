@@ -2,7 +2,46 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.fittnerserver.mapper.user.sign.SignMapper">
-
+    <select id="selectReservationByTrainerId" resultType="SignResrvationDto">
+        /* SignMapper.selectReservationByTrainerId */
+        select b.member_name
+             , CONCAT(CONCAT(CASE WHEN LEFT(a.reservation_start_time, 2) >= 12
+                                  THEN '오후 '
+                                  ELSE '오전 '
+                              END
+                           , CASE WHEN LEFT(a.reservation_start_time, 2) > 12
+                                  THEN LEFT(a.reservation_start_time, 2) - 12
+                                  ELSE LEFT(a.reservation_start_time, 2)
+                              END
+                           , ':'
+                           , RIGHT(a.reservation_start_time, 2))
+                    , ' - '
+                    , CONCAT(CASE WHEN LEFT(a.reservation_end_time, 2) >= 12
+                                  THEN '오후 '
+                                  ELSE '오전 '
+                              END
+                           , CASE WHEN LEFT(a.reservation_end_time, 2) > 12
+                                  THEN LEFT(a.reservation_end_time, 2) - 12
+                                  ELSE LEFT(a.reservation_end_time, 2)
+                              END
+                           , ':'
+                           , RIGHT(a.reservation_start_time, 2))
+                     ) as reservationTime
+             , a.reservation_memo
+             , (select count(*)
+                  from reservation
+              group by center_id
+                     , member_id
+                     , ticket_id
+                having member_id = b.member_id
+                   and ticket_id = a.ticket_id) as reservationUseCnt
+          from reservation a
+     left join member b
+            on a.member_id = b.member_id
+         where a.reservation_delete_yn = 'N'
+           and a.reservation_start_date = #{reservationStartDate}
+           and a.trainer_id = #{trainerId}
+    </select>
 </mapper>
 
 

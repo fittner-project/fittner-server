@@ -12,7 +12,7 @@ import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.entity.user.TrainerRefreshToken;
 import kr.co.fittnerserver.exception.JwtException;
-import kr.co.fittnerserver.mapper.user.TrainerMapper;
+import kr.co.fittnerserver.mapper.user.user.TrainerMapper;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
 import kr.co.fittnerserver.repository.user.TrainerRefreshTokenRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;

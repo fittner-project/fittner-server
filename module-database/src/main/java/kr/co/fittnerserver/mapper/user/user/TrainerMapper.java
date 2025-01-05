@@ -1,4 +1,4 @@
-package kr.co.fittnerserver.mapper.user;
+package kr.co.fittnerserver.mapper.user.user;
 
 import kr.co.fittnerserver.dto.user.user.TestDto;
 import org.apache.ibatis.annotations.Mapper;

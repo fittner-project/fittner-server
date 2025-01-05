@@ -5,7 +5,6 @@ import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
 import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
 import kr.co.fittnerserver.entity.common.AppVersion;
 import kr.co.fittnerserver.mapper.user.common.UserCommonMapper;
-import kr.co.fittnerserver.repository.common.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class UserCommonService {
 
     private final UserCommonMapper userCommonMapper;
-    private final CenterRepository centerRepository;
 
     public HardUpdateResDto hardUpdate(String appOsType, String appVersion) throws Exception {
         HardUpdateResDto r = new HardUpdateResDto();

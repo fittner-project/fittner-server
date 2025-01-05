@@ -1,4 +1,4 @@
-package kr.co.fittnerserver.dto.user.response;
+package kr.co.fittnerserver.dto.user.common.response;
 
 import lombok.Data;
 

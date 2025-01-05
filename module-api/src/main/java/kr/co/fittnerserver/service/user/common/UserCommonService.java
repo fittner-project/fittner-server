@@ -1,19 +1,14 @@
-package kr.co.fittnerserver.service.user;
+package kr.co.fittnerserver.service.user.common;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.dto.user.CenterListResDto;
-import kr.co.fittnerserver.dto.user.response.HardUpdateResDto;
-import kr.co.fittnerserver.dto.user.response.StatusChkResDto;
+import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
+import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
 import kr.co.fittnerserver.entity.common.AppVersion;
-import kr.co.fittnerserver.mapper.user.UserCommonMapper;
+import kr.co.fittnerserver.mapper.user.common.UserCommonMapper;
 import kr.co.fittnerserver.repository.common.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

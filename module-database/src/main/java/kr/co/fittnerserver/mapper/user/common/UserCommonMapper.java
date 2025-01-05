@@ -1,6 +1,6 @@
-package kr.co.fittnerserver.mapper.user;
+package kr.co.fittnerserver.mapper.user.common;
 
-import kr.co.fittnerserver.dto.user.response.StatusChkResDto;
+import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
 import kr.co.fittnerserver.entity.common.AppVersion;
 import org.apache.ibatis.annotations.Mapper;
 

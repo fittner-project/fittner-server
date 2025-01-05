@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
@@ -53,7 +51,7 @@ public class UserController {
 
     @Operation(summary = "센터 목록 조회 API", description = "센터 목록 조회 API 입니다.")
     @GetMapping("/center/list")
-    public ResponseEntity<ApiResponseMessage<List<CenterListResDto>>> centerList() throws Exception {
-        return FittnerResponse.build(userService.getCenterList());
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<CenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable) throws Exception {
+        return FittnerResponse.buildPage(userService.getCenterList(pageable.getPageable()),pageable);
     }
 }

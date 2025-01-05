@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -20,5 +22,5 @@ public class CenterListResDto {
     @Schema(description = "센터 전화번호", example = "02-1234-5678")
     private String centerTel;
     @Schema(description = "센터 이미지", example = "http://www.fittner.co.kr/images/center/1.jpg")
-    private String centerImage;
+    private List<CenterFileResDto> centerImage;
 }

@@ -6,9 +6,12 @@ import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.*;
 import kr.co.fittnerserver.entity.admin.Center;
+import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.entity.user.*;
 import kr.co.fittnerserver.repository.common.CenterJoinRepository;
 import kr.co.fittnerserver.repository.common.CenterRepository;
+import kr.co.fittnerserver.repository.common.FileGroupRepository;
+import kr.co.fittnerserver.repository.common.FileRepository;
 import kr.co.fittnerserver.repository.user.MemberRepository;
 import kr.co.fittnerserver.repository.user.TicketRepository;
 import kr.co.fittnerserver.repository.user.TrainerProductRepository;
@@ -24,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +41,8 @@ public class UserService {
     private final TrainerProductRepository trainerProductRepository;
     private final MemberRepository memberRepository;
     private final TicketRepository ticketRepository;
+    private final FileRepository fileRepository;
+    private final FileGroupRepository fileGroupRepository;
 
     @Transactional
     public void joinProcess(JoinReqDto joinReqDto) throws Exception {
@@ -141,16 +146,24 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<CenterListResDto> getCenterList() {
-        return centerRepository.findAllByCenterDeleteYn("N")
-                .stream()
-                .map(center -> CenterListResDto.builder()
-                        .centerId(center.getCenterId())
-                        .centerName(center.getCenterName())
-                        .centerAddress(center.getCenterAddress())
-                        .centerTel(center.getCenterTel())
-                        .centerImage("")
-                        .build())
-                .collect(Collectors.toList());
+    public Page<CenterListResDto> getCenterList(Pageable pageable) {
+        return new CacheablePage<>(centerRepository.findAllByCenterDeleteYn("N", pageable)
+                .map(center -> {
+                    List<CenterFileResDto> fileUrls = new ArrayList<>();
+
+                    if(center.getFileGroup() != null) {
+                        FileGroup fileGroup = fileGroupRepository.findById(center.getFileGroup().getFileGroupId())
+                                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FILE_GROUP.getCode(), CommonErrorCode.NOT_FOUND_FILE_GROUP.getMessage()));
+
+                        fileUrls = fileRepository.getFileUrl(fileGroup, "N");
+                    }
+                    return CenterListResDto.builder()
+                            .centerId(center.getCenterId())
+                            .centerName(center.getCenterName())
+                            .centerAddress(center.getCenterAddress())
+                            .centerTel(center.getCenterTel())
+                            .centerImage(fileUrls)
+                            .build();
+                }));
     }
 }

@@ -22,7 +22,7 @@ public class FittnerPageable {
     @Schema(description = "페이지 개수", example = "10", hidden = true)
     @Hidden
     private Integer pageSize;
-    @Schema(description = "정렬", example = "payDate,desc", hidden = true)
+    @Schema(description = "정렬", example = "createdDate,desc", hidden = true)
     @Hidden
     private String sort;
 
@@ -30,7 +30,7 @@ public class FittnerPageable {
         this.pageSize = Objects.requireNonNullElse(pageSize, 10);
         this.recordsPerPage = Objects.requireNonNullElse(recordsPerPage, 10);
         this.currentPageNo = Objects.requireNonNullElse(currentPageNo, 1);
-        this.sort = Objects.requireNonNullElse(sort, "");
+        this.sort = Objects.requireNonNullElse(sort, "createdDate.desc");
 
         Sort sortObject = Sort.unsorted();
 

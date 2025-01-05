@@ -43,7 +43,7 @@ Authorization: Bearer {{auth_token}}
 
 
 ### 트레이너가 지정한 유저 리스트 조회
-GET http://localhost:8080/api/v1/user/members?currentPageNo=4
+GET http://localhost:8080/api/v1/user/members?pageSize=2&memberNo=
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 

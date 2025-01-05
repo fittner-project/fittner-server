@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.service.user;
 
 
+import jakarta.persistence.EntityManager;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
@@ -17,6 +18,7 @@ import kr.co.fittnerserver.repository.user.TicketRepository;
 import kr.co.fittnerserver.repository.user.TrainerProductRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
 import kr.co.fittnerserver.results.CacheablePage;
+import kr.co.fittnerserver.spec.MemberSpec;
 import kr.co.fittnerserver.util.AES256Cipher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,9 +90,13 @@ public class UserService {
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
+        //휴대번호 끝자리 저장
+        String memberPhoneEnd = memberRegisterReqDto.getMemberPhone().substring(memberRegisterReqDto.getMemberPhone().length() - 4);
+
         //member 테이블 추가, 전화번호 암호화
         memberRegisterReqDto.setMemberPhone(AES256Cipher.encrypt(memberRegisterReqDto.getMemberPhone()));
-        Member member = memberRepository.save(new Member(memberRegisterReqDto, trainer));
+
+        Member member = memberRepository.save(new Member(memberRegisterReqDto, trainer, memberPhoneEnd));
 
         //trainerproduct 테이블 추가
         TrainerProduct trainerProduct = trainerProductRepository.save(new TrainerProduct(memberRegisterReqDto, trainer, member));
@@ -100,12 +106,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MemberListResDto> getMembers(CustomUserDetails customUserDetails, Pageable pageable) {
+    public Page<MemberListResDto> getMembers(MemberListSearchDto memberListSearchDto, CustomUserDetails customUserDetails, Pageable pageable) {
 
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
-        Page<Member> members = memberRepository.findAllByTrainerAndMemberDeleteYn(trainer, "N", pageable);
+        Page<Member> members = memberRepository.findAll(MemberSpec.searchMember(memberListSearchDto,trainer), pageable);
 
         return new CacheablePage<>(
                 members.map(member -> MemberListResDto.builder()

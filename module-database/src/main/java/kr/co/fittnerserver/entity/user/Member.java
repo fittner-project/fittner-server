@@ -32,6 +32,9 @@ public class Member extends BaseTimeEntity {
     @Comment(value = "회원 휴대폰")
     @Column(length = 200)
     private String memberPhone;
+    @Comment(value = "회원 휴대폰 뒷 4자리")
+    @Column(length = 4)
+    private String memberPhoneEnd;
     @Enumerated(EnumType.STRING)
     @Comment(value = "회원 성별")
     @Column(length = 1)
@@ -60,9 +63,10 @@ public class Member extends BaseTimeEntity {
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
-    public Member(MemberRegisterReqDto memberRegisterReqDto, Trainer trainer){
+    public Member(MemberRegisterReqDto memberRegisterReqDto, Trainer trainer, String memberPhoneEnd){
         this.memberName = memberRegisterReqDto.getMemberName();
         this.memberPhone = memberRegisterReqDto.getMemberPhone();
+        this.memberPhoneEnd = memberPhoneEnd;
         this.memberGender = MemberGender.valueOf(memberRegisterReqDto.getMemberGender());
         this.memberBirth = memberRegisterReqDto.getMemberBirth();
         this.memberAddress = memberRegisterReqDto.getMemberAddress();

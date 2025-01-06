@@ -1,9 +1,11 @@
 package kr.co.fittnerserver.util;
 
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import javax.crypto.Cipher;
@@ -21,7 +23,17 @@ import java.security.spec.AlgorithmParameterSpec;
 @Component
 public class AES256Cipher {
 
-    private static final String secretKey = "96A11111A935EAF9811A577B6B6A7ABC";
+    private static String secretKey; // static 필드로 변경
+
+    @Value("${aes.secret-key}")
+    private String injectedSecretKey;
+
+
+    @PostConstruct
+    public void init() {
+        secretKey = injectedSecretKey;  // 초기화 후 secretKey 설정
+    }
+
     public static final String ALGORITHM_CBC = "AES/CBC/PKCS5Padding";
     public static final String ALGORITHM_ECB = "AES/ECB/PKCS5Padding";
 

@@ -49,3 +49,5 @@ file:
     signUploadPath: ${FILE_SIGN_UPLOAD_PATH}
     url: ${FILE_URL}
     aes-key: ${FILE_AES_KEY}
+aes:
+    secret-key: ${AES_SECRET_KEY}

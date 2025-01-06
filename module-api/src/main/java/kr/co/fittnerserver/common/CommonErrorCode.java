@@ -22,7 +22,9 @@ public enum CommonErrorCode {
     NOT_FOUND_CENTER("H013","센터를 찾을 수 없습니다."),
     NOT_ALLOW_FILE("H013","허용되지 않은 확장자입니다."),
     NOT_FOUND_FILE_GROUP("H014","파일 그룹을 찾을 수 없습니다."),
-    NOT_FILE("H015","파일이 없습니다.");
+    NOT_FILE("H015","파일이 없습니다."),
+    NOT_FOUND_MEMBER("H016","회원을 찾을 수 없습니다."),
+    NOT_FOUND_TICKET("H017","티켓을 찾을 수 없습니다.");
 
     private final String code;
     private final String message;

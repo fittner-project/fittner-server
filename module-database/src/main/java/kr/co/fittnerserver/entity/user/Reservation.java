@@ -1,9 +1,11 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.reservation.request.ReservationReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.admin.TrainerSettlement;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
+import kr.co.fittnerserver.entity.user.enums.ReservationColor;
 import kr.co.fittnerserver.entity.user.enums.ReservationPush;
 import kr.co.fittnerserver.entity.user.enums.ReservationStatus;
 import lombok.AccessLevel;
@@ -21,7 +23,7 @@ public class Reservation extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "예약 키값")
     private String reservationId;
@@ -46,7 +48,8 @@ public class Reservation extends BaseTimeEntity {
 
     @Comment(value = "색상")
     @Column(length = 30)
-    private String reservationColor;
+    @Enumerated(EnumType.STRING)
+    private ReservationColor reservationColor;
 
     @Comment(value = "예약 삭제여부")
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
@@ -90,5 +93,19 @@ public class Reservation extends BaseTimeEntity {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-
+    public Reservation(ReservationReqDto reservationReqDto, Member member, Ticket ticket, Trainer trainer) {
+        this.reservationStartDate = reservationReqDto.getReservationStartDate();
+        this.reservationEndDate = reservationReqDto.getReservationEndDate();
+        this.reservationStartTime = reservationReqDto.getReservationStartTime();
+        this.reservationEndTime = reservationReqDto.getReservationEndTime();
+        this.reservationMemo = reservationReqDto.getReservationMemo();
+        this.reservationColor = ReservationColor.fromColorCode(reservationReqDto.getReservationColor());
+        this.reservationDeleteYn = "N";
+        this.reservationStatus = ReservationStatus.WAITING;
+        this.reservationPush = ReservationPush.valueOf(reservationReqDto.getReservationPush());
+        this.member = member;
+        this.ticket = ticket;
+        this.trainer = trainer;
+        this.center = trainer.getCenter();
+    }
 }

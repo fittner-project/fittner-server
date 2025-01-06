@@ -7,13 +7,40 @@
         select (select CAST(IFNULL(sum(trainer_settlement_amount),0) as SIGNED)
                   from reservation
                  where trainer_id = #{trainerId}
-                   and reservation_start_date = #{reservationStartDate}) as projection_sales
+                   and SUBSTR(reservation_start_date,1,6) = #{reservationStartMonth}
+                   and reservation_delete_yn = 'N') as projection_sales
              , (select CAST(IFNULL(sum(trainer_settlement_amount),0) as SIGNED)
                   from reservation
                  where trainer_id = #{trainerId}
-                   and reservation_status in ('SIGN','WATING')
-                   and reservation_start_date = #{reservationStartDate}) as now_sales
+                   and reservation_status in ('SIGN','NOSHOW')
+                   and SUBSTR(reservation_start_date,1,6) = #{reservationStartMonth}
+                   and reservation_delete_yn = 'N') as now_sales
          from dual
+    </select>
+
+    <select id="getSales" resultType="SalesInfoResDto">
+        /* MyPageMapper.getSales */
+        select c.member_name
+             , d.trainer_product_name
+             , DATE_FORMAT(STR_TO_DATE(b.ticket_start_date, '%Y%m%d'), '%Y.%m.%d') as ticket_start_end_date
+             , CONCAT(TIME_FORMAT(STR_TO_DATE(a.reservation_start_time, '%H%i'), '%H:%i'),' - ',TIME_FORMAT(STR_TO_DATE(a.reservation_end_time, '%H%i'), '%H:%i')) as ticket_start_end_time
+             , count(*) as ticket_use_cnt
+          from reservation a
+     left join ticket b
+            on a.ticket_id = b.ticket_id
+     left join member c
+            on a.member_id = c.member_id
+     left join trainer_product d
+            on b.trainer_product_id = d.trainer_product_id
+         where a.trainer_id = #{trainerId}
+           and a.reservation_status in ('SIGN','NOSHOW')
+           and SUBSTR(a.reservation_start_date,1,6) = #{reservationStartMonth}
+           and a.reservation_delete_yn = 'N'
+      group by c.member_name
+             , d.trainer_product_name
+             , b.ticket_start_date
+             , a.reservation_start_time
+             , a.reservation_end_time
     </select>
 
 

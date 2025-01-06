@@ -10,6 +10,6 @@ public interface MyPageMapper {
 
     SalesInfoResDto getSalesInfo(String trainerId, String reservationStartMonth);
 
-    SalesResDto getSales(String trainerId, String reservationStartMonth);
+    SalesResDto getSales(String trainerId, String reservationStartMonth, int currentPageNo);
 
 }

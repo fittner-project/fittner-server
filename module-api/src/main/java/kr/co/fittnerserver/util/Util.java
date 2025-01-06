@@ -3,6 +3,7 @@ package kr.co.fittnerserver.util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,8 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Random;
 
@@ -97,5 +100,19 @@ public class Util {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
         return cipher.doFinal(encryptedData);
+    }
+
+    /**
+     * date 포멧
+     *
+     * @param format
+     * @return date 포맷 일자
+     */
+    public static String getFormattedToday(String format){
+        if(!StringUtils.isEmpty(format)){
+            format = "yyyyMMdd";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        return LocalDateTime.now().format(formatter);
     }
 }

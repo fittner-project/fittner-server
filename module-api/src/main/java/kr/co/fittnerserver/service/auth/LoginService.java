@@ -12,7 +12,7 @@ import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.entity.user.TrainerRefreshToken;
 import kr.co.fittnerserver.exception.JwtException;
-import kr.co.fittnerserver.mapper.user.user.TrainerMapper;
+import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
 import kr.co.fittnerserver.repository.user.TrainerRefreshTokenRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
@@ -37,7 +37,7 @@ public class LoginService {
     private final TrainerRepository trainerRepository;
     private final TrainerRefreshTokenRepository trainerRefreshTokenRepository;
     private final BlackListTokenRepository blackListTokenRepository;
-    private final TrainerMapper trainerMapper;
+    private final UserMapper userMapper;
 
     @Transactional
     public TokenResDto loginProcess(LoginRequestDto loginRequestDto) throws Exception {
@@ -90,7 +90,7 @@ public class LoginService {
     }
 
     public List<TestDto> mybatisTest() {
-        return trainerMapper.selectTrainerInfo();
+        return userMapper.selectTrainerInfo();
     }
 
 

@@ -8,6 +8,7 @@ import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.CenterListResDto;
 import kr.co.fittnerserver.dto.user.user.response.MemberListResDto;
 import kr.co.fittnerserver.dto.user.user.response.UserCenterListResDto;
+import kr.co.fittnerserver.dto.user.user.response.UserInfoResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
@@ -60,5 +61,11 @@ public class UserController {
     @GetMapping("/center/list")
     public ResponseEntity<ApiResponseMessage<PageResponseDto<CenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable) throws Exception {
         return FittnerResponse.buildPage(userService.getCenterList(pageable.getPageable()), pageable);
+    }
+
+    @Operation(summary = "트레이 정보 조회 API", description = "트레이너 정보 조회 API 입니다.")
+    @GetMapping("/info")
+    public ResponseEntity<ApiResponseMessage<UserInfoResDto>> getUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.build(userService.getUserInfo(customUserDetails));
     }
 }

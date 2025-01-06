@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.co.fittnerserver.mapper.user.user.TrainerMapper">
+<mapper namespace="kr.co.fittnerserver.mapper.user.user.UserMapper">
     <select id="selectTrainerInfo" resultType="TestMybatisDto">
         select trainer_name as trainerName
           from trainer
+    </select>
+
+    <select id="selectTrainerByTrainerId" resultType="Trainer">
+        /* UserMapper.selectTrainerByTrainerId */
+        select trainer_id
+             , trainer_name
+             , trainer_email
+             , trainer_phone
+             , trainer_ci_no
+             , trainer_fcm_token
+             , trainer_sns_kind
+             , trainer_status
+          from trainer
+         where trainer_id = #{trainerId}
+           and trainer_drop_yn = 'N'
     </select>
 </mapper>
 

@@ -7,13 +7,11 @@ import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
-import kr.co.fittnerserver.dto.user.user.response.CenterFileResDto;
-import kr.co.fittnerserver.dto.user.user.response.CenterListResDto;
-import kr.co.fittnerserver.dto.user.user.response.MemberListResDto;
-import kr.co.fittnerserver.dto.user.user.response.UserCenterListResDto;
+import kr.co.fittnerserver.dto.user.user.response.*;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.entity.user.*;
+import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.repository.common.CenterJoinRepository;
 import kr.co.fittnerserver.repository.common.CenterRepository;
 import kr.co.fittnerserver.repository.common.FileGroupRepository;
@@ -51,6 +49,7 @@ public class UserService {
     private final TicketRepository ticketRepository;
     private final FileRepository fileRepository;
     private final FileGroupRepository fileGroupRepository;
+    private final UserMapper userMapper;
 
     @Transactional
     public void joinProcess(JoinReqDto joinReqDto) throws Exception {
@@ -183,5 +182,17 @@ public class UserService {
                             .centerImage(fileUrls)
                             .build();
                 }));
+    }
+
+    public UserInfoResDto getUserInfo(CustomUserDetails customUserDetails) throws Exception{
+        UserInfoResDto r = new UserInfoResDto();
+
+        Trainer trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+        r.setTrainerEmail(AES256Cipher.decrypt(trainer.getTrainerEmail()));
+        r.setTrainerSnsKind(String.valueOf(trainer.getTrainerSnsKind()));
+        //TODO 이름 암호화시 복호화 추가
+        r.setTrainerName(trainer.getTrainerName());
+
+        return r;
     }
 }

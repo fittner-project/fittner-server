@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class FileResDto {
 
-    private String groupFileId;
+    private String fileGroupId;
 
     private String fileId;
 

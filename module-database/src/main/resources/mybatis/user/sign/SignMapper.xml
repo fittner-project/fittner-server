@@ -49,9 +49,11 @@
         /* SignMapper.selectReservationByTicketId */
         select all_list.member_name
              , all_list.reservation_time
+             , all_list.member_id
              , all_list.reservation_status
              , all_list.reservation_id
           from (select b.member_name
+                     , b.member_id
                      , CONCAT(CONCAT(DATE_FORMAT(STR_TO_DATE(a.reservation_start_date, '%Y%m%d'), '%m월 %d일'))
                              , CONCAT(CASE WHEN LEFT(a.reservation_start_time, 2) >= 12
                                           THEN '오후 '
@@ -88,6 +90,29 @@
         where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
           and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
     </select>
+
+    <insert id="insertSign">
+        /* SignMapper.selectReservationByTicketId */
+        insert into sign (
+                    sign_memo
+                  , created_by
+                  , created_date
+                  , file_group_id
+                  , member_id
+                  , reservation_id
+                  , sign_id
+                  , sign_type
+          ) values (
+                    #{signReqDto.signMemo}
+                  , #{trainerId}
+                  , CURRENT_TIMESTAMP
+                  , #{signReqDto.fileGroupId}
+                  , #{signReqDto.memberId}
+                  , #{signReqDto.reservationId}
+                  , UUID()
+                  , #{signReqDto.signType}
+          )
+    </insert>
 </mapper>
 
 

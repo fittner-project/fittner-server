@@ -1,14 +1,16 @@
 package kr.co.fittnerserver.service.file;
 
+import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.common.FileDto;
+import kr.co.fittnerserver.dto.file.request.FileReqDto;
 import kr.co.fittnerserver.dto.file.response.FileResDto;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.file.FileMapper;
+import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Slf4j
@@ -30,20 +34,31 @@ import java.util.*;
 public class FileService {
 
     @Value("${file.uploadPath}")
-    private String uploadPath;
+    private String UPLOAD_PATH;
 
     @Value("${file.url}")
-    private String fileUrl;
+    private String FILE_URL;
+
+    @Value("${file.signUploadPath}")
+    private String SIGN_UPLOAD_PATH;
+
+    @Value("${file.aes-key}")
+    private String FILE_AES_KEY;
 
     final FileMapper fileMapper;
 
     final CommonMapper commonMapper;
 
     @Transactional
-    public List<FileResDto> uploadImage(MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
+    public List<FileResDto> uploadImage(FileReqDto fileReqDto, MultipartHttpServletRequest multipartHttpServletRequest, CustomUserDetails customUserDetails) throws Exception{
 
         //응답부
         List<FileResDto> fileResponseDtoList = new ArrayList<>();
+
+        //파일확인
+        if(multipartHttpServletRequest.getFileMap().size() == 0){
+            throw new CommonException(CommonErrorCode.NOT_FILE.getCode(), CommonErrorCode.NOT_FILE.getMessage());
+        }
 
         //허용 파일
         List<String> allowFileType = Arrays.asList("gif", "png", "jpeg", "bmp", "pdf", "html", "jpg");
@@ -57,7 +72,14 @@ public class FileService {
         MultipartFile mFile;
 
         //파일이 업로드 될 경로를 지정
-        String filePath = uploadPath;
+        String filePath = "";
+
+        //암호화 파일 경로 분기
+        if("N".equals(fileReqDto.getEncryptYn())){
+            filePath = UPLOAD_PATH;
+        }else{
+            filePath = SIGN_UPLOAD_PATH;
+        }
 
         //파일명이 중복되었을 경우, 사용할 스트링 객체
         String saveFileName = "";
@@ -79,8 +101,8 @@ public class FileService {
             String fileName = mFile.getOriginalFilename();
             saveFileName = fileName;
 
-            //키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 8자리)
-            String fileId = RandomStringUtils.randomAlphanumeric(10);
+            //키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 10자리)
+            String fileId = Util.convertTimeToRandomAlpha(10);
 
             //확장자
             String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -90,9 +112,6 @@ public class FileService {
             if(!allowFileCheck) {
                 throw new CommonException(CommonErrorCode.NOT_ALLOW_FILE.getCode(),CommonErrorCode.NOT_ALLOW_FILE.getMessage()); //허용되지 않은 확장자입니다.
             }
-
-            //저장될 경로와 파일명
-            String saveFilePath = filePath + File.separator + fileName;
 
             //filePath에 해당되는 파일의 File 객체를 생성
             File fileFolder = new File(filePath);
@@ -106,75 +125,79 @@ public class FileService {
                 }
             }
 
-            //중복여부
-            File saveFile = new File(saveFilePath);
+            //저장될 경로와 파일명
+            String saveFilePath = "";
 
-            //saveFile이 File이면 true, 아니면 false
-            //파일명이 중복일 경우 파일명(1).확장자, 파일명(2).확장자 와 같은 형태로 생성
-            if (saveFile.isFile()) {
-                boolean _exist = true;
+            //암호화 파일 경로 분기
+            if("N".equals(fileReqDto.getEncryptYn())){
+                saveFilePath = filePath + File.separator + fileName;
 
-                int index = 0;
+                //중복여부
+                File saveFile = new File(saveFilePath);
 
-                // 동일한 파일명이 존재하지 않을때까지 반복
-                while (_exist) {
-                    index++;
+                //saveFile이 File이면 true, 아니면 false
+                //파일명이 중복일 경우 파일명(1).확장자, 파일명(2).확장자 와 같은 형태로 생성
+                if (saveFile.isFile()) {
+                    boolean _exist = true;
 
-                    saveFileName = fileName.substring(0,fileName.lastIndexOf(".")) + "(" + index + ")." + fileExt;
+                    int index = 0;
 
-                    String dictFile = filePath + File.separator + saveFileName;
+                    // 동일한 파일명이 존재하지 않을때까지 반복
+                    while (_exist) {
+                        index++;
 
-                    _exist = new File(dictFile).isFile();
+                        saveFileName = fileName.substring(0,fileName.lastIndexOf(".")) + "(" + index + ")." + fileExt;
 
-                    if (!_exist) {
-                        savaFilePath = dictFile;
+                        String dictFile = filePath + File.separator + saveFileName;
+
+                        _exist = new File(dictFile).isFile();
+
+                        if (!_exist) {
+                            savaFilePath = dictFile;
+                        }
                     }
+
+                    //파일명 재생성 파일
+                    saveFile = new File(savaFilePath);
                 }
 
-                //생성한 파일 객체를 업로드 처리하지 않으면 임시파일에 저장된 파일이 자동적으로 삭제되기 때문에 transferTo(File f) 메서드를 이용해서 업로드처리
-                mFile.transferTo(new File(savaFilePath));
-
-                //DB저장
-                FileDto fileDto = new FileDto();
-                fileDto.setFileId(fileId);
-                fileDto.setFileGroupId(fileGroupId);
-                fileDto.setFileUrl(fileUrl+File.separator+fileId);
-                fileDto.setFileName(saveFileName);
-                fileDto.setFilePath(filePath);
-                fileMapper.insertFile(fileDto);
-
-                //응답부 추가
-                FileResDto fileResDto = new FileResDto();
-                fileResDto.setFileId(fileId);
-                fileResDto.setGroupFileId(fileGroupId);
-                fileResDto.setFileName(saveFileName);
-                fileResDto.setFilePath(filePath);
-                fileResDto.setFileUrl(fileUrl+File.separator+fileId);
-                fileResponseDtoList.add(fileResDto);
-
-            } else {
-                //생성한 파일 객체를 업로드 처리하지 않으면 임시파일에 저장된 파일이 자동적으로 삭제되기 때문에 transferTo(File f) 메서드를 이용해서 업로드처리
+                //파일 생성
                 mFile.transferTo(saveFile);
+            }else{
+                saveFileName = fileId +".dat";
+                saveFilePath = filePath + File.separator + saveFileName;
 
-                //DB저장
-                FileDto fileDto = new FileDto();
-                fileDto.setFileId(fileId);
-                fileDto.setFileGroupId(fileGroupId);
-                fileDto.setFileUrl(fileUrl+File.separator+fileId);
-                fileDto.setFileName(saveFileName);
-                fileDto.setFilePath(filePath);
-                fileMapper.insertFile(fileDto);
+                //파일을 바이트 배열로 읽기
+                byte[] fileData = mFile.getBytes();
 
-                //응답부 추가
-                FileResDto fileResDto = new FileResDto();
-                fileResDto.setFileId(fileId);
-                fileResDto.setGroupFileId(fileGroupId);
-                fileResDto.setFileName(fileName);
-                fileResDto.setFilePath(filePath);
-                fileResDto.setFileUrl(fileUrl+File.separator+fileId);
-                fileResponseDtoList.add(fileResDto);
+                //파일 암호화
+                byte[] encryptedBytes = Util.encryptFile(fileData,FILE_AES_KEY);
+
+                //파일 생성
+                Path encryptedFilePath = Paths.get(saveFilePath);
+                Files.createDirectories(encryptedFilePath.getParent());
+                Files.write(encryptedFilePath, encryptedBytes);
             }
+
+            //DB저장
+            FileDto fileDto = new FileDto();
+            fileDto.setFileId(fileId);
+            fileDto.setFileGroupId(fileGroupId);
+            fileDto.setFileUrl(FILE_URL+File.separator+fileId);
+            fileDto.setFileName(saveFileName);
+            fileDto.setFilePath(filePath);
+            fileMapper.insertFile(fileDto);
+
+            //응답부 추가
+            FileResDto fileResDto = new FileResDto();
+            fileResDto.setFileId(fileId);
+            fileResDto.setFileGroupId(fileGroupId);
+            fileResDto.setFileUrl(FILE_URL+File.separator+fileId);
+            fileResDto.setFileName(saveFileName);
+            fileResDto.setFilePath(filePath);
+            fileResponseDtoList.add(fileResDto);
         }
+
         return fileResponseDtoList;
     }
 
@@ -182,7 +205,7 @@ public class FileService {
 
         kr.co.fittnerserver.entity.common.File fileInfo =  fileMapper.selectFile(fileId);
 
-        File file = new File(uploadPath+File.separator+"non-file.jpg");
+        File file = new File(UPLOAD_PATH+File.separator+"non-file.jpg");
 
         if(fileInfo != null){
             file = new File(fileInfo.getFilePath()+File.separator+fileInfo.getFileName());
@@ -192,13 +215,19 @@ public class FileService {
             throw new Exception();
         }
 
-        ResponseEntity<byte[]> result = null;
+        String contentType = Files.probeContentType(file.toPath());
+
+        byte[] fileBytes = FileCopyUtils.copyToByteArray(file);
+
+        //암호화 이미지 -> 복호화
+        if(fileInfo.getFileName().endsWith(".dat")){
+            fileBytes = Util.decryptFile(fileBytes,FILE_AES_KEY);
+            contentType = "image/jpeg";
+        }
 
         HttpHeaders header = new HttpHeaders();
-        header.add("Content-type", Files.probeContentType(file.toPath()));
-        result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
-
-        return result;
+        header.add("Content-type", contentType);
+        return new ResponseEntity<>(fileBytes, header, HttpStatus.OK);
     }
 
     public ResponseEntity<byte[]> getPrivacyClause() throws Exception{

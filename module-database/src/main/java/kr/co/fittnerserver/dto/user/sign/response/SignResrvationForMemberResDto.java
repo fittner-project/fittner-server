@@ -6,6 +6,7 @@ import lombok.Data;
 public class SignResrvationForMemberResDto {
 
     private String reservationId;
+    private String memberId;
     private String memberName;
     private String reservationStatus;
     private String reservationTime;

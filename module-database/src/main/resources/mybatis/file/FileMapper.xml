@@ -50,14 +50,14 @@
         select file_name
              , file_path
              , file_url
-             , file_delete_yn
           from file
          where file_id = #{fileId}
+           and file_delete_yn = 'N'
     </select>
 
     <select id="selectFileGroup" resultType="FileGroup">
         /* FileMapper.selectFileGroup */
-        select *
+        select file_group_id
           from file_group
          where file_group_id = #{fileGroupId}
     </select>

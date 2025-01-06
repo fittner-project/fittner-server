@@ -14,7 +14,9 @@ swagger:
     cors-url: ${SWAGGER_CORS_URL}
 file:
     uploadPath: ${FILE_UPLOAD_PATH}
+    signUploadPath: ${FILE_SIGN_UPLOAD_PATH}
     url: ${FILE_URL}
+    aes-key: ${FILE_AES_KEY}
 server:
    shutdown: graceful
 spring:
@@ -44,4 +46,6 @@ swagger:
     cors-url: ${SWAGGER_CORS_URL}
 file:
     uploadPath: ${FILE_UPLOAD_PATH}
+    signUploadPath: ${FILE_SIGN_UPLOAD_PATH}
     url: ${FILE_URL}
+    aes-key: ${FILE_AES_KEY}

@@ -3,11 +3,14 @@ package kr.co.fittnerserver.controller.file;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.file.request.FileReqDto;
 import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -24,12 +27,12 @@ public class FileController {
 
     @Operation(summary = "이미지 업로드",description = "이미지를 업로드 합니다.")
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImage(MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
-        return FittnerResponse.buildList(fileService.uploadImage(multipartHttpServletRequest));
+    public ResponseEntity<?> uploadImage(FileReqDto fileReqDto, MultipartHttpServletRequest multipartHttpServletRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
+        return FittnerResponse.buildList(fileService.uploadImage(fileReqDto,multipartHttpServletRequest,customUserDetails));
     }
 
     @Operation(summary = "이미지 열기",description = "url 입력시 해당 이미지를 노출합니다.")
-    @GetMapping("/{fileId}")
+    @GetMapping("/show/{fileId}")
     public ResponseEntity<byte[]> showImage(@Parameter(name = "fileId", description = "파일ID", example = "6j4trvC7ac")
                                             @PathVariable(name = "fileId") String fileId) throws Exception, IOException {
         return fileService.showImage(fileId);

@@ -34,8 +34,9 @@ public class File extends BaseTimeEntity{
     private String fileUrl;
 
     @Comment(value = "파일 삭제유무")
+    @Column(length = 1, columnDefinition = "char(1) default 'N'")
     private String fileDeleteYn;
-    
+
     @ManyToOne
     @JoinColumn(name = "file_group_id")
     private FileGroup fileGroup;

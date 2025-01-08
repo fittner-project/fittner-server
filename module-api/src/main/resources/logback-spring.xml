@@ -7,6 +7,7 @@
     <property name="LOG_PATH" value="${log.config.path}"/>
     <!-- 로그 파일 이름 -->
     <property name="LOG_FILE_NAME" value="serviceLog"/>
+    <property name="ERROR_LOG_FILE_NAME" value="error"/>
 
     <!-- 로그 출력 패턴 -->
     <property name="LOG_PATTERN" value="[%X{request_id:-startup} %d{yyyy-MM-dd HH:mm:ss} %level %logger{0}:%line] - %msg%n"/>
@@ -44,6 +45,25 @@
         </rollingPolicy>
     </appender>
 
+    <!-- Error 로그만 별도로 저장하는 설정 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 초기 파일 경로를 지정하지 않고 rolling policy에 의존 -->
+        <file></file>
+
+        <!-- 출력패턴 설정 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+        <!-- Rolling 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 파일 이름 패턴 설정 -->
+            <fileNamePattern>${LOG_PATH}/error/error_%d{yyyyMMdd}.log</fileNamePattern>
+            <!-- 보관할 로그의 최대 일수 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
     <!-- 로그 전역 세팅 -->
     <root level="${LOG_LEVEL}">
         <!-- 위에 설정한 콘솔 설정 추가 -->
@@ -52,5 +72,10 @@
         <!-- 위에 설정한 파일 설정 추가 -->
         <appender-ref ref="FILE"/>
     </root>
+
+    <!-- Error 레벨 로그 전용 설정 -->
+    <logger name="ERROR_LOGGER" level="error" additivity="false">
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
 
 </configuration>

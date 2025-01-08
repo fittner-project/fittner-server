@@ -27,7 +27,7 @@ public class ApiControllerAdvice {
         apiResponseMessage.setErrorCode(CommonErrorCode.EXCEPTION.getCode());
         apiResponseMessage.setErrorMessage(CommonErrorCode.EXCEPTION.getMessage());
         return ResponseEntity.status(HttpStatus.OK).body(apiResponseMessage);
-    }//test
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public ResponseEntity<ApiResponseMessage> handleValidationExceptions(MethodArgumentNotValidException ex){

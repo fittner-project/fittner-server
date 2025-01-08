@@ -73,8 +73,9 @@
         <appender-ref ref="FILE"/>
     </root>
 
-    <!-- Error 레벨 로그 전용 설정 -->
-    <logger name="ERROR_LOGGER" level="error" additivity="false">
+    <!-- ERROR 로그 전용 설정 -->
+    <logger name="kr.co.fittnerserver" level="error" additivity="false">
+        <!-- Error 파일 로그 출력 -->
         <appender-ref ref="ERROR_FILE"/>
     </logger>
 

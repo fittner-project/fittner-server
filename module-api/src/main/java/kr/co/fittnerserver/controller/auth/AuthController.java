@@ -28,6 +28,7 @@ public class AuthController {
     @Operation(summary = "트레이너 로그인 API", description = "트레이너 로그인 API 입니다.")
     @PostMapping("/login")
     public ResponseEntity<ApiResponseMessage<TokenResDto>> login(@RequestBody LoginRequestDto loginRequestDto) throws Exception {
+        log.error("에러 메세지 출력 테스트");
         return FittnerResponse.build(loginService.loginProcess(loginRequestDto));
     }
 

@@ -19,15 +19,15 @@ import java.util.Map;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiControllerAdvice {
     
-/*    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponseMessage> handleExceptions(Exception e){
         ApiResponseMessage apiResponseMessage = new ApiResponseMessage();
         apiResponseMessage.setStatus(CommonErrorCode.FAIL.getCode());
         apiResponseMessage.setMessage(CommonErrorCode.FAIL.getMessage());
-        apiResponseMessage.setErrorCode(CommonErrorCode.EXCEPTION1.getCode());
-        apiResponseMessage.setErrorMessage(CommonErrorCode.EXCEPTION1.getMessage());
+        apiResponseMessage.setErrorCode(CommonErrorCode.EXCEPTION.getCode());
+        apiResponseMessage.setErrorMessage(CommonErrorCode.EXCEPTION.getMessage());
         return ResponseEntity.status(HttpStatus.OK).body(apiResponseMessage);
-    }*/
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public ResponseEntity<ApiResponseMessage> handleValidationExceptions(MethodArgumentNotValidException ex){

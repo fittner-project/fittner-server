@@ -68,6 +68,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("https://api.fittner.co.kr"); // 실제 도메인으로 변경
         config.addAllowedOrigin("http://localhost:8080"); // 로컬 테스트용
+        config.addAllowedOrigin("http://localhost:3000"); //프론트 로컬용
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

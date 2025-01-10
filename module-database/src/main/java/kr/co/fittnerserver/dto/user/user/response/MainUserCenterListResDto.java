@@ -10,17 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCenterListResDto {
+public class MainUserCenterListResDto {
     @Schema(description = "센터 가입 ID", example = "1")
     private String centerJoinId;
     @Schema(description = "센터 이름", example = "피트너 센터")
     private String centerName;
-    @Schema(description = "센터 주소", example = "서울시 강남구")
-    private String centerAddress;
-    @Schema(description = "센터 승인여부", example = "N")
-    private String centerJoinApprovalYn;
-    @Schema(description = "주 센터 여부", example = "Y")
-    private String centerJoinMainYn;
-
-
 }

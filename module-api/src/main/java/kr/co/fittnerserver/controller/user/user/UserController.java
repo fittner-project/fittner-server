@@ -6,10 +6,7 @@ import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
-import kr.co.fittnerserver.dto.user.user.response.CenterListResDto;
-import kr.co.fittnerserver.dto.user.user.response.MemberListResDto;
-import kr.co.fittnerserver.dto.user.user.response.UserCenterListResDto;
-import kr.co.fittnerserver.dto.user.user.response.UserInfoResDto;
+import kr.co.fittnerserver.dto.user.user.response.*;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
@@ -38,8 +35,8 @@ public class UserController {
 
     @Operation(summary = "메인에서 트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
     @GetMapping("/main/centers")
-    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildPage(userService.getCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<MainUserCenterListResDto>>> mainCenterList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildPage(userService.getMainCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
     }
 
     @Operation(summary = "트레이너가 회원을 등록하는 API", description = "트레이너가 회원을 등록하는 API 입니다.")
@@ -77,7 +74,9 @@ public class UserController {
         return FittnerResponse.ok();
     }
 
-    /*@Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
+    @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
     @GetMapping("/centers")
-    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>>*/
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildPage(userService.getCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
+    }
 }

@@ -9,13 +9,13 @@ Content-Type: application/json
   "trainerSnsKind": "KAKAO",
   "trainerCiNo": "",
   "trainerFcmToken": "",
-  "centerId": "1"
+  "centerId": "e7d5eeb6-cda6-11ef-b7c9-0242ac190002"
 }
 
 
 
 ### 트레이너가 지정한 센터 리스트 조회
-GET http://localhost:8080/api/v1/user/centers
+GET http://localhost:8080/api/v1/user/main/centers
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -55,4 +55,18 @@ Content-Type: application/json
 
 ### 예약 색깔 조회
 GET http://localhost:8080/api/v1/user/reservation/colors
+Authorization: Bearer {{auth_token}}
+
+
+### 트레이너의 센터 등록 API
+POST http://localhost:8080/api/v1/user/center
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "centerId" : "e7d5eeb6-cda6-11ef-b7c9-0242ac190002"
+}
+
+### 트레이너가 지정한 센터 목록 조회 API
+GET http://localhost:8080/api/v1/user/centers
 Authorization: Bearer {{auth_token}}

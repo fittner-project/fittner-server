@@ -79,13 +79,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserCenterListResDto> getCenterListByTrainer(CustomUserDetails customUserDetails, Pageable pageable) {
+    public Page<MainUserCenterListResDto> getMainCenterListByTrainer(CustomUserDetails customUserDetails, Pageable pageable) {
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
         return new CacheablePage<>(
                 centerJoinRepository.findAllByCenterJoinApprovalYnAndTrainer("N", trainer, pageable)
-                        .map(userCenter -> UserCenterListResDto.builder()
+                        .map(userCenter -> MainUserCenterListResDto.builder()
                                 .centerJoinId(userCenter.getCenterJoinId())
                                 .centerName(userCenter.getCenter().getCenterName())
                                 .build()));
@@ -206,5 +206,21 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_CENTER.getCode(), CommonErrorCode.NOT_FOUND_CENTER.getMessage()));
 
         centerJoinRepository.save(new CenterJoin(center, trainer));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserCenterListResDto> getCenterListByTrainer(CustomUserDetails customUserDetails, Pageable pageable) {
+        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
+
+        return new CacheablePage<>(
+                centerJoinRepository.findAllByTrainer(trainer, pageable)
+                        .map(userCenter -> UserCenterListResDto.builder()
+                                .centerJoinId(userCenter.getCenterJoinId())
+                                .centerName(userCenter.getCenter().getCenterName())
+                                .centerAddress(userCenter.getTrainer().getCenter().getCenterAddress())
+                                .centerJoinApprovalYn(userCenter.getCenterJoinApprovalYn())
+                                .centerJoinMainYn(userCenter.getCenterJoinMainYn())
+                                .build()));
     }
 }

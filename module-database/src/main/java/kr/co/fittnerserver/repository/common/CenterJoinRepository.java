@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
+
 public interface CenterJoinRepository extends JpaRepository<CenterJoin, String> {
     Page<CenterJoin> findAllByCenterJoinApprovalYnAndTrainer(String approvalYn, Trainer trainer, Pageable pageable);
+
+    Page<CenterJoin> findAllByTrainer(Trainer trainer, Pageable pageable);
 }

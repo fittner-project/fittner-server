@@ -5,6 +5,7 @@ import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.user.*;
+import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.*;
@@ -194,5 +195,16 @@ public class UserService {
         r.setTrainerName(trainer.getTrainerName());
 
         return r;
+    }
+
+    @Transactional
+    public void registerCenter(CenterRegisterReqDto centerRegisterReqDto, CustomUserDetails customUserDetails) {
+        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
+
+        Center center = centerRepository.findById(centerRegisterReqDto.getCenterId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_CENTER.getCode(), CommonErrorCode.NOT_FOUND_CENTER.getMessage()));
+
+        centerJoinRepository.save(new CenterJoin(center, trainer));
     }
 }

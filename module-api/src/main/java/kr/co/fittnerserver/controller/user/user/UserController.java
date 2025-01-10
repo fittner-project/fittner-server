@@ -3,6 +3,7 @@ package kr.co.fittnerserver.controller.user.user;
 import io.swagger.v3.oas.annotations.Operation;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.user.*;
+import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.CenterListResDto;
@@ -35,8 +36,8 @@ public class UserController {
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
-    @GetMapping("/centers")
+    @Operation(summary = "메인에서 트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
+    @GetMapping("/main/centers")
     public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildPage(userService.getCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
     }
@@ -63,9 +64,20 @@ public class UserController {
         return FittnerResponse.buildPage(userService.getCenterList(pageable.getPageable()), pageable);
     }
 
-    @Operation(summary = "트레이 정보 조회 API", description = "트레이너 정보 조회 API 입니다.")
+    @Operation(summary = "트레이너 정보 조회 API", description = "트레이너 정보 조회 API 입니다.")
     @GetMapping("/info")
     public ResponseEntity<ApiResponseMessage<UserInfoResDto>> getUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.build(userService.getUserInfo(customUserDetails));
     }
+
+    @Operation(summary = "트레이너의 센터 등록 API", description = "트레이너의 센터 등록 API 입니다.")
+    @PostMapping("/center")
+    public ResponseEntity<ApiResponseMessage<Object>> registerCenter(@RequestBody CenterRegisterReqDto centerRegisterReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        userService.registerCenter(centerRegisterReqDto, customUserDetails);
+        return FittnerResponse.ok();
+    }
+
+    /*@Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
+    @GetMapping("/centers")
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>>*/
 }

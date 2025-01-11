@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.fittnerserver.mapper.user.ticket.TicketMapper">
+    <select id="getTickets" resultType="TicketListResDto">
+        /* SignMapper.getTickets */
+        select all_list.ticket_id
+             , all_list.ticket_code
+             , all_list.member_name
+             , all_list.trainer_product_name
+             , all_list.ticket_start_end_date
+          from (select a.ticket_id
+                     , a.ticket_code
+                     , d.member_name
+                     , e.trainer_product_name
+                     , CONCAT(DATE_FORMAT(STR_TO_DATE(a.ticket_start_date, '%Y%m%d'), '%Y.%m.%d'), ' ~ ', DATE_FORMAT(STR_TO_DATE(a.ticket_end_date, '%Y%m%d'), '%Y.%m.%d')) as ticket_start_end_date
+                     , ROW_NUMBER() OVER (ORDER BY a.ticket_start_date DESC) AS row_num
+                  from ticket a
+             left join trainer b
+                    on a.trainer_id = b.trainer_id
+             left join trainer_assignment c
+                    on a.member_id = c.member_id
+                   and b.trainer_id = c.trainer_id
+             left join member d
+                    on a.member_id = d.member_id
+             left join trainer_product e
+                    on a.trainer_product_id = e.trainer_product_id
+                 where a.trainer_id = #{trainerId}
+                   and a.ticket_delete_yn = 'N'
+                <if test="ticketListReqDto.ticketStatus != 'TOTAL'">
+                   and ticket_code = #{name}
+                </if>
+            ) all_list
+        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
+          and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+    </select>
+
+
+</mapper>
+
+
+
+
+
+
+
+

@@ -24,6 +24,9 @@ public class QueryFormat extends JdbcEventListener implements MessageFormattingS
     public String formatMessage(int connectionId, String now, long elapsed, String category, String prepared, String sql, String url) {
         StringBuilder sb = new StringBuilder();
         sb.append(category).append(" ").append(elapsed).append("ms");
+        if(sql.startsWith("/*")){
+            sb.append("\n"); //mybatis 한줄띄움
+        }
         if (StringUtils.hasText(sql)) {
             sb.append(highlight(format(sql)));
         }
@@ -40,7 +43,9 @@ public class QueryFormat extends JdbcEventListener implements MessageFormattingS
     }
 
     private String highlight(String sql) {
-        return FormatStyle.HIGHLIGHT.getFormatter().format(sql);
+        //로그파일에 ANSI 색상 코드가 같이 저장되므로 임시 주석
+        //return FormatStyle.HIGHLIGHT.getFormatter().format(sql);
+        return sql;
     }
 
     private boolean isDDL(String sql) {

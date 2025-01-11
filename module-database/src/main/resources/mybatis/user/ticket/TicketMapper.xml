@@ -35,6 +35,54 @@
           and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
     </select>
 
+    <select id="selectTicketByTicketId" resultType="TicketDetailResDto">
+        /* SignMapper.selectTicketByTicketId */
+        select d.member_name
+             , d.member_phone
+             , d.member_gender
+             , d.member_birth
+             , d.member_address
+             , d.member_memo
+             , d.member_join_path
+             , a.ticket_code
+             , b.trainer_product_name
+             , a.ticket_start_date
+             , a.ticket_end_date
+             , a.ticket_use_cnt
+             , a.original_ticket_id
+             , b.trainer_product_count
+             , b.trainer_product_price
+             , c.refund_cnt
+             , c.refund_price
+             , c.refund_date_time
+          from ticket a
+     left join trainer_product b
+            on a.trainer_product_id = b.trainer_product_id
+     left join refund c
+            on a.ticket_id = c.ticket_id
+     left join member d
+            on a.member_id = d.member_id
+         where a.ticket_id = #{ticketId}
+    </select>
+
+    <select id="selectTicketByTicketIdForAssign" resultType="TicketDetailResDto">
+        /* SignMapper.selectTicketByTicketIdForAssign */
+        select a.original_ticket_id
+             , e.center_name as assign_center_name
+             , f.assignTrainerName as assign_trainer_name
+             , d.member_name
+          from ticket a
+     left join trainer_product b
+            on a.trainer_product_id = b.trainer_product_id
+     left join member d
+            on a.member_id = d.member_id
+     left join center e
+            on a.center_id = e.center_id
+     left join trainer f
+            on a.trainer_id = f.trainer_id
+         where (a.ticket_id = #{ticketId}
+            or a.originalTicketId = #{ticketId})
+    </select>
 
 </mapper>
 

@@ -41,6 +41,12 @@ public class Ticket extends BaseTimeEntity {
     private String ticketSuspendStartDate;
     @Comment(value = "티켓 일시정지 종료일자")
     private String ticketSuspendEndDate;
+    @Comment(value = "티켓 사용 카운트")
+    @Column(length = 10)
+    private String ticketUseCnt;
+    @Comment(value = "원티켓ID")
+    @Column(length = 38)
+    private String originalTicketId;
 
     @ManyToOne
     @JoinColumn(name = "trainer_product_id")

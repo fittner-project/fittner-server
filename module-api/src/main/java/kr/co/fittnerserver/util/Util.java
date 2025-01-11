@@ -115,4 +115,21 @@ public class Util {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return LocalDateTime.now().format(formatter);
     }
+
+    /**
+     * 파일명 저장시 공백 및 특수문자 제거
+     *
+     * @param originalFileName
+     * @return 특수문자 제거 문자열
+     */
+    public static String sanitizeFileName(String originalFileName) {
+        // 확장자 분리
+        String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        String baseName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+
+        // 특수 문자와 공백을 언더스코어(_)로 치환
+        baseName = baseName.replaceAll("[^a-zA-Z0-9가-힣]", "_");
+
+        return baseName + "." + extension;
+    }
 }

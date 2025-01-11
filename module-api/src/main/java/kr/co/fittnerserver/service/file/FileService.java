@@ -99,7 +99,7 @@ public class FileService {
 
             //실제 파일명
             String fileName = mFile.getOriginalFilename();
-            saveFileName = fileName;
+            saveFileName = Util.sanitizeFileName(fileName);
 
             //키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 10자리)
             String fileId = Util.convertTimeToRandomAlpha(10);

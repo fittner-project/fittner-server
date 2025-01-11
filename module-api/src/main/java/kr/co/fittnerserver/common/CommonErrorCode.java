@@ -25,7 +25,8 @@ public enum CommonErrorCode {
     NOT_FILE("H015","파일이 없습니다."),
     NOT_FOUND_MEMBER("H016","회원을 찾을 수 없습니다."),
     NOT_FOUND_TICKET("H017","티켓을 찾을 수 없습니다."),
-    NOT_FOUND_CENTER_JOIN("H018","센터 가입 정보를 찾을 수 없습니다.");
+    NOT_FOUND_CENTER_JOIN("H018","센터 가입 정보를 찾을 수 없습니다."),
+    NOT_MATCH_TRAINER("H019","트레이너 정보가 일치하지 않습니다.");
 
     private final String code;
     private final String message;

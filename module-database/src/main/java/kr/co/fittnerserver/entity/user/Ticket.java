@@ -43,7 +43,7 @@ public class Ticket extends BaseTimeEntity {
     private String ticketSuspendEndDate;
     @Comment(value = "티켓 사용 카운트")
     @Column(length = 10)
-    private String ticketUseCnt;
+    private int ticketUseCnt;
     @Comment(value = "원티켓ID")
     @Column(length = 38)
     private String originalTicketId;

@@ -25,7 +25,7 @@ public class Refund extends BaseTimeEntity {
 
     @Comment(value = "환불횟수")
     @Column(length = 5)
-    private String refundCnt;
+    private int refundCnt;
 
     @Comment(value = "환불금액")
     @Column(length = 10)

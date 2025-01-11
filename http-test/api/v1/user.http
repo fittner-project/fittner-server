@@ -70,3 +70,13 @@ Authorization: Bearer {{auth_token}}
 ### 트레이너가 지정한 센터 목록 조회 API
 GET http://localhost:8080/api/v1/user/centers
 Authorization: Bearer {{auth_token}}
+
+
+### 트레이너 본인이 승인요청한걸 승인취소하는 API
+DELETE http://localhost:8080/api/v1/user/center
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "centerJoinId": "9f689e11-949c-46c2-a8ef-5b9de9271192"
+}

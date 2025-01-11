@@ -43,4 +43,8 @@ public class CenterJoin extends BaseTimeEntity {
         this.center = center;
         this.trainer = trainer;
     }
+
+    public void cancelApproval() {
+        this.centerJoinApprovalYn = "N";
+    }
 }

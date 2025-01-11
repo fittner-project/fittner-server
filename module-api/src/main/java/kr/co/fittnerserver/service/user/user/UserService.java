@@ -5,6 +5,7 @@ import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.user.*;
+import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
 import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
@@ -222,5 +223,18 @@ public class UserService {
                                 .centerJoinApprovalYn(userCenter.getCenterJoinApprovalYn())
                                 .centerJoinMainYn(userCenter.getCenterJoinMainYn())
                                 .build()));
+    }
+
+    @Transactional
+    public void cancelCenterApproval(CancelCenterApprovalReqDto cancelCenterApprovalReqDto, CustomUserDetails customUserDetails) {
+        CenterJoin centerJoin = centerJoinRepository.findById(cancelCenterApprovalReqDto.getCenterJoinId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_CENTER_JOIN.getCode(), CommonErrorCode.NOT_FOUND_CENTER_JOIN.getMessage()));
+
+        //승인 되지않은 센터조인과 동시에 본인이 요청한 센터조인인지 체크
+        if(centerJoin.getCenterJoinApprovalYn().equals("N") && centerJoin.getTrainer().getTrainerId().equals(customUserDetails.getTrainerId())) {
+            centerJoinRepository.deleteById(cancelCenterApprovalReqDto.getCenterJoinId());
+        }else{
+            throw new CommonException(CommonErrorCode.NOT_MATCH_TRAINER.getCode(), CommonErrorCode.NOT_MATCH_TRAINER.getMessage());
+        }
     }
 }

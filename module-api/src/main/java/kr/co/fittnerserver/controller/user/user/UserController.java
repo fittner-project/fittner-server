@@ -3,6 +3,7 @@ package kr.co.fittnerserver.controller.user.user;
 import io.swagger.v3.oas.annotations.Operation;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.user.*;
+import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
 import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
@@ -76,7 +77,16 @@ public class UserController {
 
     @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
     @GetMapping("/centers")
-    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable,
+                                                                                                @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildPage(userService.getCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
+    }
+
+    @Operation(summary = "트레이너 본인이 승인요청한걸 승인취소하는 API", description = "트레이너 본인이 승인요청한걸 승인취소하는 API 입니다.")
+    @DeleteMapping("/center")
+    public ResponseEntity<ApiResponseMessage<Object>> cancelCenterApproval(@RequestBody CancelCenterApprovalReqDto cancelCenterApprovalReqDto,
+                                                                           @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        userService.cancelCenterApproval(cancelCenterApprovalReqDto, customUserDetails);
+        return FittnerResponse.ok();
     }
 }

@@ -157,11 +157,12 @@ public class FileService {
                         }
                     }
 
-                    //파일명 재생성 파일
-                    log.info("[[[[ file - saveFileName ]]]] ::: {}",saveFileName);
-                    log.info("[[[[ file - path ]]]] ::: {}",savaFilePath);
                     saveFile = new File(savaFilePath);
                 }
+
+                //파일명 재생성 파일
+                log.info("[[[[ file - saveFileName ]]]] ::: {}",saveFileName);
+                log.info("[[[[ file - path ]]]] ::: {}",savaFilePath);
 
                 //파일 생성
                 mFile.transferTo(saveFile);

@@ -83,7 +83,6 @@ public class FileService {
 
         //파일명이 중복되었을 경우, 사용할 스트링 객체
         String saveFileName = "";
-        String savaFilePath = "";
 
         //그룹 테이블 선 저장
         String fileGroupId = commonMapper.selectUUID();
@@ -99,7 +98,7 @@ public class FileService {
 
             //실제 파일명
             String fileName = mFile.getOriginalFilename();
-            saveFileName = Util.sanitizeFileName(fileName);
+            saveFileName = fileName;
 
             //키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 10자리)
             String fileId = Util.convertTimeToRandomAlpha(10);
@@ -153,16 +152,16 @@ public class FileService {
                         _exist = new File(dictFile).isFile();
 
                         if (!_exist) {
-                            savaFilePath = dictFile;
+                            saveFilePath = dictFile;
                         }
                     }
 
-                    saveFile = new File(savaFilePath);
+                    saveFile = new File(saveFilePath);
                 }
 
                 //파일명 재생성 파일
                 log.info("[[[[ file - saveFileName ]]]] ::: {}",saveFileName);
-                log.info("[[[[ file - path ]]]] ::: {}",savaFilePath);
+                log.info("[[[[ file - path ]]]] ::: {}",saveFilePath);
 
                 //파일 생성
                 mFile.transferTo(saveFile);
@@ -223,7 +222,7 @@ public class FileService {
         byte[] fileBytes = FileCopyUtils.copyToByteArray(file);
 
         //암호화 이미지 -> 복호화
-        if(fileInfo.getFileName().endsWith(".dat")){
+        if(fileInfo!=null && fileInfo.getFileName().endsWith(".dat")){
             fileBytes = Util.decryptFile(fileBytes,FILE_AES_KEY);
             contentType = "image/jpeg";
         }

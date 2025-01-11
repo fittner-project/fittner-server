@@ -32,6 +32,7 @@
         <!-- 출력패턴 설정-->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${LOG_PATTERN}</pattern>
+            <outputPatternAsHeader>false</outputPatternAsHeader>
         </encoder>
 
         <!-- Rolling 정책 -->
@@ -53,6 +54,7 @@
         <!-- 출력패턴 설정 -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${LOG_PATTERN}</pattern>
+            <outputPatternAsHeader>false</outputPatternAsHeader>
         </encoder>
 
         <!-- Rolling 정책 -->

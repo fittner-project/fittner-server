@@ -92,7 +92,7 @@ public class Reservation extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
-//ㅅㄷㄴㅅ
+
     public Reservation(ReservationReqDto reservationReqDto, Member member, Ticket ticket, Trainer trainer) {
         this.reservationStartDate = reservationReqDto.getReservationStartDate();
         this.reservationEndDate = reservationReqDto.getReservationEndDate();

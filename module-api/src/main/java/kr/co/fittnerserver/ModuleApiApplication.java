@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ModuleApiApplication {
-//test
     public static void main(String[] args) throws Exception {
         SpringApplication.run(ModuleApiApplication.class, args);
     }

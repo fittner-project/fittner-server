@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.user.request.AccessTokenReqDto;
+import kr.co.fittnerserver.dto.user.user.request.AppleInfoReqDto;
 import kr.co.fittnerserver.dto.user.user.request.LoginRequestDto;
+import kr.co.fittnerserver.dto.user.user.response.AppleInfoResDto;
 import kr.co.fittnerserver.dto.user.user.response.TokenResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
@@ -24,6 +26,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final LoginService loginService;
+
+    @Operation(summary = "애플 로그인 시 필요한 유저이메일 전달 API", description = "애플 로그인 시 필요한 유저이메일 전달 API 입니다.")
+    @PostMapping("/apple-info")
+    public ResponseEntity<ApiResponseMessage<AppleInfoResDto>> appleInfo(@RequestBody AppleInfoReqDto appleInfoReqDto) throws Exception {
+        return FittnerResponse.build(loginService.appleInfo(appleInfoReqDto));
+    }
 
     @Operation(summary = "트레이너 로그인 API", description = "트레이너 로그인 API 입니다.")
     @PostMapping("/login")

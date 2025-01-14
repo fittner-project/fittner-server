@@ -26,7 +26,13 @@ spring:
          multipart:
              max-file-size: 10MB
              max-request-size: 10MB
-
+aes:
+  secret-key: ${AES_SECRET_KEY}
+apple:
+  key: ${APPLE_KEY}
+  team-id: ${APPLE_TEAM_ID}
+  client-id: ${APPLE_CLIENT_ID}
+  key-id: ${APPLE_KEY_ID}
 ---
 spring.config.activate.on-profile: local
 server:
@@ -51,3 +57,8 @@ file:
     aes-key: ${FILE_AES_KEY}
 aes:
     secret-key: ${AES_SECRET_KEY}
+apple:
+  key: ${APPLE_KEY}
+  team-id: ${APPLE_TEAM_ID}
+  client-id: ${APPLE_CLIENT_ID}
+  key-id: ${APPLE_KEY_ID}

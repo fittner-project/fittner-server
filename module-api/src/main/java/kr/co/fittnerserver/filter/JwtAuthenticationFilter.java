@@ -31,6 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final BlackListTokenRepository blackListTokenRepository;
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
     private static final List<String> EXCLUDED_URLS = Arrays.asList(
+            "/api/v1/auth/apple-info",
             "/api/v1/auth/login",
             "/api/v1/auth/refresh-token",
             "/actuator/**",

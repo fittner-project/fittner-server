@@ -2,6 +2,7 @@ package kr.co.fittnerserver.controller.auth;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.user.request.AccessTokenReqDto;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "권한", description = "권한 처리입니다.")
 public class AuthController {
 
     private final LoginService loginService;

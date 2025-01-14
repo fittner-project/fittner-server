@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "push", description = "push(알림)")
+@Tag(name = "푸시", description = "푸시 알람입니다.)")
 public class PushController {
 
     final PushService pushService;

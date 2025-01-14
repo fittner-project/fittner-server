@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "myPage", description = "myPage내 기능들입니다.")
+@Tag(name = "마이페이지", description = "마이페이지 내 기능들입니다.")
 public class MypageController {
 
     final MyPageService myPageService;

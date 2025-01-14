@@ -17,7 +17,7 @@ public class SwaggerConfig {
     @Value("${swagger.cors-url}")
     private String corsUrl;
 
-    @Bean
+   /* @Bean
     public GroupedOpenApi authGroupApi() {
         return GroupedOpenApi.builder()
                 .group("1")
@@ -51,7 +51,7 @@ public class SwaggerConfig {
                 .displayName("공통")
                 .pathsToMatch("/api/v1/common/**")
                 .build();
-    }
+    }*/
 
     @Bean
     public OpenAPI customOpenAPI() {

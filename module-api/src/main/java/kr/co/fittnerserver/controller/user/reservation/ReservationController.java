@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.controller.user.reservation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.reservation.request.ReservationReqDto;
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationColorResDto;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "예약", description = "예약 처리입니다.")
 public class ReservationController {
 
     private final ReservationService reservationService;

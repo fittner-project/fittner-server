@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.controller.user.user;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "유저", description = "유저 관련 처리입니다.")
 public class UserController {
 
     private final UserService userService;

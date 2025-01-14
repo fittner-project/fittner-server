@@ -22,6 +22,18 @@
          where trainer_id = #{trainerId}
            and trainer_drop_yn = 'N'
     </select>
+
+    <select id="selectTerms" resultType="TermsResDto">
+        /* UserMapper.selectTerms */
+        select a.terms_essential_yn
+             , case when a.terms_essential_yn = 'Y' then  concat('(필수) ',a.terms_title)
+                    else concat('(선택) ',a.terms_title)
+                end as terms_title
+             , b.file_url as terms_url
+          from terms a
+     left join file b
+            on a.file_group_id = b.file_group_id
+    </select>
 </mapper>
 
 

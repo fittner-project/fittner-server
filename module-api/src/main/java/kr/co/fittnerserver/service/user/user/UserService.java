@@ -237,4 +237,8 @@ public class UserService {
             throw new CommonException(CommonErrorCode.NOT_MATCH_TRAINER.getCode(), CommonErrorCode.NOT_MATCH_TRAINER.getMessage());
         }
     }
+
+    public List<TermsResDto> getTerms(){
+        return userMapper.selectTerms();
+    }
 }

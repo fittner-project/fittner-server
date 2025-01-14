@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.mapper.user.user;
 
 import kr.co.fittnerserver.dto.user.user.TestDto;
+import kr.co.fittnerserver.dto.user.user.response.TermsResDto;
 import kr.co.fittnerserver.entity.user.Trainer;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,4 +12,6 @@ public interface UserMapper {
     List<TestDto> selectTrainerInfo();
 
     Trainer selectTrainerByTrainerId(String trainerId);
+
+    List<TermsResDto> selectTerms();
 }

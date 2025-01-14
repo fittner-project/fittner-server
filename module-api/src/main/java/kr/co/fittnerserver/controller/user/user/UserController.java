@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
@@ -90,5 +92,11 @@ public class UserController {
                                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         userService.cancelCenterApproval(cancelCenterApprovalReqDto, customUserDetails);
         return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "약관 조회 API", description = "약관 조회 API 입니다.")
+    @GetMapping("/terms")
+    public ResponseEntity<ApiResponseMessage<List<TermsResDto>>> getTerms() throws Exception {
+        return FittnerResponse.buildList(userService.getTerms());
     }
 }

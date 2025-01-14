@@ -17,6 +17,7 @@
              , trainer_fcm_token
              , trainer_sns_kind
              , trainer_status
+             , center_id
           from trainer
          where trainer_id = #{trainerId}
            and trainer_drop_yn = 'N'

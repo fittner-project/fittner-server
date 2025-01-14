@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
+import kr.co.fittnerserver.dto.user.common.response.SplashResDto;
 import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerResponse;
@@ -38,5 +39,12 @@ public class UserCommonController {
     @GetMapping("/status-chk")
     public ResponseEntity<ApiResponseMessage<StatusChkResDto>> statusChk(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.build(userCommonService.statusChk(customUserDetails));
+    }
+
+    @Operation(summary = "스플래시 API", description = "스플래시 조회 API 입니다.")
+    @GetMapping("/splash")
+    public ResponseEntity<ApiResponseMessage<SplashResDto>> getSplash(@Parameter(description = "승인토큰", example = "")
+                                                                      @RequestParam(value = "accessToken", required = false) String accessToken) {
+        return FittnerResponse.build(userCommonService.getSplash(accessToken));
     }
 }

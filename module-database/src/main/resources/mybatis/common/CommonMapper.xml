@@ -13,6 +13,18 @@
         select concat('R',CONCAT(DATE_FORMAT(NOW(3), '%y%m%d%H%i%s'), LPAD(MICROSECOND(NOW(3)) DIV 1000, 3, '0'))) from dual
     </select>
 
+    <select id="selectCommonCodeByGrpCommonCodeAndCommonCode" resultType="CommonCode">
+        /* CommonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode */
+        select common_code_id
+             , common_code
+             , grp_common_code
+             , common_code_memo
+             , common_code_name
+          from common_code
+         where grp_common_code = #{grpCommonCode}
+           and common_code = #{commonCode}
+    </select>
+
 
 </mapper>
 

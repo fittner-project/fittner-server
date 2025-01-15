@@ -21,7 +21,7 @@ public class NoticeRead extends BaseTimeEntity {
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "공지사항읽음 키값")
-    private String userNoticeReadId;
+    private String noticeReadId;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id")

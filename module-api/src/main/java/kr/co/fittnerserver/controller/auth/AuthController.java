@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.dto.user.sign.request.AppleSignDto;
 import kr.co.fittnerserver.dto.user.user.request.AccessTokenReqDto;
 import kr.co.fittnerserver.dto.user.user.request.AppleInfoReqDto;
 import kr.co.fittnerserver.dto.user.user.request.LoginRequestDto;
@@ -20,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth")
@@ -73,17 +71,4 @@ public class AuthController {
         return FittnerResponse.build(loginService.mybatisTest());
     }
 
-    @PostMapping("/apple/test")
-    public RedirectView redirectView(AppleSignDto appleSignDto){
-
-        log.info("[[[ appleSignDto ]]] ::: {}",appleSignDto);
-
-        AppleInfoReqDto param = new AppleInfoReqDto();
-        param.setCode(appleSignDto.getCode());
-
-        AppleInfoResDto appleInfoResDto = loginService.appleInfo(param);
-        log.info("[[[ appleInfoResDto ]]] ::: {}",appleInfoResDto);
-
-        return new RedirectView("https://naver.com"); //임시 화면
-    }
 }

@@ -37,6 +37,14 @@ public class Push extends BaseTimeEntity {
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
     private String pushReadYn;
 
+    @Comment(value = "푸시 일자(yyyyMMdd)")
+    @Column(length = 8)
+    private String pushDate;
+
+    @Comment(value = "푸시 시간(HHmmss)")
+    @Column(length = 6)
+    private String pushTime;
+
     @ManyToOne
     @JoinColumn(name = "center_id")
     private Center center;

@@ -1,10 +1,16 @@
 package kr.co.fittnerserver.service.user.mypage;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.domain.user.TrainerDto;
+import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesResDto;
+import kr.co.fittnerserver.entity.admin.Center;
+import kr.co.fittnerserver.entity.user.Trainer;
+import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.myPage.MyPageMapper;
+import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +25,8 @@ import java.util.List;
 public class MyPageService {
 
     final MyPageMapper myPageMapper;
+    final UserMapper userMapper;
+    final CommonMapper commonMapper;
 
     public SalesInfoResDto getSalesInfo(CustomUserDetails customUserDetails) throws Exception{
         return myPageMapper.getSalesInfo(customUserDetails.getTrainerId(), Util.getFormattedToday("yyyyMmdd"));
@@ -30,6 +38,11 @@ public class MyPageService {
 
     public List<SalesDetailResDto> getSalesDetail(String reservationStartMonth, String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
         return myPageMapper.getSalesDetail(reservationStartMonth, ticketId, customUserDetails.getTrainerId(), pageable.getCurrentPageNo());
+    }
+
+    public List<NoticeResDto> getNotices(CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception {
+        TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+        return myPageMapper.selectNoticeByCenterIdAndTrainerId(pageable.getCurrentPageNo(), trainer.getCenterId(), customUserDetails.getTrainerId());
     }
 
 

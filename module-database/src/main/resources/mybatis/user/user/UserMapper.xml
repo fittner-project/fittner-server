@@ -7,7 +7,7 @@
           from trainer
     </select>
 
-    <select id="selectTrainerByTrainerId" resultType="Trainer">
+    <select id="selectTrainerByTrainerId" resultType="TrainerDto">
         /* UserMapper.selectTrainerByTrainerId */
         select trainer_id
              , trainer_name

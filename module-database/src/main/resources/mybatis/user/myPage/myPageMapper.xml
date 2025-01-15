@@ -55,38 +55,60 @@
     </select>
 
     <select id="getSalesDetail" resultType="SalesInfoResDto">
-    /* MyPageMapper.getSales */
-    select all_list.member_name
-         , all_list.trainer_product_name
-         , all_list.reservation_start_date
-         , all_list.reservation_start_end_time
-         , all_list.row_num as ticketUseCnt
-         , all_list.reservation_status
-         , all_list.reservation_settlement_amount as settlement_amount
-    from (select c.member_name
-               , d.trainer_product_name
-               , DATE_FORMAT(STR_TO_DATE(a.reservation_start_date, '%Y%m%d'), '%Y.%m.%d') as reservation_start_date
-               , CONCAT(TIME_FORMAT(STR_TO_DATE(a.reservation_start_time, '%H%i'), '%H:%i'),' - ',TIME_FORMAT(STR_TO_DATE(a.reservation_end_time, '%H%i'), '%H:%i')) as reservation_start_end_time
-               , ROW_NUMBER() OVER (ORDER BY a.reservation_start_date DESC, a.reservation_start_time DESC) AS row_num
-               , a.reservation_status
-               , a.reservation_settlement_amount
-          from reservation a
-     left join ticket b
-            on a.ticket_id = b.ticket_id
-     left join member c
-            on a.member_id = c.member_id
-     left join trainer_product d
-            on b.trainer_product_id = d.trainer_product_id
-         where a.trainer_id = #{trainerId}
-           and a.reservation_status in ('SIGN','NOSHOW')
-           and SUBSTR(a.reservation_start_date,1,6) = #{reservationStartMonth}
-           and a.reservation_delete_yn = 'N'
-           and b.ticket_id = #{ticketId}
-          ) all_list
-    where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
-      and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+        /* MyPageMapper.getSales */
+        select all_list.member_name
+             , all_list.trainer_product_name
+             , all_list.reservation_start_date
+             , all_list.reservation_start_end_time
+             , all_list.row_num as ticketUseCnt
+             , all_list.reservation_status
+             , all_list.reservation_settlement_amount as settlement_amount
+        from (select c.member_name
+                   , d.trainer_product_name
+                   , DATE_FORMAT(STR_TO_DATE(a.reservation_start_date, '%Y%m%d'), '%Y.%m.%d') as reservation_start_date
+                   , CONCAT(TIME_FORMAT(STR_TO_DATE(a.reservation_start_time, '%H%i'), '%H:%i'),' - ',TIME_FORMAT(STR_TO_DATE(a.reservation_end_time, '%H%i'), '%H:%i')) as reservation_start_end_time
+                   , ROW_NUMBER() OVER (ORDER BY a.reservation_start_date DESC, a.reservation_start_time DESC) AS row_num
+                   , a.reservation_status
+                   , a.reservation_settlement_amount
+              from reservation a
+         left join ticket b
+                on a.ticket_id = b.ticket_id
+         left join member c
+                on a.member_id = c.member_id
+         left join trainer_product d
+                on b.trainer_product_id = d.trainer_product_id
+             where a.trainer_id = #{trainerId}
+               and a.reservation_status in ('SIGN','NOSHOW')
+               and SUBSTR(a.reservation_start_date,1,6) = #{reservationStartMonth}
+               and a.reservation_delete_yn = 'N'
+               and b.ticket_id = #{ticketId}
+              ) all_list
+        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
+          and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
     </select>
 
+    <select id="selectNoticeByCenterIdAndTrainerId" resultType="NoticeResDto">
+        /* MyPageMapper.selectNoticeByCenterIdAndTrainerId */
+        select all_list.notice_title
+             , all_list.notice_content
+             , all_list.notice_date
+             , all_list.notice_read_yn
+          from (select a.notice_title
+                     , a.notice_content
+                     , LEFT(REGEXP_REPLACE(a.created_date, '[^0-9]', ''), 8) as notice_date
+                     , CASE WHEN b.notice_read_id is null THEN 'N'
+                            ELSE 'Y'
+                        END AS notice_read_yn
+                     , ROW_NUMBER() OVER (ORDER BY a.created_date DESC) AS row_num
+                  from notice a
+             left join notice_read b
+                    on a.notice_id = b.notice_id
+                   and b.trainer_id = #{trainerId}
+                 where a.center_id = #{centerId}
+                ) all_list
+            where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
+              and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+    </select>
 
 </mapper>
 

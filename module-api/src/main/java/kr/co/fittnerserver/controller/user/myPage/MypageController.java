@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesResDto;
@@ -53,5 +54,11 @@ public class MypageController {
                                                                                       @ModelAttribute FittnerPageable pageable,
                                                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getSalesDetail(reservationStartMonth,ticketId,customUserDetails,pageable));
+    }
+
+    @Operation(summary = "공지사항 조회 API", description = "공지사항 조회 API 입니다.")
+    @GetMapping("/myPage/notices")
+    public ResponseEntity<ApiResponseMessage<List<NoticeResDto>>> getNotices(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(myPageService.getNotices(customUserDetails,pageable));
     }
 }

@@ -4,6 +4,7 @@ package kr.co.fittnerserver.service.user.user;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
+import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
 import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
@@ -189,7 +190,7 @@ public class UserService {
     public UserInfoResDto getUserInfo(CustomUserDetails customUserDetails) throws Exception{
         UserInfoResDto r = new UserInfoResDto();
 
-        Trainer trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+        TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
         r.setTrainerEmail(AES256Cipher.decrypt(trainer.getTrainerEmail()));
         r.setTrainerSnsKind(String.valueOf(trainer.getTrainerSnsKind()));
         //TODO 이름 암호화시 복호화 추가

@@ -25,7 +25,20 @@
            and common_code = #{commonCode}
     </select>
 
-
+    <select id="selectCenterByCenterId" resultType="Center">
+        /* CommonMapper.selectCenterByCenterId */
+        select center_id
+             , buiness_no
+             , center_owner_name
+             , center_tel
+             , center_adress
+             , center_name
+             , center_group_id
+             , center_type
+             , file_group_id
+          from center
+         where center_id = #{centerId}
+    </select>
 </mapper>
 
 

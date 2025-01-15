@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.service.user.common;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
 import kr.co.fittnerserver.dto.user.common.response.SplashResDto;
 import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
@@ -55,9 +56,9 @@ public class UserCommonService {
 
         try {
             if(!StringUtils.isEmpty(accessToken)){
-                Trainer trainer = userMapper.selectTrainerByTrainerId(jwtTokenUtil.validateTokenAndGetTrainerId(accessToken));
+                TrainerDto trainer = userMapper.selectTrainerByTrainerId(jwtTokenUtil.validateTokenAndGetTrainerId(accessToken));
                 if(trainer != null){
-                    CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("SPLASH",trainer.getCenter().getCenterId());
+                    CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("SPLASH",trainer.getCenterId());
                     r.setSplashImgUrl(commonCode.getCommonCodeMemo());
                 }
             }

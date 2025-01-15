@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.mapper.user.myPage;
 
+import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesResDto;
@@ -17,4 +18,5 @@ public interface MyPageMapper {
 
     List<SalesDetailResDto> getSalesDetail(String trainerId, String ticketId, String reservationStartMonth, int currentPageNo);
 
+    List<NoticeResDto> selectNoticeByCenterIdAndTrainerId(int currentPageNo, String centerId, String trainerId);
 }

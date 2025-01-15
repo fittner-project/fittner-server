@@ -19,4 +19,10 @@ public interface MyPageMapper {
     List<SalesDetailResDto> getSalesDetail(String trainerId, String ticketId, String reservationStartMonth, int currentPageNo);
 
     List<NoticeResDto> selectNoticeByCenterIdAndTrainerId(int currentPageNo, String centerId, String trainerId);
+
+    int selectNoticeReadCountByNoticeIdAndTrainerId(String noticeId, String trainerId);
+
+    void insertNoticeRead(String noticeId, String trainerId, String centerId);
+
+    int selectNoticeCountByNoticeId(String noticeId);
 }

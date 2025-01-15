@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
 import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
@@ -60,5 +61,12 @@ public class MypageController {
     @GetMapping("/myPage/notices")
     public ResponseEntity<ApiResponseMessage<List<NoticeResDto>>> getNotices(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getNotices(customUserDetails,pageable));
+    }
+
+    @Operation(summary = "공지사항 읽음 API", description = "공지사항 읽음 API 입니다.")
+    @PostMapping("/myPage/notice/read")
+    public ResponseEntity<ApiResponseMessage<Object>> noticeRead(@RequestBody NoticeReadReqDto noticeReadReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        myPageService.noticeRead(noticeReadReqDto,customUserDetails);
+        return FittnerResponse.ok();
     }
 }

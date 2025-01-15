@@ -2,6 +2,7 @@ package kr.co.fittnerserver.service.user.mypage;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.domain.user.TrainerDto;
+import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
 import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
@@ -43,6 +44,19 @@ public class MyPageService {
     public List<NoticeResDto> getNotices(CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception {
         TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
         return myPageMapper.selectNoticeByCenterIdAndTrainerId(pageable.getCurrentPageNo(), trainer.getCenterId(), customUserDetails.getTrainerId());
+    }
+
+    public void noticeRead(NoticeReadReqDto noticeReadReqDto, CustomUserDetails customUserDetails) throws Exception{
+        //공지사항ID 체크
+        if(myPageMapper.selectNoticeCountByNoticeId(noticeReadReqDto.getNoticeId()) > 0){
+
+            //공지사항 읽음 테이블 있는지 체크
+            int noticeReadChk = myPageMapper.selectNoticeReadCountByNoticeIdAndTrainerId(noticeReadReqDto.getNoticeId(), customUserDetails.getTrainerId());
+            if(noticeReadChk == 0){
+                TrainerDto trainerDto = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+                myPageMapper.insertNoticeRead(noticeReadReqDto.getNoticeId(), customUserDetails.getTrainerId(), trainerDto.getCenterId());
+            }
+        }
     }
 
 

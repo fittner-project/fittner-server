@@ -89,11 +89,13 @@
 
     <select id="selectNoticeByCenterIdAndTrainerId" resultType="NoticeResDto">
         /* MyPageMapper.selectNoticeByCenterIdAndTrainerId */
-        select all_list.notice_title
+        select all_list.notice_id
+             , all_list.notice_title
              , all_list.notice_content
              , all_list.notice_date
              , all_list.notice_read_yn
-          from (select a.notice_title
+          from (select a.notice_id
+                     , a.notice_title
                      , a.notice_content
                      , LEFT(REGEXP_REPLACE(a.created_date, '[^0-9]', ''), 8) as notice_date
                      , CASE WHEN b.notice_read_id is null THEN 'N'
@@ -108,6 +110,40 @@
                 ) all_list
             where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
               and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+    </select>
+
+    <select id="selectNoticeReadCountByNoticeIdAndTrainerId" resultType="int">
+        /* MyPageMapper.selectNoticeReadCountByNoticeIdAndTrainerId */
+        select count(*)
+          from notice_read
+         where notice_id = #{noticeId}
+           and trainer_id = #{trainerId}
+    </select>
+
+    <insert id="insertNoticeRead">
+        /* MyPageMapper.insertNoticeRead */
+        insert into notice_read(
+                    notice_read_id
+                  , center_id
+                  , notice_id
+                  , trainer_id
+                  , created_by
+                  , created_date
+          ) values (
+                    UUID()
+                  , #{centerId}
+                  , #{noticeId}
+                  , #{trainerId}
+                  , 'system'
+                  , CURRENT_TIMESTAMP
+          )
+    </insert>
+
+    <select id="selectNoticeCountByNoticeId" resultType="int">
+        /* MyPageMapper.selectNoticeCountByNoticeId */
+        select count(*)
+          from notice
+         where notice_id = #{noticeId}
     </select>
 
 </mapper>

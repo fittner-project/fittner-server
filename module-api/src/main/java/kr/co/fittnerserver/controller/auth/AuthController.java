@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth")
@@ -69,5 +70,11 @@ public class AuthController {
     @GetMapping("/mybatis-test")
     public ResponseEntity<?> mybatisTest(){
         return FittnerResponse.build(loginService.mybatisTest());
+    }
+
+    @PostMapping("/apple/test")
+    public RedirectView redirectView(){
+        log.info("@@@@");
+        return new RedirectView("https://naver.com"); //임시 화면
     }
 }

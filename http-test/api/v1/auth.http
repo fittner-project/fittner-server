@@ -47,3 +47,11 @@ GET http://localhost:8080/api/v1/auth/mybatis-test
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
+
+### test
+POST http://localhost:8080/api/v1/auth/apple-info
+Content-Type: application/json
+
+{
+  "code": "c658e0768e935481c86a1cf37234c3622.0.prwyw.EzrXIowQvTE4l9_4XWtnBA"
+}

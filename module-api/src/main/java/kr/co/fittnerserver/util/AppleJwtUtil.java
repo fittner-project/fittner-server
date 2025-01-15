@@ -34,21 +34,22 @@ public class AppleJwtUtil {
 
     public String generateClientSecret() throws Exception {
         // Private Key 생성
-        byte[] keyBytes = Base64.getDecoder().decode(privateKey.replaceAll("-----\\w+ PRIVATE KEY-----", "").trim());
+        byte[] keyBytes = Base64.getDecoder().decode(privateKey);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         PrivateKey signingKey = KeyFactory.getInstance("EC").generatePrivate(keySpec);
 
+        long now = System.currentTimeMillis() / 1000;  // 초 단위로 변환
+
         // JWT 생성
-        long now = System.currentTimeMillis() / 1000;
         return Jwts.builder()
                 .setHeaderParam("kid", keyId)
                 .setHeaderParam("alg", "ES256")
                 .setIssuer(teamId)
                 .setAudience("https://appleid.apple.com")
                 .setSubject(clientId)
-                .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + 3600)) // 1시간 유효
-                .signWith(SignatureAlgorithm.ES256, signingKey)
+                .setIssuedAt(new Date(now * 1000))
+                .setExpiration(new Date((now + 3600) * 1000))
+                .signWith(signingKey, SignatureAlgorithm.ES256)
                 .compact();
     }
 

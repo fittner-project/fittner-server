@@ -3,6 +3,7 @@ package kr.co.fittnerserver.controller.user.push;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.user.push.request.PushReadReqDto;
 import kr.co.fittnerserver.dto.user.push.response.PushChkResDto;
 import kr.co.fittnerserver.dto.user.push.response.PushResDto;
 import kr.co.fittnerserver.results.FittnerPageable;
@@ -37,5 +38,12 @@ public class PushController {
     @GetMapping("/pushs")
     public ResponseEntity<ApiResponseMessage<List<PushResDto>>> getPushs(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(pushService.getPushs(pageable, customUserDetails));
+    }
+
+    @Operation(summary = "알림 읽음 API", description = "알림 읽음 API 입니다.")
+    @PostMapping("/push/read")
+    public ResponseEntity<ApiResponseMessage<Object>> pushRead(@RequestBody PushReadReqDto pushReadReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        pushService.pushRead(pushReadReqDto, customUserDetails);
+        return FittnerResponse.ok();
     }
 }

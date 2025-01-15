@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.service.user.push;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.user.push.request.PushReadReqDto;
 import kr.co.fittnerserver.dto.user.push.response.PushChkResDto;
 import kr.co.fittnerserver.dto.user.push.response.PushResDto;
 import kr.co.fittnerserver.mapper.user.push.PushMapper;
@@ -24,5 +25,9 @@ public class PushService {
 
     public List<PushResDto> getPushs(FittnerPageable pageable, CustomUserDetails customUserDetails){
         return pushMapper.selectPushByTrainerId(pageable.getCurrentPageNo(), customUserDetails.getTrainerId());
+    }
+
+    public void pushRead(PushReadReqDto pushReadReqDto, CustomUserDetails customUserDetails) throws Exception{
+        pushMapper.updatePushByPushId(pushReadReqDto.getPushId(), customUserDetails.getTrainerId());
     }
 }

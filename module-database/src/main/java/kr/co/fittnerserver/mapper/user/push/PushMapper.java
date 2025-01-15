@@ -14,4 +14,5 @@ public interface PushMapper {
 
     List<PushResDto> selectPushByTrainerId(int currentPageNo, String trainerId);
 
+    void updatePushByPushId(String pushId, String trainerId);
 }

@@ -14,11 +14,13 @@
 
     <select id="selectPushByTrainerId" resultType="PushResDto">
         /* PushMapper.selectPushByTrainerId */
-        select all_list.push_title
+        select all_list.push_id
+             , all_list.push_title
              , all_list.push_content
              , all_list.push_read_yn
              , all_list.push_date
-          from (select push_title
+          from (select push_id
+                     , push_title
                      , push_content
                      , push_read_yn
                      , push_date
@@ -30,6 +32,14 @@
           and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
     </select>
 
+    <update id="updatePushByPushId">
+        /* PushMapper.updatePushByPushId */
+        update push
+           set push_read_yn = 'Y'
+             , modified_by = #{trainerId}
+             , modified_date = CURRENT_TIMESTAMP
+         where push_id = #{pushId}
+    </update>
 
 </mapper>
 

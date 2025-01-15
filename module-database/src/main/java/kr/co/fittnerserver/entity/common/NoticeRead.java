@@ -2,6 +2,7 @@ package kr.co.fittnerserver.entity.common;
 
 import jakarta.persistence.*;
 import kr.co.fittnerserver.entity.admin.Center;
+import kr.co.fittnerserver.entity.user.Trainer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,10 @@ public class NoticeRead extends BaseTimeEntity {
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "공지사항읽음 키값")
     private String userNoticeReadId;
+
+    @ManyToOne
+    @JoinColumn(name = "trainer_id")
+    private Trainer trainer;
 
     @ManyToOne
     @JoinColumn(name = "center_id")

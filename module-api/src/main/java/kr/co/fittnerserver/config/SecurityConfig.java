@@ -72,6 +72,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:3000"); //프론트 로컬용
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

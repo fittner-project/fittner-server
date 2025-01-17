@@ -149,7 +149,7 @@ public class LoginService {
 
     public RedirectView test(AppleInfoReqDto appleInfoReqDto) throws Exception {
 
-            log.info("state: {}", appleInfoReqDto.getUser());
+            log.info("test@@@@@@@ : {}", appleInfoReqDto.getUser());
 
            /* ObjectMapper objectMapper = new ObjectMapper();
             AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);

@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.service.auth;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
@@ -150,13 +151,10 @@ public class LoginService {
 
     public RedirectView test(AppleRedirectReqDto appleRedirectReqDto) throws Exception {
 
-
-/*
-            ObjectMapper objectMapper = new ObjectMapper();
-            AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);
-            String email = appleUser.getEmail();*/
-            //return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
-            return new RedirectView("https://m.fittner.co.kr/sign-in");
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode userNode = objectMapper.readTree(appleRedirectReqDto.getUser());
+        String email = userNode.get("email").asText();
+        return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
 
     }
 }

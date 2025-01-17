@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.service.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
@@ -9,6 +10,7 @@ import kr.co.fittnerserver.dto.user.user.request.AccessTokenReqDto;
 import kr.co.fittnerserver.dto.user.user.request.AppleInfoReqDto;
 import kr.co.fittnerserver.dto.user.user.request.LoginRequestDto;
 import kr.co.fittnerserver.dto.user.user.response.AppleInfoResDto;
+import kr.co.fittnerserver.dto.user.user.response.AppleUserDto;
 import kr.co.fittnerserver.dto.user.user.response.TokenResDto;
 import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.user.Trainer;
@@ -145,22 +147,12 @@ public class LoginService {
         }
     }
 
-    public RedirectView test(AppleInfoReqDto appleInfoReqDto) {
+    public RedirectView test(String user) {
         try {
-            // 1. JWT(Client Secret) 생성
-            String clientSecret = appleJwtUtil.generateClientSecret();
-
-            // 2. Apple Token Endpoint 요청
-            Map<String, Object> tokenResponse = appleJwtUtil.requestAppleToken(appleInfoReqDto.getCode(), clientSecret);
-
-            // 3. ID Token 디코딩
-            String idToken = (String) tokenResponse.get("id_token");
-            Map<String, Object> userClaims = appleJwtUtil.decodeIdToken(idToken);
-            log.info("userClaims: {}", userClaims);
-            // 4. 사용자 정보 반환
-            String userEmail = (String) userClaims.get("email");
-
-            return new RedirectView("https://m.fittner.co.kr/sign-in");
+            ObjectMapper objectMapper = new ObjectMapper();
+            AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);
+            String email = appleUser.getEmail();
+            return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
 
         } catch (Exception e) {
             throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());

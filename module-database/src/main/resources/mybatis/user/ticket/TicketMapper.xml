@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.fittnerserver.mapper.user.ticket.TicketMapper">
     <select id="getTickets" resultType="TicketListResDto">
-        /* SignMapper.getTickets */
+        /* TicketMapper.getTickets */
         select all_list.ticket_id
              , all_list.ticket_code
              , all_list.member_name
@@ -27,63 +27,143 @@
                     on a.trainer_product_id = e.trainer_product_id
                  where a.trainer_id = #{trainerId}
                    and a.ticket_delete_yn = 'N'
-                <if test="ticketListReqDto.ticketStatus != 'TOTAL'">
-                   and ticket_code = #{name}
+                <if test="ticketStatus != 'TOTAL'">
+                   and ticket_code = #{ticketStatus}
                 </if>
             ) all_list
         where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
           and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
     </select>
 
-    <select id="selectTicketByTicketId" resultType="TicketDetailResDto">
-        /* SignMapper.selectTicketByTicketId */
-        select d.member_name
-             , d.member_phone
-             , d.member_gender
-             , d.member_birth
-             , d.member_address
-             , d.member_memo
-             , d.member_join_path
-             , a.ticket_code
-             , b.trainer_product_name
+    <select id="selectTicketByTicketId" resultType="TicketDto">
+        /* TicketMapper.selectTicketByTicketId */
+        select a.ticket_id
              , a.ticket_start_date
              , a.ticket_end_date
+             , a.ticket_code
+             , a.ticket_suspend_start_date
+             , a.ticket_suspend_end_date
              , a.ticket_use_cnt
              , a.original_ticket_id
-             , b.trainer_product_count
-             , b.trainer_product_price
-             , c.refund_cnt
-             , c.refund_price
-             , c.refund_date_time
+             , b.trainer_product_id
+             , b.trainer_id
+             , b.trainer_product_name as ticket_name
+             , b.trainer_product_price as ticket_price
+             , b.trainer_product_count as ticket_total_cnt
+             , c.member_id
+             , c.member_name
+             , c.member_phone
+             , c.member_phone_end
+             , c.member_birth
+             , c.member_memo
+             , d.center_id
+             , d.center_name
+             , d.center_tel
+             , d.center_adress
+             , e.trainer_id
+             , e.trainer_name
+             , e.trainer_email
+             , e.trainer_phone
+             , LEFT(REGEXP_REPLACE(a.created_date, '[^0-9]', ''), 8) as created_date
           from ticket a
      left join trainer_product b
-            on a.trainer_product_id = b.trainer_product_id
-     left join refund c
-            on a.ticket_id = c.ticket_id
-     left join member d
-            on a.member_id = d.member_id
-         where a.ticket_id = #{ticketId}
+            on a.ticket_id = b.ticket_id
+     left join member c
+            on a.member_id = c.member_id
+     left join center d
+            on a.center_id = d.center_id
+     left join trainer e
+            on a.trainer_id = e.trainer_id
+         where 1=1
+        <choose>
+            <when test="gubn == 'ORIGINAL'">
+                and original_ticket_id = #{ticketId}
+            </when>
+            <otherwise>
+                and ticket_id = #{ticketId}
+            </otherwise>
+        </choose>
     </select>
 
-    <select id="selectTicketByTicketIdForAssign" resultType="TicketDetailResDto">
-        /* SignMapper.selectTicketByTicketIdForAssign */
-        select a.original_ticket_id
-             , e.center_name as assign_center_name
-             , f.assignTrainerName as assign_trainer_name
-             , d.member_name
-          from ticket a
-     left join trainer_product b
-            on a.trainer_product_id = b.trainer_product_id
-     left join member d
-            on a.member_id = d.member_id
-     left join center e
-            on a.center_id = e.center_id
-     left join trainer f
-            on a.trainer_id = f.trainer_id
-         where (a.ticket_id = #{ticketId}
-            or a.originalTicketId = #{ticketId})
+    <select id="selectRefund" resultType="Refund">
+        /* TicketMapper.selectRefund */
+        select refund_cnt
+             , refund_price
+             , refund_date_time
+          from refund
+         where ticket_id = #{ticketId}
     </select>
 
+    <insert id="insertTicket">
+        /* TicketMapper.insertTicket */
+        insert into ticket(
+                    created_by
+                  , created_date
+                  , member_id
+                  , ticket_end_date
+                  , ticket_id
+                  , ticket_start_date
+                  , trainer_id
+                  , trainer_product_id
+                  , ticket_code
+                  , original_ticket_id
+                  , ticket_use_cnt
+          ) values (
+                    CURRENT_TIMESTAMP
+                  , #{trainerId}
+                  , #{memberId}
+                  , #{ticketEndDate}
+                  , #{ticketId}
+                  , #{ticketStartDate}
+                  , #{trainerId}
+                  , #{trainerProductId}
+                  , #{ticketCode}
+                  , #{originalTicketId}
+                  , #{ticketUseCnt}
+          )
+    </insert>
+
+    <update id="updateTicketForAssign">
+        /* TicketMapper.updateTicketForAssign */
+        update ticket
+           set ticket_code = 'ASSIGN_TO'
+             , modified_by = #{trainerId}
+             , modified_date = CURRENT_TIMESTAMP
+         where ticket_id = #{ticketId}
+    </update>
+
+    <insert id="insertMember">
+        /* TicketMapper.insertMember */
+        insert into member(
+                    member_phone_end
+                  , member_birth
+                  , member_name
+                  , member_address
+                  , member_phone
+                  , center_id
+                  , create_by
+                  , create_date
+                  , member_join_path
+                  , member_memo
+                  , trainer_id
+                  , member_gender
+                  , member_id
+           ) values (
+                    #{memberPhoneEnd}
+                  , #{AssignToNewMemberReqDto.memberBirth}
+                  , #{AssignToNewMemberReqDto.memberName}
+                  , #{AssignToNewMemberReqDto.memberAddress}
+                  , #{AssignToNewMemberReqDto.memberPhone}
+                  , #{AssignToNewMemberReqDto.centerId}
+                  , #{trainerId}
+                  , CURRENT_TIMESTAMP
+                  , #{AssignToNewMemberReqDto.memberJoinPath}
+                  , #{AssignToNewMemberReqDto.memberMemo}
+                  , #{AssignToNewMemberReqDto.trainerId}
+                  , #{AssignToNewMemberReqDto.memberGender}
+                  , #{memberId}
+          )
+    </insert>
 </mapper>
 
 

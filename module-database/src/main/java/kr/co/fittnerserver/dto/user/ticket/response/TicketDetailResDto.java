@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class TicketDetailResDto {
 
-    private String ticketId;
+    //회원 정보
     private String memeberName;
     private String memberPhone;
     private String memberGender;
@@ -13,24 +13,25 @@ public class TicketDetailResDto {
     private String memberAddress;
     private String memberMomo;
     private String memberJoinPath;
-    private String ticketCode;
+
+    //이용권 정보
+    private String ticketCodeName;
     private String ticketName;
     private String ticketStartDate;
     private String ticketEndDate;
-    private String remainingCnt;
+    private String ticketUseCnt;
+    private String ticketTotalCnt;
     private String ticketPrice;
 
-    //환불관련
-    private String refundId;
+    //환불 정보
     private String refundCnt;
     private String refundPrice;
     private String refundDateTime;
 
-    //양도관련
-    private String originalTicketId;
+    //양도 정보
     private String assignCenterName;
     private String assignTrainerName;
     private String assignDate;
     private String assignCnt;
-    private String assignName;
+    private String assignMemberName;
 }

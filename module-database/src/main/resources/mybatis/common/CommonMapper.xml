@@ -39,6 +39,22 @@
           from center
          where center_id = #{centerId}
     </select>
+
+    <select id="selectMemberByMemberId" resultType="Member">
+        /* CommonMapper.selectMemberByMemberId */
+        select member_phone_end
+             , member_birth
+             , member_name
+             , member_adress
+             , member_phone
+             , member_id
+             , member_join_path
+             , member_memo
+             , member_gender
+          from member
+         where member_id = #{memberId}
+           and member_delete_yn = 'N'
+    </select>
 </mapper>
 
 

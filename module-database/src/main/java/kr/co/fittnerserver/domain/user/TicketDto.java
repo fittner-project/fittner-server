@@ -1,29 +1,47 @@
 package kr.co.fittnerserver.domain.user;
 
-import jakarta.persistence.*;
-import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
-import kr.co.fittnerserver.entity.common.BaseTimeEntity;
-import kr.co.fittnerserver.entity.user.Member;
-import kr.co.fittnerserver.entity.user.Trainer;
-import kr.co.fittnerserver.entity.user.TrainerProduct;
-import kr.co.fittnerserver.entity.user.enums.TicketCode;
 import lombok.*;
-import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.GenericGenerator;
 
 @Data
 public class TicketDto {
 
+    //이용권 정보
     private String ticketId;
     private String ticketStartDate;
     private String ticketEndDate;
-    private String ticketStartEndDate;
-    private String ticketDeleteYn;
-    private String ticketEndYn;
     private String ticketCode;
+    private String ticketCodeName;
     private String ticketSuspendStartDate;
     private String ticketSuspendEndDate;
+    private String ticketUseCnt;
+    private String originalTicketId;
     private String trainerProductId;
-    private String trainerId;
+    private String ticketName;
+    private String ticketPrice;
+    private String ticketTotalCnt;
+    private String createdDate;
+
+    //회원 정보
     private String memberId;
+    private String memberName;
+    private String memberPhone;
+    private String memberPhoneEnd;
+    private String memberBirth;
+    private String memberMemo;
+    private String memberJoinPath;
+    private String memberGender;
+    private String memberAdress;
+
+    //센터정보
+    private String centerId;
+    private String centerName;
+    private String centerTel;
+    private String centerAdress;
+
+    //트레이너정보
+    private String trainerId;
+    private String trainerName;
+    private String trainerEmail;
+    private String trainerPhone;
+
 }

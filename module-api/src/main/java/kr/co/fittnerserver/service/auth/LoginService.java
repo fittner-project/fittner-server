@@ -147,9 +147,12 @@ public class LoginService {
         }
     }
 
-    public RedirectView test(Object o) {
+    public RedirectView test(String state, String code, String user) throws Exception {
 
-            log.info("test@@@@: {}", o);
+            log.info("state: {}", state);
+            log.info("code: {}", code);
+            log.info("user: {}", user);
+
            /* ObjectMapper objectMapper = new ObjectMapper();
             AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);
             String email = appleUser.getEmail();*/

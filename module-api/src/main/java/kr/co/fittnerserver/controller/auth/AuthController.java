@@ -37,8 +37,8 @@ public class AuthController {
     private final LoginService loginService;
 
     @PostMapping(value = "/apple-redirect-url")
-    public void appleRedirectUrl(@ModelAttribute AppleRedirectReqDto appleRedirectReqDto) {
-        log.info("appleRedirectUrl : {}", appleRedirectReqDto);
+    public void appleRedirectUrl(HttpServletRequest request) throws Exception {
+        log.info("request : {}",request);
             //return loginService.test(appleInfoReqDto.getCode());
         }
 

@@ -7,7 +7,13 @@ import java.util.List;
 @Data
 public class TermsListResDto {
 
-    private String termsTitle;
-    private String termsStartDate;
-    private List<String> beforeTermsStartDate;
+    private String ingTermsTitle;
+    private String intTermsStartDate;
+    private List<TotalTerm> totalTermList;
+
+    @Data
+    public static class TotalTerm{
+        private String termsStartDate;
+        private String termsUrl;
+    }
 }

@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.mapper.user.myPage;
 
+import kr.co.fittnerserver.domain.user.TermsDto;
 import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
 import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
@@ -27,5 +28,5 @@ public interface MyPageMapper {
 
     int selectNoticeCountByNoticeId(String noticeId);
 
-    List<Terms> selectTerms(String termsState, String termsKind);
+    List<TermsDto> selectTerms(String termsState, String termsKind);
 }

@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.service.user.mypage;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.domain.user.TermsDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
 import kr.co.fittnerserver.dto.user.myPage.response.*;
@@ -63,20 +64,23 @@ public class MyPageService {
         List<TermsListResDto> r = new ArrayList<>();
 
         //적용중인 약관
-        List<Terms> ingTerms = myPageMapper.selectTerms("ING","TOTAL");
+        List<TermsDto> ingTerms = myPageMapper.selectTerms("ING","TOTAL");
 
-        for(Terms ingTerm : ingTerms){
+        for(TermsDto ingTerm : ingTerms){
             //적용중 약관 정보
             TermsListResDto data = new TermsListResDto();
-            data.setTermsTitle(ingTerm.getTermsTitle());
-            data.setTermsStartDate(ingTerm.getTermsStartDate());
+            data.setIngTermsTitle(ingTerm.getTermsTitle());
+            data.setIntTermsStartDate(ingTerm.getTermsStartDate());
 
             //이전 약관 정보
-            List<Terms> allTerms = myPageMapper.selectTerms("TOTAL",ingTerm.getTermsKind().name());
-            List<String> beforeTermsStartDate = new ArrayList<>();
-            for(Terms term : allTerms){
-                beforeTermsStartDate.add(term.getTermsStartDate());
-                data.setBeforeTermsStartDate(beforeTermsStartDate);
+            List<TermsDto> allTerms = myPageMapper.selectTerms("TOTAL",ingTerm.getTermsKind());
+            List<TermsListResDto.TotalTerm> beforeTermsStartDate = new ArrayList<>();
+            for(TermsDto termsDto : allTerms){
+                TermsListResDto.TotalTerm terms = new TermsListResDto.TotalTerm();
+                terms.setTermsStartDate(termsDto.getTermsStartDate());
+                terms.setTermsUrl(termsDto.getFileUrl());
+                beforeTermsStartDate.add(terms);
+                data.setTotalTermList(beforeTermsStartDate);
             }
             r.add(data);
         }

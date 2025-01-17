@@ -146,7 +146,7 @@
          where notice_id = #{noticeId}
     </select>
 
-    <select id="selectTerms" resultType="Terms">
+    <select id="selectTerms" resultType="TermsDto">
         /* MyPageMapper.selectTerms */
         select a.terms_essential_yn
              , a.terms_title

@@ -37,20 +37,10 @@ public class AuthController {
     private final LoginService loginService;
 
     @PostMapping(value = "/apple-redirect-url")
-    public void appleRedirectUrl(HttpServletRequest request) throws Exception {
-        log.info("request : {}",request.getRequestURI());
-        log.info("request : {}",request.getContentType());
-        log.info("request : {}",request.getContextPath());
-        log.info("request : {}",request.getQueryString());
-        log.info("request : {}",request.getParameterMap());
-        log.info("request : {}",request.getParameter("code"));
-        log.info("request : {}",request.getParameter("state"));
-        log.info("request : {}",request.getParameter("user"));
-        log.info("request : {}",request.getRequestId());
-
-
-            //return loginService.test(appleInfoReqDto.getCode());
-        }
+    public RedirectView appleRedirectUrl(@ModelAttribute AppleRedirectReqDto appleRedirectReqDto) throws Exception {
+        log.info("appleRedirectReqDto : {}", appleRedirectReqDto);
+        return loginService.test(appleRedirectReqDto);
+    }
 
 
 /*
@@ -60,43 +50,45 @@ public class AuthController {
         return FittnerResponse.build(loginService.appleInfo(appleInfoReqDto));
     }*/
 
-        @Operation(summary = "트레이너 로그인 API", description = "트레이너 로그인 API 입니다.")
-        @PostMapping("/login")
-        public ResponseEntity<ApiResponseMessage<TokenResDto>> login (@RequestBody LoginRequestDto loginRequestDto) throws
-        Exception {
-            return FittnerResponse.build(loginService.loginProcess(loginRequestDto));
-        }
-
-        @Operation(summary = "트레이너 로그아웃 API", description = "트레이너 로그아웃 API 입니다.", security = @SecurityRequirement(name = "Authorization"))
-        @PostMapping("/logout")
-        public ResponseEntity<ApiResponseMessage<Object>> logout (HttpServletRequest
-        request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-            loginService.logoutProcess(request, customUserDetails);
-            return FittnerResponse.ok();
-        }
-
-        @Operation(summary = "엑세스 토큰 재발급 API", description = "엑세스 토큰을 재발급 받습니다.")
-        @PostMapping("/refresh-token")
-        public ResponseEntity<ApiResponseMessage<TokenResDto>> makeAccessToken (@RequestBody AccessTokenReqDto
-        accessTokenReqDto) throws Exception {
-            return FittnerResponse.build(loginService.makeToken(accessTokenReqDto));
-        }
-
-
-        @Operation(hidden = true)
-        @GetMapping("/list-test")
-        public ResponseEntity<?> listTest () {
-            return FittnerResponse.build(loginService.listTest());
-        }
-        @Operation(hidden = true)
-        @GetMapping("/page-test")
-        public ResponseEntity<?> pageTest (@ModelAttribute FittnerPageable pageable){
-            return FittnerResponse.buildPage(loginService.pageTest(pageable.getPageable()), pageable);
-        }
-        @Operation(hidden = true)
-        @GetMapping("/mybatis-test")
-        public ResponseEntity<?> mybatisTest () {
-            return FittnerResponse.build(loginService.mybatisTest());
-        }
-
+    @Operation(summary = "트레이너 로그인 API", description = "트레이너 로그인 API 입니다.")
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponseMessage<TokenResDto>> login(@RequestBody LoginRequestDto loginRequestDto) throws
+            Exception {
+        return FittnerResponse.build(loginService.loginProcess(loginRequestDto));
     }
+
+    @Operation(summary = "트레이너 로그아웃 API", description = "트레이너 로그아웃 API 입니다.", security = @SecurityRequirement(name = "Authorization"))
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponseMessage<Object>> logout(HttpServletRequest
+                                                                     request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        loginService.logoutProcess(request, customUserDetails);
+        return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "엑세스 토큰 재발급 API", description = "엑세스 토큰을 재발급 받습니다.")
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponseMessage<TokenResDto>> makeAccessToken(@RequestBody AccessTokenReqDto
+                                                                                   accessTokenReqDto) throws Exception {
+        return FittnerResponse.build(loginService.makeToken(accessTokenReqDto));
+    }
+
+
+    @Operation(hidden = true)
+    @GetMapping("/list-test")
+    public ResponseEntity<?> listTest() {
+        return FittnerResponse.build(loginService.listTest());
+    }
+
+    @Operation(hidden = true)
+    @GetMapping("/page-test")
+    public ResponseEntity<?> pageTest(@ModelAttribute FittnerPageable pageable) {
+        return FittnerResponse.buildPage(loginService.pageTest(pageable.getPageable()), pageable);
+    }
+
+    @Operation(hidden = true)
+    @GetMapping("/mybatis-test")
+    public ResponseEntity<?> mybatisTest() {
+        return FittnerResponse.build(loginService.mybatisTest());
+    }
+
+}

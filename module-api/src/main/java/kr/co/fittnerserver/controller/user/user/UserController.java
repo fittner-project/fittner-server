@@ -68,8 +68,8 @@ public class UserController {
 
     @Operation(summary = "센터 목록 조회 API", description = "센터 목록 조회 API 입니다.")
     @GetMapping("/center/list")
-    public ResponseEntity<ApiResponseMessage<PageResponseDto<CenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable) throws Exception {
-        return FittnerResponse.buildPage(userService.getCenterList(pageable.getPageable()), pageable);
+    public ResponseEntity<ApiResponseMessage<List<CenterListResDto>>> centerList() throws Exception {
+        return FittnerResponse.buildList(userService.getCenterList());
     }
 
     @Operation(summary = "트레이너 정보 조회 API", description = "트레이너 정보 조회 API 입니다.")

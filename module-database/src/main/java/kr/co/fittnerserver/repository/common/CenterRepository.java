@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CenterRepository extends JpaRepository<Center, String> {
-    Page<Center> findAllByCenterDeleteYn(String deleteYn, Pageable pageable);
+    List<Center> findAllByCenterDeleteYn(String deleteYn);
 
     List<Center> findAllByCenterGroupAndCenterDeleteYn(CenterGroup centerGroup, String deleteYn);
 }

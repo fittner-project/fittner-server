@@ -166,12 +166,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CenterListResDto> getCenterList(Pageable pageable) {
-        return new CacheablePage<>(centerRepository.findAllByCenterDeleteYn("N", pageable)
+    public List<CenterListResDto> getCenterList() {
+
+        return centerRepository.findAllByCenterDeleteYn("N")
+                .stream()
                 .map(center -> {
                     List<CenterFileResDto> fileUrls = new ArrayList<>();
 
-                    if(center.getFileGroup() != null) {
+                    if (center.getFileGroup() != null) {
                         FileGroup fileGroup = fileGroupRepository.findById(center.getFileGroup().getFileGroupId())
                                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FILE_GROUP.getCode(), CommonErrorCode.NOT_FOUND_FILE_GROUP.getMessage()));
 
@@ -184,7 +186,8 @@ public class UserService {
                             .centerTel(center.getCenterTel())
                             .centerImage(fileUrls)
                             .build();
-                }));
+                })
+                .toList();
     }
 
     public UserInfoResDto getUserInfo(CustomUserDetails customUserDetails) throws Exception{

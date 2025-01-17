@@ -127,8 +127,7 @@ public class LoginService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode userNode = objectMapper.readTree(appleRedirectReqDto.getUser());
             String email = userNode.get("email").asText();
-            String encryptedEmail = AES256Cipher.encrypt(email);
-            return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + encryptedEmail);
+            return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
         }else{
             return new RedirectView("https://m.fittner.co.kr/sign-in");
         }

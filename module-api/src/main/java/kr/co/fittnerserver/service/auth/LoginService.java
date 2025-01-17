@@ -147,18 +147,14 @@ public class LoginService {
         }
     }
 
-    public RedirectView test(String user) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);
-            String email = appleUser.getEmail();
-            return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
+    public RedirectView test(Object o) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("appleRedirectUrl error: {}", e.getMessage());
+            log.info("test@@@@: {}", o);
+           /* ObjectMapper objectMapper = new ObjectMapper();
+            AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);
+            String email = appleUser.getEmail();*/
+            //return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
             return new RedirectView("https://m.fittner.co.kr/sign-in");
-            //throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());
-        }
+
     }
 }

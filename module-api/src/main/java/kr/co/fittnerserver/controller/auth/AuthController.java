@@ -31,9 +31,10 @@ public class AuthController {
     private final LoginService loginService;
 
     @PostMapping("/apple-redirect-url")
-    public RedirectView appleRedirectUrl(@RequestParam(value = "user")String user) throws Exception {
-        return loginService.test(user);
+    public RedirectView appleRedirectUrl(Object object) throws Exception {
+        return loginService.test(object);
     }
+
 
     @Operation(summary = "애플 로그인 시 필요한 유저이메일 전달 API", description = "애플 로그인 시 필요한 유저이메일 전달 API 입니다.")
     @PostMapping("/apple-info")

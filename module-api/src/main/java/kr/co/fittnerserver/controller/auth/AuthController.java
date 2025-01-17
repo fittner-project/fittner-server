@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth")
@@ -28,6 +29,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final LoginService loginService;
+
+    @PostMapping("/apple-redirect-url")
+    public ResponseEntity<ApiResponseMessage<RedirectView>> appleRedirectUrl(@RequestBody AppleInfoReqDto appleInfoReqDto) throws Exception {
+        return FittnerResponse.build(loginService.test(appleInfoReqDto));
+    }
+
 
     @Operation(summary = "애플 로그인 시 필요한 유저이메일 전달 API", description = "애플 로그인 시 필요한 유저이메일 전달 API 입니다.")
     @PostMapping("/apple-info")

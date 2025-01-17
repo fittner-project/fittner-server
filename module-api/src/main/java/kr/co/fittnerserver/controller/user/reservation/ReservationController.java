@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "예약", description = "예약 처리입니다.")
+@Tag(name = "수업", description = "수업 관련 처리입니다.")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -39,5 +39,6 @@ public class ReservationController {
         return FittnerResponse.ok();
     }
 
+    //@Operation(summary = "트레이너의 회원 수업 목록 리스트 API", description = "트레이너의 회원 수업 목록 리스트 API 입니다.")
 
 }

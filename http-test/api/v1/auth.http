@@ -53,5 +53,5 @@ POST http://localhost:8080/api/v1/auth/apple-info
 Content-Type: application/json
 
 {
-  "code": "c658e0768e935481c86a1cf37234c3622.0.prwyw.EzrXIowQvTE4l9_4XWtnBA"
+  "code": "c38946d17da054bcbaa09dd6c0b196e6e.0.rrwyw.HuZVQfD206Ilqe8QA81QPg"
 }

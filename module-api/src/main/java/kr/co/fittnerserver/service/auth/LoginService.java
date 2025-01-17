@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -133,11 +134,33 @@ public class LoginService {
             // 3. ID Token 디코딩
             String idToken = (String) tokenResponse.get("id_token");
             Map<String, Object> userClaims = appleJwtUtil.decodeIdToken(idToken);
-
+            log.info("userClaims: {}", userClaims);
             // 4. 사용자 정보 반환
             String userEmail = (String) userClaims.get("email");
 
             return new AppleInfoResDto(userEmail);
+
+        } catch (Exception e) {
+            throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());
+        }
+    }
+
+    public RedirectView test(AppleInfoReqDto appleInfoReqDto) {
+        try {
+            // 1. JWT(Client Secret) 생성
+            String clientSecret = appleJwtUtil.generateClientSecret();
+
+            // 2. Apple Token Endpoint 요청
+            Map<String, Object> tokenResponse = appleJwtUtil.requestAppleToken(appleInfoReqDto.getCode(), clientSecret);
+
+            // 3. ID Token 디코딩
+            String idToken = (String) tokenResponse.get("id_token");
+            Map<String, Object> userClaims = appleJwtUtil.decodeIdToken(idToken);
+            log.info("userClaims: {}", userClaims);
+            // 4. 사용자 정보 반환
+            String userEmail = (String) userClaims.get("email");
+
+            return new RedirectView("https://m.fittner.co.kr/sign-in");
 
         } catch (Exception e) {
             throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());

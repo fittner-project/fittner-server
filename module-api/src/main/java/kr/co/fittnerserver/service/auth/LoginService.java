@@ -146,16 +146,16 @@ public class LoginService {
             throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());
         }
     }*/
+/*
+    public RedirectView test(String code) throws Exception {
 
-    public RedirectView test(AppleInfoReqDto appleInfoReqDto) throws Exception {
+            log.info("test@@@@@@@ : {}", code);
 
-            log.info("test@@@@@@@ : {}", appleInfoReqDto.getUser());
-
-           /* ObjectMapper objectMapper = new ObjectMapper();
+           *//* ObjectMapper objectMapper = new ObjectMapper();
             AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);
-            String email = appleUser.getEmail();*/
+            String email = appleUser.getEmail();*//*
             //return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
             return new RedirectView("https://m.fittner.co.kr/sign-in");
 
-    }
+    }*/
 }

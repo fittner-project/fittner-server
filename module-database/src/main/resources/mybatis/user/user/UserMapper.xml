@@ -23,8 +23,8 @@
            and trainer_drop_yn = 'N'
     </select>
 
-    <select id="selectTerms" resultType="TermsResDto">
-        /* UserMapper.selectTerms */
+    <select id="selectTermsForJoin" resultType="TermsResDto">
+        /* UserMapper.selectTermsForJoin */
         select a.terms_essential_yn
              , case when a.terms_essential_yn = 'Y' then  concat('(필수) ',a.terms_title)
                     else concat('(선택) ',a.terms_title)
@@ -33,6 +33,7 @@
           from terms a
      left join file b
             on a.file_group_id = b.file_group_id
+         where a.terms_state = 'ING'
     </select>
 </mapper>
 

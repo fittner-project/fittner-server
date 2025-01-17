@@ -3,11 +3,9 @@ package kr.co.fittnerserver.service.user.mypage;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
-import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesResDto;
+import kr.co.fittnerserver.dto.user.myPage.response.*;
 import kr.co.fittnerserver.entity.admin.Center;
+import kr.co.fittnerserver.entity.common.Terms;
 import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.myPage.MyPageMapper;
@@ -16,8 +14,10 @@ import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,6 +57,31 @@ public class MyPageService {
                 myPageMapper.insertNoticeRead(noticeReadReqDto.getNoticeId(), customUserDetails.getTrainerId(), trainerDto.getCenterId());
             }
         }
+    }
+
+    public List<TermsListResDto> getTerms(CustomUserDetails customUserDetails) throws Exception {
+        List<TermsListResDto> r = new ArrayList<>();
+
+        //적용중인 약관
+        List<Terms> ingTerms = myPageMapper.selectTerms("ING","TOTAL");
+
+        for(Terms ingTerm : ingTerms){
+            //적용중 약관 정보
+            TermsListResDto data = new TermsListResDto();
+            data.setTermsTitle(ingTerm.getTermsTitle());
+            data.setTermsStartDate(ingTerm.getTermsStartDate());
+
+            //이전 약관 정보
+            List<Terms> allTerms = myPageMapper.selectTerms("TOTAL",ingTerm.getTermsKind().name());
+            List<String> beforeTermsStartDate = new ArrayList<>();
+            for(Terms term : allTerms){
+                beforeTermsStartDate.add(term.getTermsStartDate());
+                data.setBeforeTermsStartDate(beforeTermsStartDate);
+            }
+            r.add(data);
+        }
+
+        return r;
     }
 
 

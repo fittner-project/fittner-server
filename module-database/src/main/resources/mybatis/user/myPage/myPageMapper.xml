@@ -146,6 +146,29 @@
          where notice_id = #{noticeId}
     </select>
 
+    <select id="selectTerms" resultType="Terms">
+        /* MyPageMapper.selectTerms */
+        select a.terms_essential_yn
+             , a.terms_title
+             , b.file_url
+             , a.terms_id
+             , a.terms_start_date
+             , a.terms_end_date
+             , a.terms_kind
+             , a.terms_state
+          from terms a
+     left join file b
+            on a.file_group_id = b.file_group_id
+         where 1=1
+        <if test="termsState != 'TOTAL'">
+            and terms_state = #{termsState}
+        </if>
+        <if test="termsKind != 'TOTAL'">
+            and terms_kind = #{termsKind}
+        </if>
+      order by a.terms_start_date desc
+    </select>
+
 </mapper>
 
 

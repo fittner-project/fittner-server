@@ -242,8 +242,8 @@ public class UserService {
         }
     }
 
-    public List<TermsResDto> getTerms(){
-        return userMapper.selectTerms();
+    public List<TermsResDto> getJoinTerms(){
+        return userMapper.selectTermsForJoin();
     }
 
 

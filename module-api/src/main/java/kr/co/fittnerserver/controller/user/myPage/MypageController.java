@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
-import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesResDto;
+import kr.co.fittnerserver.dto.user.myPage.response.*;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
@@ -68,5 +65,11 @@ public class MypageController {
     public ResponseEntity<ApiResponseMessage<Object>> noticeRead(@RequestBody NoticeReadReqDto noticeReadReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         myPageService.noticeRead(noticeReadReqDto,customUserDetails);
         return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "약관 조회 API", description = "약관 조회 API 입니다.")
+    @GetMapping("/myPage/terms")
+    public ResponseEntity<ApiResponseMessage<List<TermsListResDto>>> getTerms(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(myPageService.getTerms(customUserDetails));
     }
 }

@@ -100,9 +100,9 @@ public class UserController {
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "약관 조회 API", description = "약관 조회 API 입니다.")
+    @Operation(summary = "회원가입 약관 조회 API", description = "회원가입 약관 조회 API 입니다.")
     @GetMapping("/terms")
-    public ResponseEntity<ApiResponseMessage<List<TermsResDto>>> getTerms() throws Exception {
-        return FittnerResponse.buildList(userService.getTerms());
+    public ResponseEntity<ApiResponseMessage<List<TermsResDto>>> getJoinTerms() throws Exception {
+        return FittnerResponse.buildList(userService.getJoinTerms());
     }
 }

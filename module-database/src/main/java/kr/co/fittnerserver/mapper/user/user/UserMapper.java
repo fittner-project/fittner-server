@@ -14,5 +14,5 @@ public interface UserMapper {
 
     TrainerDto selectTrainerByTrainerId(String trainerId);
 
-    List<TermsResDto> selectTerms();
+    List<TermsResDto> selectTermsForJoin();
 }

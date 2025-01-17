@@ -125,7 +125,7 @@ public class LoginService {
         return new TokenResDto(newAccessToken, trainerRefreshToken.getRefreshTokenId());
     }
 
-    public AppleInfoResDto appleInfo(AppleInfoReqDto appleInfoReqDto) {
+    /*public AppleInfoResDto appleInfo(AppleInfoReqDto appleInfoReqDto) {
         try {
             // 1. JWT(Client Secret) 생성
             String clientSecret = appleJwtUtil.generateClientSecret();
@@ -145,13 +145,11 @@ public class LoginService {
         } catch (Exception e) {
             throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());
         }
-    }
+    }*/
 
-    public RedirectView test(String state, String code, String user) throws Exception {
+    public RedirectView test(AppleInfoReqDto appleInfoReqDto) throws Exception {
 
-            log.info("state: {}", state);
-            log.info("code: {}", code);
-            log.info("user: {}", user);
+            log.info("state: {}", appleInfoReqDto.getUser());
 
            /* ObjectMapper objectMapper = new ObjectMapper();
             AppleUserDto appleUser = objectMapper.readValue(user, AppleUserDto.class);

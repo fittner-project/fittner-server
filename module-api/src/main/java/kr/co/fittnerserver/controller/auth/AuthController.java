@@ -31,18 +31,16 @@ public class AuthController {
     private final LoginService loginService;
 
     @PostMapping("/apple-redirect-url")
-    public RedirectView appleRedirectUrl(@RequestParam String state,
-                                         @RequestParam String code,
-                                         @RequestParam String user) throws Exception {
-        return loginService.test(state,code,user);
+    public RedirectView appleRedirectUrl(AppleInfoReqDto appleInfoReqDto) throws Exception {
+        return loginService.test(appleInfoReqDto);
     }
 
-
+/*
     @Operation(summary = "애플 로그인 시 필요한 유저이메일 전달 API", description = "애플 로그인 시 필요한 유저이메일 전달 API 입니다.")
     @PostMapping("/apple-info")
     public ResponseEntity<ApiResponseMessage<AppleInfoResDto>> appleInfo(@RequestBody AppleInfoReqDto appleInfoReqDto) throws Exception {
         return FittnerResponse.build(loginService.appleInfo(appleInfoReqDto));
-    }
+    }*/
 
     @Operation(summary = "트레이너 로그인 API", description = "트레이너 로그인 API 입니다.")
     @PostMapping("/login")

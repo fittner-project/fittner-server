@@ -4,10 +4,8 @@ import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.domain.user.TermsDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
+import kr.co.fittnerserver.dto.user.myPage.requset.PushSetReqDto;
 import kr.co.fittnerserver.dto.user.myPage.response.*;
-import kr.co.fittnerserver.entity.admin.Center;
-import kr.co.fittnerserver.entity.common.Terms;
-import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.myPage.MyPageMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
@@ -15,7 +13,6 @@ import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -86,6 +83,21 @@ public class MyPageService {
         }
 
         return r;
+    }
+
+    public void setPush(PushSetReqDto pushSetReqDto, CustomUserDetails customUserDetails) throws Exception{
+        myPageMapper.updatePushSet(pushSetReqDto.getPushKind(), pushSetReqDto.getPushSetYn(), customUserDetails.getTrainerId());
+
+        //마케팅 알림일 경우 약관 동의 업데이트
+        if("ADVERTISE".equals(pushSetReqDto.getPushKind())){
+            //현재 적용중인 마케팅 약관ID
+            List<TermsDto> termsDto = myPageMapper.selectTerms("ING", "ADVERTISE");
+            myPageMapper.updateTermsAgree(customUserDetails.getTrainerId(), termsDto.get(0).getTermsId());
+        }
+    }
+
+    public List<PushSetResDto> getPush(CustomUserDetails customUserDetails) throws Exception{
+        return myPageMapper.selectPushSetByTrainerId(customUserDetails.getTrainerId());
     }
 
 

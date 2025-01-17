@@ -1,11 +1,7 @@
 package kr.co.fittnerserver.mapper.user.myPage;
 
 import kr.co.fittnerserver.domain.user.TermsDto;
-import kr.co.fittnerserver.dto.user.myPage.response.NoticeResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesDetailResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesInfoResDto;
-import kr.co.fittnerserver.dto.user.myPage.response.SalesResDto;
-import kr.co.fittnerserver.entity.common.Terms;
+import kr.co.fittnerserver.dto.user.myPage.response.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -29,4 +25,10 @@ public interface MyPageMapper {
     int selectNoticeCountByNoticeId(String noticeId);
 
     List<TermsDto> selectTerms(String termsState, String termsKind);
+
+    void updatePushSet(String pushKind, String pushSetYn, String trainerId);
+
+    void updateTermsAgree(String trainerId, String termsId);
+
+    List<PushSetResDto> selectPushSetByTrainerId(String trainerId);
 }

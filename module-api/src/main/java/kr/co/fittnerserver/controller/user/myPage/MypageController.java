@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
+import kr.co.fittnerserver.dto.user.myPage.requset.PushSetReqDto;
 import kr.co.fittnerserver.dto.user.myPage.response.*;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
@@ -71,5 +72,18 @@ public class MypageController {
     @GetMapping("/myPage/terms")
     public ResponseEntity<ApiResponseMessage<List<TermsListResDto>>> getTerms(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getTerms(customUserDetails));
+    }
+
+    @Operation(summary = "푸시 설정 API", description = "푸시 설정 API 입니다.")
+    @PostMapping("/myPage/push-set")
+    public ResponseEntity<ApiResponseMessage<Object>> setPush(@RequestBody PushSetReqDto pushSetReqDto,  @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        myPageService.setPush(pushSetReqDto, customUserDetails);
+        return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "푸시 설정 조회 API", description = "푸시 설정 조회 API 입니다.")
+    @PostMapping("/myPage/push")
+    public ResponseEntity<ApiResponseMessage<List<PushSetResDto>>> getPush(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(myPageService.getPush(customUserDetails));
     }
 }

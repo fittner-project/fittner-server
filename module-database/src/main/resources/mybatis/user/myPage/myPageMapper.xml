@@ -169,6 +169,39 @@
       order by a.terms_start_date desc
     </select>
 
+    <update id="updatePushSet">
+        /* MyPageMapper.updatePushSet */
+        update push_set
+           set push_set_yn = #{pushSetYn}
+             , modified_by = #{trainerId}
+             , modified_date = CURRENT_TIMESTAMP
+         where trainer_id = #{trainerId}
+           and push_kind = #{pushKind}
+    </update>
+
+    <update id="updateTermsAgree">
+        /* MyPageMapper.updatePushSet */
+        update terms_agree
+           set terms_agree_yn = 'Y'
+             , terms_id = #{termsId}
+             , modified_by = #{trainerId}
+             , modified_date = CURRENT_TIMESTAMP
+         where terms_agree_id = (select a.terms_agree_id
+                                   from terms_agree a
+                              left join terms b
+                                     on a.terms_id = b.terms_id
+                                  where a.trainer_id = #{trainerId}
+                                    and b.terms_kind = 'ADVERTISE')
+    </update>
+
+    <select id="selectPushSetByTrainerId" resultType="PushSetResDto">
+        /* MyPageMapper.selectPushSetByTrainerId */
+        select push_kind
+             , push_set_yn
+          from push_set
+         where trainer_id = #{trainerId}
+    </select>
+
 </mapper>
 
 

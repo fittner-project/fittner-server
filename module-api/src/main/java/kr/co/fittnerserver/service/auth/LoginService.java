@@ -160,7 +160,7 @@ public class LoginService {
             // 4. 사용자 정보 반환
             String userEmail = (String) userClaims.get("email");
 
-            return new RedirectView("https://m.fittner.co.kr/sign-in");
+            return new RedirectView("https://m.fittner.co.kr");
 
         } catch (Exception e) {
             throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());

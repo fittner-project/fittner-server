@@ -35,6 +35,10 @@ public class TermsAgree extends BaseTimeEntity {
     private LocalDateTime termsAgreeDateTime;
 
     @ManyToOne
+    @JoinColumn(name = "terms_id")
+    private Terms terms;
+
+    @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 

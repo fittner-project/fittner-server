@@ -155,7 +155,10 @@ public class LoginService {
             return new RedirectView("https://m.fittner.co.kr/sign-in?email=" + email);
 
         } catch (Exception e) {
-            throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());
+            e.printStackTrace();
+            log.error("appleRedirectUrl error: {}", e.getMessage());
+            return new RedirectView("https://m.fittner.co.kr/sign-in");
+            //throw new CommonException(CommonErrorCode.APPLE_FAIL.getCode(), CommonErrorCode.APPLE_FAIL.getMessage());
         }
     }
 }

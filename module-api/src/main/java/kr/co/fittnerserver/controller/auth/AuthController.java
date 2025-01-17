@@ -35,7 +35,6 @@ public class AuthController {
         return loginService.test(user);
     }
 
-
     @Operation(summary = "애플 로그인 시 필요한 유저이메일 전달 API", description = "애플 로그인 시 필요한 유저이메일 전달 API 입니다.")
     @PostMapping("/apple-info")
     public ResponseEntity<ApiResponseMessage<AppleInfoResDto>> appleInfo(@RequestBody AppleInfoReqDto appleInfoReqDto) throws Exception {

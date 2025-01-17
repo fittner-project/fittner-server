@@ -31,7 +31,6 @@ public class AuthController {
     private final LoginService loginService;
 
     @PostMapping("/apple-redirect-url")
-    @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
     public ResponseEntity<ApiResponseMessage<RedirectView>> appleRedirectUrl(@RequestBody AppleInfoReqDto appleInfoReqDto) throws Exception {
         return FittnerResponse.build(loginService.test(appleInfoReqDto));
     }

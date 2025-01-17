@@ -38,9 +38,20 @@ public class AuthController {
 
     @PostMapping(value = "/apple-redirect-url")
     public void appleRedirectUrl(HttpServletRequest request) throws Exception {
-        log.info("request : {}",request);
+        log.info("request : {}",request.getRequestURI());
+        log.info("request : {}",request.getContentType());
+        log.info("request : {}",request.getContextPath());
+        log.info("request : {}",request.getQueryString());
+        log.info("request : {}",request.getParameterMap());
+        log.info("request : {}",request.getParameter("code"));
+        log.info("request : {}",request.getParameter("state"));
+        log.info("request : {}",request.getParameter("user"));
+        log.info("request : {}",request.getRequestId());
+
+
             //return loginService.test(appleInfoReqDto.getCode());
         }
+
 
 /*
     @Operation(summary = "애플 로그인 시 필요한 유저이메일 전달 API", description = "애플 로그인 시 필요한 유저이메일 전달 API 입니다.")

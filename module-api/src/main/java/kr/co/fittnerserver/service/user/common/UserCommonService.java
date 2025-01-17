@@ -2,6 +2,7 @@ package kr.co.fittnerserver.service.user.common;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.domain.user.TrainerDto;
+import kr.co.fittnerserver.dto.user.common.response.BrandColorResDto;
 import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
 import kr.co.fittnerserver.dto.user.common.response.SplashResDto;
 import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
@@ -16,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +73,91 @@ public class UserCommonService {
 
         }catch (Exception e){
             r.setSplashImgUrl(defaultImgUrl); //기본이미지
+        }
+
+        return r;
+    }
+
+    public BrandColorResDto getBrandColor(CustomUserDetails customUserDetails){
+
+        BrandColorResDto r = new BrandColorResDto();
+
+        try {
+
+            TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+
+            CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("BRANDCOLOR", trainer.getCenterId());
+
+            if (commonCode != null) {
+                //format : greyTypeA=#909090&greyTypeB=#D0D0D0&greyTypeC=#92KS00
+                String keyValueStr = commonCode.getCommonCodeMemo();
+
+                Map<String, String> map = new HashMap<>();
+
+                // 문자열을 '&'로 분리
+                String[] pairs = keyValueStr.split("&");
+
+                for (String pair : pairs) {
+                    // 각 쌍을 '='로 분리
+                    String[] keyValue = pair.split("=", 2); // 최대 2개로 나누기
+
+                    if (keyValue.length == 2) {
+                        String key = keyValue[0];
+                        String value = keyValue[1];
+                        map.put(key, value); // HashMap에 추가
+                    } else if (keyValue.length == 1) {
+                        // 값이 없는 키 처리 (예: "test4="의 경우)
+                        map.put(keyValue[0], "");
+                    }
+                }
+
+                r.setPrimary(map.get("primary"));
+                r.setSub(map.get("sub"));
+                r.setGreyTypeA(map.get("greyTypeA"));
+                r.setGreyTypeB(map.get("greyTypeB"));
+                r.setGreyTypeC(map.get("greyTypeC"));
+                r.setGreyTypeD(map.get("greyTypeD"));
+                r.setTextTypeA(map.get("textTypeA"));
+                r.setTextTypeB(map.get("textTypeB"));
+                r.setTextTypeB(map.get("textTypeC"));
+                r.setTextTypeB(map.get("textTypeD"));
+                r.setTextTypeB(map.get("textTypeE"));
+                r.setTextTypeB(map.get("textTypeF"));
+                r.setTextTypeB(map.get("textTypeG"));
+
+            } else {
+
+                //기본 컬러
+                r.setPrimary("#4C6AFF");
+                r.setSub("#FF8194");
+                r.setGreyTypeA("#F2F4F6");
+                r.setGreyTypeB("#B0B8C1");
+                r.setGreyTypeC("#7F848D");
+                r.setGreyTypeD("#4D5662");
+                r.setTextTypeA("#191F28");
+                r.setTextTypeB("#191F28");
+                r.setTextTypeC("#191F28");
+                r.setTextTypeD("#191F28");
+                r.setTextTypeE("#191F28");
+                r.setTextTypeF("#191F28");
+                r.setTextTypeG("#191F28");
+
+            }
+        }catch (Exception e){
+            //기본 컬러
+            r.setPrimary("#4C6AFF");
+            r.setSub("#FF8194");
+            r.setGreyTypeA("#F2F4F6");
+            r.setGreyTypeB("#B0B8C1");
+            r.setGreyTypeC("#7F848D");
+            r.setGreyTypeD("#4D5662");
+            r.setTextTypeA("#191F28");
+            r.setTextTypeB("#191F28");
+            r.setTextTypeC("#191F28");
+            r.setTextTypeD("#191F28");
+            r.setTextTypeE("#191F28");
+            r.setTextTypeF("#191F28");
+            r.setTextTypeG("#191F28");
         }
 
         return r;

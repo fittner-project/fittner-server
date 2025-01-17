@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.dto.user.common.response.BrandColorResDto;
 import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
 import kr.co.fittnerserver.dto.user.common.response.SplashResDto;
 import kr.co.fittnerserver.dto.user.common.response.StatusChkResDto;
@@ -46,5 +47,11 @@ public class UserCommonController {
     public ResponseEntity<ApiResponseMessage<SplashResDto>> getSplash(@Parameter(description = "승인토큰", example = "")
                                                                       @RequestParam(value = "accessToken", required = false) String accessToken) {
         return FittnerResponse.build(userCommonService.getSplash(accessToken));
+    }
+
+    @Operation(summary = "브랜드컬러 조회 API", description = "브랜드컬러 조회 API 입니다.")
+    @GetMapping("/brand-color")
+    public ResponseEntity<ApiResponseMessage<BrandColorResDto>> getBrandColor(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        return FittnerResponse.build(userCommonService.getBrandColor(customUserDetails));
     }
 }

@@ -1,15 +1,16 @@
 package kr.co.fittnerserver.util;
 
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -131,5 +132,67 @@ public class Util {
         baseName = baseName.replaceAll("[^a-zA-Z0-9가-힣]", "_");
 
         return baseName + "." + extension;
+    }
+
+    /**
+     * 문자열이 yyyyMMdd 날짜 포맷인지 확인
+     *
+     * @param dateStr 확인할 문자열
+     * @return boolean 유효하면 true, 그렇지 않으면 false
+     */
+    public static boolean isValidDateFormat(String dateStr) {
+        // null 또는 길이가 8이 아닌 경우 유효하지 않음
+        if (dateStr == null || dateStr.length() != 8) {
+            return false;
+        }
+
+        // yyyyMMdd 형식을 지정
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        sdf.setLenient(false); // 엄격한 검증 설정
+
+        try {
+            // 날짜 파싱 시도
+            sdf.parse(dateStr);
+            return true; // 성공적으로 파싱되면 유효
+        } catch (ParseException e) {
+            return false; // 파싱 실패 시 유효하지 않음
+        }
+    }
+
+    /**
+     * 이용권 날짜 체크
+     *
+     * @param startDate(yyyyMMdd), endDate(yyyyMMdd), throwTf
+     * @return String or Throw
+     */
+    public static String ticketStartEndDateChk(String startDate, String endDate, boolean throwTf){
+        String resultCd = CommonErrorCode.SUCCESS.getCode();
+
+        String today = getFormattedToday("yyyyMMdd");
+
+        try {
+
+            if(!isValidDateFormat(startDate) || !isValidDateFormat(endDate)){
+                throw new CommonException(CommonErrorCode.ERR_TICKET_START_END_DATE.getCode(), CommonErrorCode.ERR_TICKET_START_END_DATE.getMessage());
+            }
+
+            if(Integer.parseInt(startDate) < Integer.parseInt(today)){
+                throw new CommonException(CommonErrorCode.ERR_TICKET_START_END_DATE.getCode(), CommonErrorCode.ERR_TICKET_START_END_DATE.getMessage());
+            }
+
+            if(Integer.parseInt(endDate) < Integer.parseInt(startDate)){
+                throw new CommonException(CommonErrorCode.ERR_TICKET_START_END_DATE.getCode(), CommonErrorCode.ERR_TICKET_START_END_DATE.getMessage());
+            }
+
+
+        }catch (CommonException e){
+            if(throwTf){
+                throw new CommonException(e.getCode(), e.getMessage());
+            }
+
+            resultCd = e.getCode();
+        }
+
+        return resultCd;
     }
 }

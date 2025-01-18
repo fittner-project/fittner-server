@@ -12,19 +12,17 @@ import kr.co.fittnerserver.dto.user.ticket.request.RelayReqDto;
 import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
-import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Refund;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.results.FittnerPageable;
+import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -148,6 +146,9 @@ public class TIcketService {
 
     @Transactional
     public void ticketAssignToNewMember(AssignToNewMemberReqDto assignToNewMemberReqDto, CustomUserDetails customUserDetails) throws Exception{
+        //이용권 기간 체크
+        Util.ticketStartEndDateChk(assignToNewMemberReqDto.getProductStartDate(), assignToNewMemberReqDto.getProductEndDate(), true);
+
         //회원등록
         String memberPhoneEnd = assignToNewMemberReqDto.getMemberPhone().substring(8);
         String memberId = commonMapper.selectUUID();
@@ -178,6 +179,9 @@ public class TIcketService {
         //업데이트 해줘야 하나 현재 수업에 정산퍼센트 외래키가 있어서
         //trainer_product로 외래키 옮겨야 할듯해 보임
         //추가로 trainer_product와 ticket의 별도 분리가 무의미 해보이므로 해당 내용도 검토 필요
+
+        //이용권 기간 체크
+        Util.ticketStartEndDateChk(relayReqDto.getProductStartDate(), relayReqDto.getProductEndDate(), true);
 
         //센터정보
         TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());

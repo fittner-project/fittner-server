@@ -4,7 +4,9 @@ package kr.co.fittnerserver.common;
 public enum CommonErrorCode {
     // common
     SUCCESS("SUCCESS", "정상처리"),
+    SUCCESS_CODE("0000", "정상처리"),
     FAIL("FAIL", "실패"),
+    FAIL_CODE("9999", "실패"),
     //EXCEPTION("9999","관리자에게 문의해주세요."),
     COMMON_FAIL("A000", "실패"),
     NOT_FOUND_TRAINER("H001","트레이너를 찾을 수 없습니다."),
@@ -29,7 +31,8 @@ public enum CommonErrorCode {
     NOT_MATCH_TRAINER("H019","트레이너 정보가 일치하지 않습니다."),
     APPLE_FAIL("H020","애플 통신 중 에러가 발생하였습니다."),
     NOT_FOUND_TRAINER_PRODUCT("H021","트레이너 상품을 찾을 수 없습니다."),
-    NOT_ASSIGN_SAME_MEMBER("H022","동일회원에게 양도가 불가능합니다.");
+    NOT_ASSIGN_SAME_MEMBER("H022","동일회원에게 양도가 불가능합니다."),
+    ERR_TICKET_START_END_DATE("H023","티켓 이용일이 잘못되었습니다.");
 
     private final String code;
     private final String message;

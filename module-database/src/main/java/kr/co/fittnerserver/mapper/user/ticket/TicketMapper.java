@@ -1,8 +1,8 @@
 package kr.co.fittnerserver.mapper.user.ticket;
 
 import kr.co.fittnerserver.domain.user.TicketDto;
-import kr.co.fittnerserver.dto.user.assign.request.AssignToNewMemberReqDto;
-import kr.co.fittnerserver.dto.user.assign.request.AssignToOldMemberReqDto;
+import kr.co.fittnerserver.domain.user.TrainerProductDto;
+import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.entity.user.Refund;
 import org.apache.ibatis.annotations.Mapper;
@@ -25,5 +25,7 @@ public interface TicketMapper {
     void updateTicketForAssign(String ticketId, String trainerId);
 
     void insertMember(@Param("AssignToNewMemberReqDto") AssignToNewMemberReqDto assignToNewMemberReqDto, @Param("memberPhoneEnd") String memberPhoneEnd, @Param("trainerId") String trainerId, @Param("memberId") String memberId);
+
+    void insertTrainerProduct(TrainerProductDto trainerProductDto);
 
 }

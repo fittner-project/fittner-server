@@ -164,6 +164,31 @@
                   , #{memberId}
           )
     </insert>
+
+    <insert id="insertTrainerProduct">
+        /* TicketMapper.insertTrainerProduct */
+        insert into trainer_product(
+                    trainer_product_count
+                  , trainer_product_price
+                  , trainer_product_name
+                  , center_id
+                  , created_by
+                  , created_date
+                  , member_id
+                  , trainer_id
+                  , trainer_product_id
+          ) values (
+                    #{trainerProductCount}
+                  , #{trainerProductPrice}
+                  , #{trainerProductName}
+                  , #{centerId}
+                  , #{trainerId}
+                  , CURRENT_TIMESTAMP
+                  , #{memberId}
+                  , #{trainerId}
+                  , #{trainerProductId}
+          )
+    </insert>
 </mapper>
 
 

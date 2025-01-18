@@ -1,4 +1,4 @@
-package kr.co.fittnerserver.dto.user.assign.request;
+package kr.co.fittnerserver.dto.user.ticket.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

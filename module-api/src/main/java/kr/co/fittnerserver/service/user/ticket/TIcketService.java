@@ -4,21 +4,27 @@ import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.user.TicketDto;
-import kr.co.fittnerserver.dto.user.assign.request.AssignToNewMemberReqDto;
-import kr.co.fittnerserver.dto.user.assign.request.AssignToOldMemberReqDto;
-import kr.co.fittnerserver.dto.user.assign.response.AssignToInfoResDto;
+import kr.co.fittnerserver.domain.user.TrainerDto;
+import kr.co.fittnerserver.domain.user.TrainerProductDto;
+import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.RelayReqDto;
+import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
+import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Refund;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
+import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.results.FittnerPageable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -29,7 +35,7 @@ public class TIcketService {
 
     final TicketMapper ticketMapper;
     final CommonMapper commonMapper;
-
+    final UserMapper userMapper;
     public List<TicketListResDto> getTickets(String ticketStatus, FittnerPageable pageable, CustomUserDetails customUserDetails){
         return ticketMapper.getTickets(ticketStatus,pageable.getCurrentPageNo(),customUserDetails.getTrainerId());
     }
@@ -163,5 +169,41 @@ public class TIcketService {
 
         //양도한 이용권 상태 업데이트
         ticketMapper.updateTicketForAssign(assignToNewMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId());
+    }
+
+    @Transactional
+    public void ticketRelay(RelayReqDto relayReqDto, CustomUserDetails customUserDetails) throws Exception{
+        //TODO
+        //연장하기의 경우 정산 퍼센트가 다르므로
+        //업데이트 해줘야 하나 현재 수업에 정산퍼센트 외래키가 있어서
+        //trainer_product로 외래키 옮겨야 할듯해 보임
+        //추가로 trainer_product와 ticket의 별도 분리가 무의미 해보이므로 해당 내용도 검토 필요
+
+        //센터정보
+        TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+
+        //상품 등록
+        TrainerProductDto trainerProductDto = new TrainerProductDto();
+        trainerProductDto.setTrainerProductId(commonMapper.selectUUID());
+        trainerProductDto.setTrainerProductCount(relayReqDto.getProductCount());
+        trainerProductDto.setTrainerProductPrice(relayReqDto.getProductPrice());
+        trainerProductDto.setTrainerProductName(relayReqDto.getProductName());
+        trainerProductDto.setCenterId(trainer.getCenterId());
+        trainerProductDto.setTrainerId(customUserDetails.getTrainerId());
+
+        ticketMapper.insertTrainerProduct(trainerProductDto);
+
+        //이용권 등록
+        TicketDto ticketDto = new TicketDto();
+        ticketDto.setTrainerId(customUserDetails.getTrainerId());
+        ticketDto.setMemberId(relayReqDto.getMemberId());
+        ticketDto.setTicketEndDate(relayReqDto.getProductEndDate());
+        ticketDto.setTicketId(commonMapper.selectUUID());
+        ticketDto.setTicketStartDate(relayReqDto.getProductStartDate());
+        ticketDto.setTrainerProductId(trainerProductDto.getTrainerProductId());
+        ticketDto.setTicketCode("ING"); //TODO 이용전으로 할지 고민 필요
+        ticketDto.setTicketUseCnt("0");
+
+        ticketMapper.insertTicket(ticketDto);
     }
 }

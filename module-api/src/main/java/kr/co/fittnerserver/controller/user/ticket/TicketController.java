@@ -4,9 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.dto.user.assign.request.AssignToNewMemberReqDto;
-import kr.co.fittnerserver.dto.user.assign.request.AssignToOldMemberReqDto;
-import kr.co.fittnerserver.dto.user.assign.response.AssignToInfoResDto;
+import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.RelayReqDto;
+import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
@@ -68,6 +69,13 @@ public class TicketController {
     @PostMapping("/ticket/assign/new-member")
     public ResponseEntity<ApiResponseMessage<Object>> ticketAssignToNewMember(@RequestBody AssignToNewMemberReqDto assignToNewMemberReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         tIcketService.ticketAssignToNewMember(assignToNewMemberReqDto, customUserDetails);
+        return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "이용권 연장하기 API", description = "이용권 연장하기 API 입니다.")
+    @PostMapping("/ticket/relay")
+    public ResponseEntity<ApiResponseMessage<Object>> ticketRelay(@RequestBody RelayReqDto relayReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
+        tIcketService.ticketRelay(relayReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 }

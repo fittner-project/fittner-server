@@ -59,7 +59,7 @@ public class UserController {
         return FittnerResponse.buildPage(userService.getMembers(memberListSearchDto, customUserDetails, pageable.getPageable()), pageable);
     }
 
-    /*@Operation(summary = "트레이너의 회원 상세 조회 API", description = "트레이너의 회원 상세 조회 API 입니다.")
+   /* @Operation(summary = "트레이너의 회원 상세 조회 API", description = "트레이너의 회원 상세 조회 API 입니다.")
     @GetMapping("/member/{memberId}")
     public ResponseEntity<ApiResponseMessage<MemberDetailResDto>> memberDetail(@PathVariable String memberId) throws Exception {
         return FittnerResponse.buildList(userService.getMemberDetailInfo(memberId));

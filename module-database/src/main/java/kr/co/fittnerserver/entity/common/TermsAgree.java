@@ -49,7 +49,7 @@ public class TermsAgree extends BaseTimeEntity {
 
     public TermsAgree(Terms terms, String agreed, Trainer trainer) {
         this.termsAgreeYn = agreed;
-        this.termsAgreeDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.termsAgreeDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         this.terms = terms;
         this.trainer = trainer;
     }

@@ -8,6 +8,7 @@ import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
 import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
 import kr.co.fittnerserver.dto.user.ticket.request.RelayReqDto;
 import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
+import kr.co.fittnerserver.dto.user.ticket.response.RefundInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
@@ -77,5 +78,13 @@ public class TicketController {
     public ResponseEntity<ApiResponseMessage<Object>> ticketRelay(@RequestBody RelayReqDto relayReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         tIcketService.ticketRelay(relayReqDto, customUserDetails);
         return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "이용권 환불 정보 조회 API", description = "이용권 환불 정보 조회 API 입니다.")
+    @GetMapping("/ticket/refund-info")
+    public ResponseEntity<ApiResponseMessage<RefundInfoResDto>> ticketRefundInfo(@Parameter(name = "ticketId", description = "티켓ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
+                                                                                 @RequestParam(name = "ticketId") String ticketId,
+                                                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
+        return FittnerResponse.build(tIcketService.ticketRefundInfo(ticketId, customUserDetails));
     }
 }

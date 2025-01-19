@@ -34,7 +34,9 @@ public enum CommonErrorCode {
     NOT_ASSIGN_SAME_MEMBER("H022","동일회원에게 양도가 불가능합니다."),
     ERR_TICKET_START_END_DATE("H023","티켓 이용일이 잘못되었습니다."),
     NOT_FOUND_TERMS("H024","약관을 찾을 수 없습니다."),
-    NOT_FOUND_TERMS_AGREE("H025","약관 동의 정보를 찾을 수 없습니다.");
+    NOT_FOUND_TERMS_AGREE("H025","약관 동의 정보를 찾을 수 없습니다."),
+    RESERVATION_TICKET("H024","수업 예정인 이용권입니다.");
+
 
     private final String code;
     private final String message;

@@ -34,6 +34,7 @@ public class TermsAgree extends BaseTimeEntity {
     private String termsAgreeYn;
 
     @Comment(value = "약관 동의일시")
+    @Column(length = 14)
     private String termsAgreeDateTime;
 
     @ManyToOne

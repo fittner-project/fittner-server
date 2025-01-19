@@ -10,11 +10,14 @@ import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
 import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
 import kr.co.fittnerserver.dto.user.ticket.request.RelayReqDto;
 import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
+import kr.co.fittnerserver.dto.user.ticket.response.RefundInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Refund;
+import kr.co.fittnerserver.entity.user.Reservation;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
+import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.results.FittnerPageable;
@@ -34,6 +37,8 @@ public class TIcketService {
     final TicketMapper ticketMapper;
     final CommonMapper commonMapper;
     final UserMapper userMapper;
+    final ReservationMapper reservationMapper;
+
     public List<TicketListResDto> getTickets(String ticketStatus, FittnerPageable pageable, CustomUserDetails customUserDetails){
         return ticketMapper.getTickets(ticketStatus,pageable.getCurrentPageNo(),customUserDetails.getTrainerId());
     }
@@ -209,5 +214,36 @@ public class TIcketService {
         ticketDto.setTicketUseCnt("0");
 
         ticketMapper.insertTicket(ticketDto);
+    }
+
+    public RefundInfoResDto ticketRefundInfo(String ticketId, CustomUserDetails customUserDetails) throws Exception{
+        RefundInfoResDto r = new RefundInfoResDto();
+
+        //예약된 수업 있는지 확인
+        int reservatinoChk = reservationMapper.selectReservationForCount(ticketId);
+        if(reservatinoChk > 0){
+            throw new CommonException(CommonErrorCode.RESERVATION_TICKET.getCode(), CommonErrorCode.RESERVATION_TICKET.getMessage()); //수업 예정인 이용권입니다.
+        }
+
+        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(ticketId,"NORMAL");
+        if(ticketDto == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
+        }
+
+        //이용권 사용금액
+        int ticketOneTimePrice = Integer.parseInt(ticketDto.getTicketPrice()) / Integer.parseInt(ticketDto.getTicketTotalCnt());
+        int tikcetUsePrice = ticketOneTimePrice * Integer.parseInt(ticketDto.getTicketUseCnt());
+
+        r.setTicketId(ticketDto.getTicketId());
+        r.setMemberName(ticketDto.getMemberName());
+        r.setTicketName(ticketDto.getTicketName());
+        r.setTicketStartDate(ticketDto.getTicketStartDate());
+        r.setTicketEndDate(ticketDto.getTicketEndDate());
+        r.setTicketTotalCnt(ticketDto.getTicketTotalCnt());
+        r.setTicketPrice(ticketDto.getTicketPrice());
+        r.setTicketUsePrice(String.valueOf(tikcetUsePrice));
+        r.setRefundPrice(String.valueOf(Integer.parseInt(ticketDto.getTicketPrice()) - tikcetUsePrice));
+
+        return r;
     }
 }

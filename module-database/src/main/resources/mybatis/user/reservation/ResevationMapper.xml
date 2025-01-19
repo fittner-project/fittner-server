@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.fittnerserver.mapper.user.reservation.ReservationMapper">
+    <select id="selectReservationForCount" resultType="int">
+        select count(*)
+          from reservation
+         where reservation_delete_yn = 'N'
+           and concat(reservation_start_date, reservation_start_time) <![CDATA[>=]]> DATE_FORMAT(NOW(), '%Y%m%d%H%i')
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+

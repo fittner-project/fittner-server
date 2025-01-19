@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.entity.common;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.user.request.AgreementDto;
 import kr.co.fittnerserver.entity.user.Trainer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Entity
@@ -22,7 +24,7 @@ public class TermsAgree extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "약관동의 키값")
     private String termsAgreeId;
@@ -32,7 +34,7 @@ public class TermsAgree extends BaseTimeEntity {
     private String termsAgreeYn;
 
     @Comment(value = "약관 동의일시")
-    private LocalDateTime termsAgreeDateTime;
+    private String termsAgreeDateTime;
 
     @ManyToOne
     @JoinColumn(name = "terms_id")
@@ -43,5 +45,12 @@ public class TermsAgree extends BaseTimeEntity {
     private Trainer trainer;
 
     //TODO 대표앱 매핑
+
+    public TermsAgree(Terms terms, String agreed, Trainer trainer) {
+        this.termsAgreeYn = agreed;
+        this.termsAgreeDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.terms = terms;
+        this.trainer = trainer;
+    }
 
 }

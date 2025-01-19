@@ -32,7 +32,9 @@ public enum CommonErrorCode {
     APPLE_FAIL("H020","애플 통신 중 에러가 발생하였습니다."),
     NOT_FOUND_TRAINER_PRODUCT("H021","트레이너 상품을 찾을 수 없습니다."),
     NOT_ASSIGN_SAME_MEMBER("H022","동일회원에게 양도가 불가능합니다."),
-    ERR_TICKET_START_END_DATE("H023","티켓 이용일이 잘못되었습니다.");
+    ERR_TICKET_START_END_DATE("H023","티켓 이용일이 잘못되었습니다."),
+    NOT_FOUND_TERMS("H024","약관을 찾을 수 없습니다."),
+    NOT_FOUND_TERMS_AGREE("H025","약관 동의 정보를 찾을 수 없습니다.");
 
     private final String code;
     private final String message;

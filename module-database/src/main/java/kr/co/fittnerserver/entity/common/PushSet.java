@@ -39,4 +39,11 @@ public class PushSet extends BaseTimeEntity {
     private Trainer trainer;
 
     //TODO 대표앱 매핑
+
+
+    public PushSet(Trainer trainer, PushKind pushKind, String pushSetYn) {
+        this.pushKind = pushKind;
+        this.pushSetYn = pushSetYn;
+        this.trainer = trainer;
+    }
 }

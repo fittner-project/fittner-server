@@ -25,7 +25,7 @@
 
     <select id="selectTermsForJoin" resultType="TermsResDto">
         /* UserMapper.selectTermsForJoin */
-        select a.terms_essential_yn
+        select a.terms_id,a.terms_kind,a.terms_essential_yn
              , case when a.terms_essential_yn = 'Y' then  concat('(필수) ',a.terms_title)
                     else concat('(선택) ',a.terms_title)
                 end as terms_title

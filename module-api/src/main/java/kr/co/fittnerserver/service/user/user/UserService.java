@@ -13,16 +13,16 @@ import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.*;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.FileGroup;
+import kr.co.fittnerserver.entity.common.PushSet;
+import kr.co.fittnerserver.entity.common.Terms;
+import kr.co.fittnerserver.entity.common.TermsAgree;
+import kr.co.fittnerserver.entity.common.enums.PushKind;
+import kr.co.fittnerserver.entity.common.enums.TermsKind;
+import kr.co.fittnerserver.entity.common.enums.TermsState;
 import kr.co.fittnerserver.entity.user.*;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
-import kr.co.fittnerserver.repository.common.CenterJoinRepository;
-import kr.co.fittnerserver.repository.common.CenterRepository;
-import kr.co.fittnerserver.repository.common.FileGroupRepository;
-import kr.co.fittnerserver.repository.common.FileRepository;
-import kr.co.fittnerserver.repository.user.MemberRepository;
-import kr.co.fittnerserver.repository.user.TicketRepository;
-import kr.co.fittnerserver.repository.user.TrainerProductRepository;
-import kr.co.fittnerserver.repository.user.TrainerRepository;
+import kr.co.fittnerserver.repository.common.*;
+import kr.co.fittnerserver.repository.user.*;
 import kr.co.fittnerserver.results.CacheablePage;
 import kr.co.fittnerserver.spec.MemberSpec;
 import kr.co.fittnerserver.util.AES256Cipher;
@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +53,10 @@ public class UserService {
     private final TicketRepository ticketRepository;
     private final FileRepository fileRepository;
     private final FileGroupRepository fileGroupRepository;
+    private final TermsAgreeRepository termsAgreeRepository;
+    private final TermsRepository termsRepository;
     private final UserMapper userMapper;
+    private final PushSetRepository pushSetRepository;
 
     @Transactional
     public void joinProcess(JoinReqDto joinReqDto) throws Exception {
@@ -70,8 +74,25 @@ public class UserService {
         //트레이너 회원가입
         Trainer trainer = trainerRepository.save(new Trainer(joinReqDto, center));
 
-        //센터조인 테이블에 추가
+        //센터조인 저장
         centerJoinRepository.save(new CenterJoin(center, trainer));
+
+        //약관 동의 저장
+        joinReqDto.getAgreements().forEach(agreement -> {
+            Terms terms = termsRepository.findById(agreement.getTermsId())
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TERMS.getCode(), CommonErrorCode.NOT_FOUND_TERMS.getMessage()));
+            termsAgreeRepository.save(new TermsAgree(terms, agreement.getAgreed(), trainer));
+        });
+
+        //push set 저장
+        Terms terms = termsRepository.findByTermsKindAndTermsState(TermsKind.ADVERTISE, TermsState.ING)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TERMS.getCode(), CommonErrorCode.NOT_FOUND_TERMS.getMessage()));
+
+        TermsAgree termsAgree = termsAgreeRepository.findByTermsAndTrainer(terms, trainer)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TERMS_AGREE.getCode(), CommonErrorCode.NOT_FOUND_TERMS_AGREE.getMessage()));
+
+        pushSetRepository.save(new PushSet(trainer, PushKind.ADVERTISE, termsAgree.getTermsAgreeYn().equals("Y") ? "Y" : "N"));
+        pushSetRepository.save(new PushSet(trainer, PushKind.RESERVATION, "Y"));
     }
 
     private void joinValidation(JoinReqDto joinReqDto) throws Exception {
@@ -119,7 +140,7 @@ public class UserService {
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
-        Page<Member> members = memberRepository.findAll(MemberSpec.searchMember(memberListSearchDto,trainer), pageable);
+        Page<Member> members = memberRepository.findAll(MemberSpec.searchMember(memberListSearchDto, trainer), pageable);
 
         return new CacheablePage<>(
                 members.map(member -> {
@@ -190,7 +211,7 @@ public class UserService {
                 .toList();
     }
 
-    public UserInfoResDto getUserInfo(CustomUserDetails customUserDetails) throws Exception{
+    public UserInfoResDto getUserInfo(CustomUserDetails customUserDetails) throws Exception {
         UserInfoResDto r = new UserInfoResDto();
 
         TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
@@ -235,14 +256,14 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_CENTER_JOIN.getCode(), CommonErrorCode.NOT_FOUND_CENTER_JOIN.getMessage()));
 
         //승인 되지않은 센터조인과 동시에 본인이 요청한 센터조인인지 체크
-        if(centerJoin.getCenterJoinApprovalYn().equals("N") && centerJoin.getTrainer().getTrainerId().equals(customUserDetails.getTrainerId())) {
+        if (centerJoin.getCenterJoinApprovalYn().equals("N") && centerJoin.getTrainer().getTrainerId().equals(customUserDetails.getTrainerId())) {
             centerJoinRepository.deleteById(cancelCenterApprovalReqDto.getCenterJoinId());
-        }else{
+        } else {
             throw new CommonException(CommonErrorCode.NOT_MATCH_TRAINER.getCode(), CommonErrorCode.NOT_MATCH_TRAINER.getMessage());
         }
     }
 
-    public List<TermsResDto> getJoinTerms(){
+    public List<TermsResDto> getJoinTerms() {
         return userMapper.selectTermsForJoin();
     }
 

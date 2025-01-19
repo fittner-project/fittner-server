@@ -3,14 +3,29 @@ POST http://localhost:8080/api/v1/user/join
 Content-Type: application/json
 
 {
+  "agreements": [
+    {
+      "termsId": "0f83adb5-d27a-11ef-b7c9-0242ac190002",
+      "agreed": "Y"
+    },
+    {
+      "termsId": "d14374a1-d279-11ef-b7c9-0242ac190002",
+      "agreed": "N"
+    }
+  ],
   "trainerPhone": "01057212058",
-  "trainerName": "홍길동",
-  "trainerEmail": "newy12@naver.com",
+  "trainerName": "킹영재",
+  "trainerEmail": "newy23@naver.com",
   "trainerSnsKind": "KAKAO",
   "trainerCiNo": "",
   "trainerFcmToken": "",
-  "centerId": "e7d5eeb6-cda6-11ef-b7c9-0242ac190002"
+  "centerId": "0244c3bc-d49b-11ef-b7c9-0242ac190002"
 }
+
+
+### 회원가입 시 약관 조회
+GET http://localhost:8080/api/v1/user/terms
+Content-Type: application/json
 
 
 

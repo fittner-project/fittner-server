@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.mapper.user.user;
 
 import kr.co.fittnerserver.domain.user.TrainerDto;
+import kr.co.fittnerserver.domain.user.TrainerSettlementDto;
 import kr.co.fittnerserver.dto.user.user.TestDto;
 import kr.co.fittnerserver.dto.user.user.response.MemberDetailResDto;
 import kr.co.fittnerserver.dto.user.user.response.TermsResDto;
@@ -17,4 +18,6 @@ public interface UserMapper {
     List<TermsResDto> selectTermsForJoin();
 
     List<MemberDetailResDto> selectMemberTicketDetailInfo(String memberId);
+
+    TrainerSettlementDto selectTrainerSettlementByTrainerSettlementId(String trainerSettlementId);
 }

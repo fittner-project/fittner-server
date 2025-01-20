@@ -33,6 +33,24 @@
            and reservation_delete_yn = 'N'
     </select>
 
+    <update id="updateReservationForSign">
+        /* TicketMapper.selectReservationByReservationId */
+        update reservation
+           set reservation_status = #{reservationStatus}
+             , modified_by = #{trainerId}
+             , modified_date = CURRENT_TIMESTAMP
+         where reservation_id = #{reservationId}
+    </update>
+
+    <update id="updateReservationForSettlement">
+        /* TicketMapper.selectReservationByReservationId */
+        update reservation
+           set reservation_settlement_amount = #{settlementPrice}
+             , modified_by = #{trainerId}
+             , modified_date = CURRENT_TIMESTAMP
+         where reservation_id = #{reservationId}
+    </update>
+
 </mapper>
 
 

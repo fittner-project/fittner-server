@@ -10,4 +10,9 @@ public interface ReservationMapper {
     int selectReservationForCount(String ticketId);
 
     ReservationDto selectReservationByReservationId(String reservationId);
+
+    void updateReservationForSign(String reservationId, String reservationStatus, String trainerId);
+
+    void updateReservationForSettlement(String reservationId, String trainerId, String settlementPrice);
+
 }

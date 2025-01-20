@@ -35,6 +35,7 @@
             on a.file_group_id = b.file_group_id
          where a.terms_state = 'ING'
     </select>
+
     <select id="selectMemberTicketDetailInfo" resultType="MemberDetailResDto">
        with ticket_info_view as (select
                                     a.member_id  as memberId
@@ -79,6 +80,17 @@
         where case when (select count(*) from ticket_info_view) > 1 then STR_TO_DATE(tiv.ticketEndDate, '%Y%m%d') >= CURDATE()
                    else 1=1
                   end
+    </select>
+
+    <select id="selectTrainerSettlementByTrainerSettlementId" resultType="TrainerSettlementDto">
+        /* UserMapper.selectTrainerSettlementByTrainerSettlementId */
+        select trainer_settlement_id
+             , trainer_settlement_percent
+             , trainer_settlement_code
+             , center_id
+             , trainer_id
+          from trainer_settlement
+         where trainer_settlement_id = #{trainerSettlementId}
     </select>
 </mapper>
 

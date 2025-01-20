@@ -38,7 +38,9 @@ public enum CommonErrorCode {
     RESERVATION_TICKET("H024","수업 예정인 이용권입니다."),
     DROP_FAIL("H025","트레이너 계정 탈퇴에 실패하였습니다."),
     EXIST_DROP_TRAINER("H026","탈퇴한 트레이너입니다."),
-    NOT_FOUND_RESERVATION("H027","수업 정보를 찾을 수 없습니다.")
+    NOT_FOUND_RESERVATION("H027","수업 정보를 찾을 수 없습니다."),
+    ALREADY_SIGN("H028","이미 처리된 예약입니다."),
+    NOT_FOUND_SETTLEMENT("H029","정산 정책을 찾을 수 없습니다."),
     ;
 
 

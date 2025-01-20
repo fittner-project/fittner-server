@@ -28,12 +28,13 @@ public class SignController {
 
     private final SignService signService;
 
-    @Operation(summary = "전체 예약 리스트 조회 API", description = "전체 예약 리스트 조회 API 입니다.")
+    @Operation(summary = "서명전 날짜별 예약 리스트 조회 API", description = "서명전 날짜별 예약 리스트 조회 API 입니다.")
     @GetMapping("/sign/reservations")
     public ResponseEntity<ApiResponseMessage<SignResrvationResDto>> getReservations(@Parameter(description = "예약 시작 일자", example = "20250101")
                                                                                     @RequestParam(value = "reservationStartDate") String reservationStartDate,
+                                                                                    @ModelAttribute FittnerPageable pageable,
                                                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.build(signService.getReservations(reservationStartDate,customUserDetails));
+        return FittnerResponse.build(signService.getReservations(reservationStartDate,pageable,customUserDetails));
     }
 
     @Operation(summary = "회원 예약 리스트 조회 API", description = "회원 예약 리스트 조회 API 입니다.")

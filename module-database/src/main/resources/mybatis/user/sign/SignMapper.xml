@@ -2,47 +2,52 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.fittnerserver.mapper.user.sign.SignMapper">
-    <select id="selectReservationByTrainerId" resultType="SignResrvationDto">
-        /* SignMapper.selectReservationByTrainerId */
-        select b.member_name
-             , CONCAT(CONCAT(CASE WHEN LEFT(a.reservation_start_time, 2) >= 12
-                                  THEN '오후 '
-                                  ELSE '오전 '
-                              END
-                           , CASE WHEN LEFT(a.reservation_start_time, 2) > 12
-                                  THEN LEFT(a.reservation_start_time, 2) - 12
-                                  ELSE LEFT(a.reservation_start_time, 2)
-                              END
-                           , ':'
-                           , RIGHT(a.reservation_start_time, 2))
-                    , ' - '
-                    , CONCAT(CASE WHEN LEFT(a.reservation_end_time, 2) >= 12
-                                  THEN '오후 '
-                                  ELSE '오전 '
-                              END
-                           , CASE WHEN LEFT(a.reservation_end_time, 2) > 12
-                                  THEN LEFT(a.reservation_end_time, 2) - 12
-                                  ELSE LEFT(a.reservation_end_time, 2)
-                              END
-                           , ':'
-                           , RIGHT(a.reservation_start_time, 2))
-                     ) as reservation_time
-             , a.reservation_memo
-             , (select count(*)
-                  from reservation
-                where member_id = a.member_id
-                  and ticket_id = a.ticket_id
-              group by center_id
-                     , member_id
-                     , ticket_id) as reservation_use_cnt
-             , a.ticket_id
-             , CONCAT(DATE_FORMAT(STR_TO_DATE(a.reservation_start_date, '%Y%m%d'), '%m월 %d일')) as reservation_start_date
+
+    <select id="selectReservationByTrainerIdCnt" resultType="int">
+        /* SignMapper.selectReservationByTrainerIdCnt */
+        select count(*)
           from reservation a
      left join member b
             on a.member_id = b.member_id
          where a.reservation_delete_yn = 'N'
            and a.reservation_start_date = #{reservationStartDate}
            and a.trainer_id = #{trainerId}
+    </select>
+
+    <select id="selectReservationByTrainerId" resultType="SignResrvationDto">
+        /* SignMapper.selectReservationByTrainerId */
+        select all_list.reservation_id
+             , all_list.member_name
+             , all_list.reservation_start_time
+             , all_list.reservation_end_time
+             , all_list.reservation_memo
+             , all_list.reservation_status
+             , all_list.reservation_use_cnt
+          from (select a.reservation_id
+                     , b.member_name
+                     , a.reservation_start_time
+                     , a.reservation_end_time
+                     , a.reservation_memo
+                     , a.reservation_status
+                     , (select count(*)
+                          from reservation
+                        where member_id = a.member_id
+                          and ticket_id = a.ticket_id
+                          and reservation_start_date <![CDATA[<=]]> #{reservationStartDate}
+                      group by center_id
+                             , member_id
+                             , ticket_id) as reservation_use_cnt
+                     , ROW_NUMBER() OVER (ORDER BY reservation_start_date DESC, reservation_start_time DESC) AS row_num
+                  from reservation a
+             left join member b
+                    on a.member_id = b.member_id
+                 where a.reservation_delete_yn = 'N'
+                   and a.reservation_start_date = #{reservationStartDate}
+                   and a.trainer_id = #{trainerId}
+               ) all_list
+        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
+          and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+
     </select>
 
     <select id="selectReservationByTicketId" resultType="SignResrvationForMemberResDto">

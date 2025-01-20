@@ -34,13 +34,15 @@ public class SignService {
     private final TicketMapper ticketMapper;
     private final ReservationMapper reservationMapper;
 
-    public SignResrvationResDto getReservations(String reservationStartDate, CustomUserDetails customUserDetails) throws Exception {
+    public SignResrvationResDto getReservations(String reservationStartDate, FittnerPageable pageable, CustomUserDetails customUserDetails) throws Exception {
 
         SignResrvationResDto r = new SignResrvationResDto();
 
-        List<SignResrvationDto> reservationDtoList = signMapper.selectReservationByTrainerId(customUserDetails.getTrainerId(), reservationStartDate);
+        int totalCnt = signMapper.selectReservationByTrainerIdCnt(customUserDetails.getTrainerId(), reservationStartDate);
 
-        r.setReservationTotalCnt(String.valueOf(reservationDtoList.size()));
+        List<SignResrvationDto> reservationDtoList = signMapper.selectReservationByTrainerId(customUserDetails.getTrainerId(), reservationStartDate, pageable.getCurrentPageNo());
+
+        r.setReservationTotalCnt(String.valueOf(totalCnt));
         r.setReservationList(reservationDtoList);
 
         return r;

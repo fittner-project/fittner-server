@@ -12,7 +12,8 @@ import java.util.List;
 @Mapper
 public interface SignMapper {
 
-    List<SignResrvationDto> selectReservationByTrainerId(String trainerId, String reservationStartDate);
+    int selectReservationByTrainerIdCnt(String trainerId, String reservationStartDate);
+    List<SignResrvationDto> selectReservationByTrainerId(String trainerId, String reservationStartDate, int currentPageNo);
 
     SignResrvationForMemberResDto selectReservationByTicketId(String trainerId, String ticketId, int currentPageNo);
 

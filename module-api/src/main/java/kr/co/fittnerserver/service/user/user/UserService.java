@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.service.user.user;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
@@ -11,6 +12,8 @@ import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.*;
+import kr.co.fittnerserver.entity.BlackListToken;
+import kr.co.fittnerserver.entity.DropTrainer;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.entity.common.PushSet;
@@ -20,7 +23,9 @@ import kr.co.fittnerserver.entity.common.enums.PushKind;
 import kr.co.fittnerserver.entity.common.enums.TermsKind;
 import kr.co.fittnerserver.entity.common.enums.TermsState;
 import kr.co.fittnerserver.entity.user.*;
+import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
+import kr.co.fittnerserver.repository.DropTrainerRepository;
 import kr.co.fittnerserver.repository.common.*;
 import kr.co.fittnerserver.repository.user.*;
 import kr.co.fittnerserver.results.CacheablePage;
@@ -57,6 +62,7 @@ public class UserService {
     private final TermsRepository termsRepository;
     private final UserMapper userMapper;
     private final PushSetRepository pushSetRepository;
+    private final DropTrainerRepository dropTrainerRepository;
 
     @Transactional
     public void joinProcess(JoinReqDto joinReqDto) throws Exception {
@@ -265,5 +271,18 @@ public class UserService {
     @Transactional
     public List<MemberDetailResDto> getMemberTicketDetailInfo(String memberId) {
         return userMapper.selectMemberTicketDetailInfo(memberId);
+    }
+
+    @Transactional
+    public void dropTrainer(HttpServletRequest request, CustomUserDetails customUserDetails) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            // Bearer 토큰 부분만 추출
+            String accessToken = authorizationHeader.substring(7);
+            dropTrainerRepository.save(new DropTrainer(accessToken, customUserDetails.getTrainerId()));
+        } else {
+            throw new JwtException(CommonErrorCode.DROP_FAIL.getCode(), CommonErrorCode.DROP_FAIL.getMessage());
+        }
     }
 }

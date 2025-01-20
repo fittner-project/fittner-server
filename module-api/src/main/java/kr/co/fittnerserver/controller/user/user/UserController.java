@@ -2,6 +2,7 @@ package kr.co.fittnerserver.controller.user.user;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
@@ -35,6 +36,13 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<ApiResponseMessage<Object>> login(@RequestBody JoinReqDto joinReqDto) throws Exception {
         userService.joinProcess(joinReqDto);
+        return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "트레이너 계정 탈퇴", description = "트레이너 계정 탈퇴 API 입니다.")
+    @PostMapping("/drop")
+    public ResponseEntity<ApiResponseMessage<Object>> dropTrainer(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        userService.dropTrainer(request, customUserDetails);
         return FittnerResponse.ok();
     }
 

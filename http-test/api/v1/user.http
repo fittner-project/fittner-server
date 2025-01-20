@@ -99,3 +99,9 @@ Authorization: Bearer {{auth_token}}
 ### 트레이너의 회원 상세조회(티켓정보포함)
 GET http://localhost:8080/api/v1/user/member/baa3d0e6-d6df-11ef-b7c9-0242ac190002
 Authorization: Bearer {{auth_token}}
+
+
+### 트레이너 걔정 탈퇴 처리
+POST http://localhost:8080/api/v1/user/drop
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}

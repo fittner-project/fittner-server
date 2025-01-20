@@ -35,7 +35,9 @@ public enum CommonErrorCode {
     ERR_TICKET_START_END_DATE("H023","티켓 이용일이 잘못되었습니다."),
     NOT_FOUND_TERMS("H024","약관을 찾을 수 없습니다."),
     NOT_FOUND_TERMS_AGREE("H025","약관 동의 정보를 찾을 수 없습니다."),
-    RESERVATION_TICKET("H024","수업 예정인 이용권입니다.");
+    RESERVATION_TICKET("H024","수업 예정인 이용권입니다."),
+    DROP_FAIL("H025","트레이너 계정 탈퇴에 실패하였습니다."),
+    EXIST_DROP_TRAINER("H026","탈퇴한 트레이너입니다.");
 
 
     private final String code;

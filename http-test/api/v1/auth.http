@@ -48,7 +48,7 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 
-### test
+### 애플 로그인 테스트
 POST http://localhost:8080/api/v1/auth/apple-info
 Content-Type: application/json
 

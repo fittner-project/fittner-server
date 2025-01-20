@@ -9,6 +9,7 @@ import kr.co.fittnerserver.auth.CustomUserDetailsService;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
+import kr.co.fittnerserver.repository.DropTrainerRepository;
 import kr.co.fittnerserver.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService userDetailsService;
     private final BlackListTokenRepository blackListTokenRepository;
+    private final DropTrainerRepository dropTrainerRepository;
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
     private static final List<String> EXCLUDED_URLS = Arrays.asList(
             "/api/v1/auth/apple-info",
@@ -68,10 +70,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new JwtException(CommonErrorCode.NOT_NEED_AUTH_HEADER.getCode(), CommonErrorCode.NOT_NEED_AUTH_HEADER.getMessage());
             }
             token = authorizationHeader.substring(7);
-            //블랙리스트 토큰 확인
+            //로그아웃 계정 체크
             if (blackListTokenRepository.existsByAccessToken(token)) {
                 throw new JwtException(CommonErrorCode.EXIST_BLACKLIST_TOKEN.getCode(), CommonErrorCode.EXIST_BLACKLIST_TOKEN.getMessage());
             }
+            //탈퇴 계정 체크
+            if(dropTrainerRepository.existsByAccessToken(token)) {
+                throw new JwtException(CommonErrorCode.EXIST_DROP_TRAINER.getCode(), CommonErrorCode.EXIST_DROP_TRAINER.getMessage());
+            }
+
             trainerId = jwtTokenUtil.validateTokenAndGetTrainerId(token);
             if (trainerId == null) {
                 throw new JwtException(CommonErrorCode.INVALID_TOKEN.getCode(), CommonErrorCode.INVALID_TOKEN.getMessage());

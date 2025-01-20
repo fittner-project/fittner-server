@@ -38,7 +38,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -268,25 +267,8 @@ public class UserService {
     }
 
 
-/*    @Transactional
-    public MemberDetailResDto getMemberDetailInfo(String memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()));
-
-        trainerProductRepository.getMemberDetailInfo(memberId);
-
-
-
-
-
-        return MemberDetailResDto.builder()
-                .memberName(member.getMemberName())
-                .memberPhone(PhoneFormatUtil.formatPhoneNumber(AES256Cipher.decrypt(member.getMemberPhone())))
-                .memberGender(member.getMemberGender().name())
-                .memberBirth(member.getMemberBirth())
-                .memberAddress(member.getMemberAddress())
-                .memberMemo(member.getMemberMemo())
-                .memberJoinPath(member.getMemberJoinPath())
-                .build();
-    }*/
+    @Transactional
+    public List<MemberDetailResDto> getMemberTicketDetailInfo(String memberId) {
+        return userMapper.selectMemberTicketDetailInfo(memberId);
+    }
 }

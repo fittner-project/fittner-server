@@ -95,3 +95,7 @@ Authorization: Bearer {{auth_token}}
 {
   "centerJoinId": "9f689e11-949c-46c2-a8ef-5b9de9271192"
 }
+
+### 트레이너의 회원 상세조회(티켓정보포함)
+GET http://localhost:8080/api/v1/user/member/baa3d0e6-d6df-11ef-b7c9-0242ac190002
+Authorization: Bearer {{auth_token}}

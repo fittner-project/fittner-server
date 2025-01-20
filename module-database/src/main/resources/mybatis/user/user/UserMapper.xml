@@ -76,7 +76,7 @@
                tiv.absenceCnt,
                tiv.ticketCode
         from ticket_info_view tiv
-        where case when (select count(*) from ticket_info_view) > 1 then STR_TO_DATE(ticket_info_view.ticket_end_date, '%Y%m%d') >= CURDATE()
+        where case when (select count(*) from ticket_info_view) > 1 then STR_TO_DATE(tiv.ticketEndDate, '%Y%m%d') >= CURDATE()
                    else 1=1
                   end
     </select>

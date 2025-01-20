@@ -28,4 +28,6 @@ public interface TicketMapper {
 
     void insertTrainerProduct(TrainerProductDto trainerProductDto);
 
+    void updateTicketForUseCnt(String ticketId);
+
 }

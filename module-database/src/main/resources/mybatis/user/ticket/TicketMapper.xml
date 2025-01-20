@@ -189,6 +189,13 @@
                   , #{trainerProductId}
           )
     </insert>
+
+    <update id="updateTicketForUseCnt">
+        /* TicketMapper.updateTicketForUseCnt */
+        update ticket
+           set ticket_use_cnt = (ticket_use_cnt+1)
+         where ticket_id = #{ticketId}
+    </update>
 </mapper>
 
 

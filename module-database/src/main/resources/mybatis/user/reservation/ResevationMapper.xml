@@ -9,6 +9,30 @@
            and concat(reservation_start_date, reservation_start_time) <![CDATA[>=]]> DATE_FORMAT(NOW(), '%Y%m%d%H%i')
     </select>
 
+    <select id="selectReservationByReservationId" resultType="ReservationDto">
+        /* TicketMapper.selectReservationByReservationId */
+        select reservation_id
+             , reservation_start_date
+             , reservation_end_date
+             , reservation_start_time
+             , reservation_end_time
+             , reservation_memo
+             , reservation_color
+             , reservation_delete_yn
+             , reservation_status
+             , trainer_settlement_amount
+             , trainer_settlement_change_amount
+             , reservation_push
+             , trainer_settlement_id
+             , center_id
+             , trainer_id
+             , member_id
+             , ticket_id
+          from reservation
+         where reservation_id = #{reservationId}
+           and reservation_delete_yn = 'N'
+    </select>
+
 </mapper>
 
 

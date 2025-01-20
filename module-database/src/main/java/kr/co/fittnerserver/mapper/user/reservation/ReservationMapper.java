@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.mapper.user.reservation;
 
+import kr.co.fittnerserver.domain.user.ReservationDto;
 import org.apache.ibatis.annotations.Mapper;
 
 
@@ -7,4 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ReservationMapper {
 
     int selectReservationForCount(String ticketId);
+
+    ReservationDto selectReservationByReservationId(String reservationId);
 }

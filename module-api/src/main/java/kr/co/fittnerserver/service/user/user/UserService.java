@@ -24,13 +24,13 @@ import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.repository.common.*;
 import kr.co.fittnerserver.repository.user.*;
 import kr.co.fittnerserver.results.CacheablePage;
-import kr.co.fittnerserver.spec.MemberSpec;
 import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.PhoneFormatUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -136,7 +136,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<MemberListResDto> getMembers() {
-        List<Member> members = memberRepository.findAll();
+        List<Member> members = memberRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
 
         return members.stream().map(member -> {
             try {

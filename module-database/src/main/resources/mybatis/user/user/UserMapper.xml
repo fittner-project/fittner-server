@@ -63,12 +63,22 @@
                              where a.member_id = #{memberId}
                              group by b.ticket_id
                             )
-        select *
-        from ticket_info_view
+        select tiv.memberId,
+               tiv.ticketId,
+               tiv.memberName,
+               tiv.productName,
+               tiv.productMonth,
+               tiv.productTotalCnt,
+               tiv.productRemainCnt,
+               tiv.ticketStartDate,
+               tiv.ticketEndDate,
+               tiv.attendanceCnt,
+               tiv.absenceCnt,
+               tiv.ticketCode
+        from ticket_info_view tiv
         where case when (select count(*) from ticket_info_view) > 1 then STR_TO_DATE(ticket_info_view.ticket_end_date, '%Y%m%d') >= CURDATE()
                    else 1=1
                   end
-        ;
     </select>
 </mapper>
 

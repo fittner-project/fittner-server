@@ -19,6 +19,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v1/user")
 @RequiredArgsConstructor
@@ -37,13 +39,13 @@ public class SignController {
         return FittnerResponse.build(signService.getReservations(reservationStartDate,pageable,customUserDetails));
     }
 
-    @Operation(summary = "회원 예약 리스트 조회 API", description = "회원 예약 리스트 조회 API 입니다.")
+    @Operation(summary = "서명할 예약 리스트 조회 API", description = "서명할 예약 리스트 조회 API 입니다.")
     @GetMapping("/sign/reservations/{ticketId}")
-    public ResponseEntity<ApiResponseMessage<SignResrvationForMemberResDto>> getReservationsForMember(@Parameter(description = "이용권ID", example = "55531c95-cb79-11ef-b7c9-0242ac190002")
+    public ResponseEntity<ApiResponseMessage<List<SignResrvationForMemberResDto>>> getReservationsForMember(@Parameter(description = "이용권ID", example = "55531c95-cb79-11ef-b7c9-0242ac190002")
                                                                                                       @PathVariable(name = "ticketId") String ticketId,
-                                                                                                      @ModelAttribute FittnerPageable pageable,
-                                                                                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.build(signService.getReservationsForMember(ticketId,customUserDetails,pageable));
+                                                                                                            @ModelAttribute FittnerPageable pageable,
+                                                                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(signService.getReservationsForMember(ticketId,customUserDetails,pageable));
     }
 
     @Operation(summary = "서명 요청 API", description = "서명 요청 API 입니다.")

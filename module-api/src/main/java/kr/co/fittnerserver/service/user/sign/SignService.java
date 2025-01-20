@@ -48,7 +48,7 @@ public class SignService {
         return r;
     }
 
-    public SignResrvationForMemberResDto getReservationsForMember(String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable){
+    public List<SignResrvationForMemberResDto> getReservationsForMember(String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable){
         return signMapper.selectReservationByTicketId(customUserDetails.getTrainerId(), ticketId, pageable.getCurrentPageNo());
     }
 

@@ -15,7 +15,7 @@ public interface SignMapper {
     int selectReservationByTrainerIdCnt(String trainerId, String reservationStartDate);
     List<SignResrvationDto> selectReservationByTrainerId(String trainerId, String reservationStartDate, int currentPageNo);
 
-    SignResrvationForMemberResDto selectReservationByTicketId(String trainerId, String ticketId, int currentPageNo);
+    List<SignResrvationForMemberResDto> selectReservationByTicketId(String trainerId, String ticketId, int currentPageNo);
 
     void insertSign(@Param("signReqDto") SignReqDto signReqDto, @Param("trainerId") String trainerId);
 }

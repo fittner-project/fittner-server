@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -134,28 +135,22 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MemberListResDto> getMembers(MemberListSearchDto memberListSearchDto, CustomUserDetails customUserDetails, Pageable pageable) {
+    public List<MemberListResDto> getMembers() {
+        List<Member> members = memberRepository.findAll();
 
-        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
-
-        Page<Member> members = memberRepository.findAll(MemberSpec.searchMember(memberListSearchDto, trainer), pageable);
-
-        return new CacheablePage<>(
-                members.map(member -> {
-                    try {
-                        return MemberListResDto.builder()
-                                .memberId(member.getMemberId())
-                                .memberName(member.getMemberName())
-                                .memberPhone(PhoneFormatUtil.formatPhoneNumber(AES256Cipher.decrypt(member.getMemberPhone())))
-                                .memberAge(ageCalculate(member.getMemberBirth()))
-                                .memberTotalCount(members.getTotalElements())
-                                .build();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-        );
+        return members.stream().map(member -> {
+            try {
+                return MemberListResDto.builder()
+                        .memberId(member.getMemberId())
+                        .memberName(member.getMemberName())
+                        .memberPhone(PhoneFormatUtil.formatPhoneNumber(AES256Cipher.decrypt(member.getMemberPhone())))
+                        .memberAge(ageCalculate(member.getMemberBirth()))
+                        .memberTotalCount(members.size())
+                        .build();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
     }
 
     private String ageCalculate(String memberBirth) {

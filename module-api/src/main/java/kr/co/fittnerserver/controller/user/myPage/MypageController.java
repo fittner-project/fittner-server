@@ -86,4 +86,10 @@ public class MypageController {
     public ResponseEntity<ApiResponseMessage<List<PushSetResDto>>> getPush(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getPush(customUserDetails));
     }
+
+    @Operation(summary = "마이페이 기본 정보 조회 API", description = "마이페이지 기본 정보 조회 API 입니다.")
+    @GetMapping("/myPage/default-info")
+    public ResponseEntity<ApiResponseMessage<MyPageInfoResDto>> myPageInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.build(myPageService.myPageInfo(customUserDetails));
+    }
 }

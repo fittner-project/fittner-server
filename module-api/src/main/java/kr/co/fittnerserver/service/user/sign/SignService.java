@@ -75,7 +75,7 @@ public class SignService {
         }
 
         //정산금액 정책 체크
-        TrainerSettlementDto trainerSettlementDto = userMapper.selectTrainerSettlementByTrainerSettlementId(reservationDto.getTrainerSettlementId());
+        TrainerSettlementDto trainerSettlementDto = userMapper.selectTrainerSettlementByTrainerIdAndSettlementCode(customUserDetails.getTrainerId(), signReqDto.getSignType());
         if(trainerSettlementDto == null){
             throw new CommonException(CommonErrorCode.NOT_FOUND_SETTLEMENT.getCode(), CommonErrorCode.NOT_FOUND_SETTLEMENT.getMessage()); //정산 정책을 찾을 수 없습니다.
         }
@@ -95,8 +95,9 @@ public class SignService {
 
         //정산 금액 업데이트
         int ticketOneTimePrice = Integer.parseInt(ticketDto.getTicketPrice()) / Integer.parseInt(ticketDto.getTicketTotalCnt());
-        int settlementPrice = ticketOneTimePrice * (Integer.parseInt(trainerSettlementDto.getTrainerSettlementPercent())/100);
-        reservationMapper.updateReservationForSettlement(signReqDto.getReservationId(), customUserDetails.getTrainerId(), String.valueOf(Math.floor(settlementPrice)));
+        double settlementPercent = Double.parseDouble(trainerSettlementDto.getTrainerSettlementPercent()) / 100.0;
+        double settlementPrice = ticketOneTimePrice * settlementPercent;
+        reservationMapper.updateReservationForSettlement(signReqDto.getReservationId(), customUserDetails.getTrainerId(), String.valueOf((int) settlementPrice), trainerSettlementDto.getTrainerSettlementId());
     }
 
 }

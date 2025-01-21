@@ -81,7 +81,7 @@
     </select>
 
     <insert id="insertSign">
-        /* SignMapper.selectReservationByTicketId */
+        /* SignMapper.insertSign */
         insert into sign (
                     sign_memo
                   , created_by

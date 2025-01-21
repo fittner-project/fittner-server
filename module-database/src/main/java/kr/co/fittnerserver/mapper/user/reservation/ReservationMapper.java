@@ -13,6 +13,6 @@ public interface ReservationMapper {
 
     void updateReservationForSign(String reservationId, String reservationStatus, String trainerId);
 
-    void updateReservationForSettlement(String reservationId, String trainerId, String settlementPrice);
+    void updateReservationForSettlement(String reservationId, String trainerId, String settlementPrice, String trainerSettlementId);
 
 }

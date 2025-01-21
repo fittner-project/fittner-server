@@ -34,7 +34,7 @@
     </select>
 
     <update id="updateReservationForSign">
-        /* TicketMapper.selectReservationByReservationId */
+        /* TicketMapper.updateReservationForSign */
         update reservation
            set reservation_status = #{reservationStatus}
              , modified_by = #{trainerId}
@@ -43,9 +43,10 @@
     </update>
 
     <update id="updateReservationForSettlement">
-        /* TicketMapper.selectReservationByReservationId */
+        /* TicketMapper.updateReservationForSettlement */
         update reservation
-           set reservation_settlement_amount = #{settlementPrice}
+           set trainer_settlement_amount = #{settlementPrice}
+             , trainer_settlement_id = #{trainerSettlementId}
              , modified_by = #{trainerId}
              , modified_date = CURRENT_TIMESTAMP
          where reservation_id = #{reservationId}

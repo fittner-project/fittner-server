@@ -59,7 +59,7 @@
              , d.center_id
              , d.center_name
              , d.center_tel
-             , d.center_adress
+             , d.center_address
              , e.trainer_id
              , e.trainer_name
              , e.trainer_email
@@ -67,11 +67,11 @@
              , LEFT(REGEXP_REPLACE(a.created_date, '[^0-9]', ''), 8) as created_date
           from ticket a
      left join trainer_product b
-            on a.ticket_id = b.ticket_id
+            on a.trainer_product_id = b.trainer_product_id
      left join member c
             on a.member_id = c.member_id
      left join center d
-            on a.center_id = d.center_id
+            on b.center_id = d.center_id
      left join trainer e
             on a.trainer_id = e.trainer_id
          where 1=1

@@ -92,6 +92,18 @@
           from trainer_settlement
          where trainer_settlement_id = #{trainerSettlementId}
     </select>
+
+    <select id="selectTrainerSettlementByTrainerIdAndSettlementCode" resultType="TrainerSettlementDto">
+        /* UserMapper.selectTrainerSettlementByTrainerIdAndSettlementCode */
+        select trainer_settlement_id
+             , trainer_settlement_percent
+             , trainer_settlement_code
+             , center_id
+             , trainer_id
+          from trainer_settlement
+         where trainer_id = #{trainerId}
+           and trainer_settlement_code = #{trainerSettlementCode}
+    </select>
 </mapper>
 
 

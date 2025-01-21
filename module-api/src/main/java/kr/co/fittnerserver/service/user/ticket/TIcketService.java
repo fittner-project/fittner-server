@@ -179,12 +179,6 @@ public class TIcketService {
 
     @Transactional
     public void ticketRelay(RelayReqDto relayReqDto, CustomUserDetails customUserDetails) throws Exception{
-        //TODO
-        //연장하기의 경우 정산 퍼센트가 다르므로
-        //업데이트 해줘야 하나 현재 수업에 정산퍼센트 외래키가 있어서
-        //trainer_product로 외래키 옮겨야 할듯해 보임
-        //추가로 trainer_product와 ticket의 별도 분리가 무의미 해보이므로 해당 내용도 검토 필요
-
         //이용권 기간 체크
         Util.ticketStartEndDateChk(relayReqDto.getProductStartDate(), relayReqDto.getProductEndDate(), true);
 
@@ -212,6 +206,7 @@ public class TIcketService {
         ticketDto.setTrainerProductId(trainerProductDto.getTrainerProductId());
         ticketDto.setTicketCode("ING"); //TODO 이용전으로 할지 고민 필요
         ticketDto.setTicketUseCnt("0");
+        ticketDto.setTicketRelayYn("Y");
 
         ticketMapper.insertTicket(ticketDto);
     }

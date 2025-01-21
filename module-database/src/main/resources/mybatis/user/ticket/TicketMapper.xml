@@ -109,6 +109,7 @@
                   , ticket_code
                   , original_ticket_id
                   , ticket_use_cnt
+                  , ticket_relay_yn
           ) values (
                     CURRENT_TIMESTAMP
                   , #{trainerId}
@@ -121,6 +122,7 @@
                   , #{ticketCode}
                   , #{originalTicketId}
                   , #{ticketUseCnt}
+                  , #{ticketRelayYn}
           )
     </insert>
 

@@ -20,6 +20,7 @@ public class TicketDto {
     private String ticketPrice;
     private String ticketTotalCnt;
     private String createdDate;
+    private String ticketRelayYn;
 
     //회원 정보
     private String memberId;

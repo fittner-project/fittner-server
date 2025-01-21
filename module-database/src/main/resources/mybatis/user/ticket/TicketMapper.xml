@@ -45,6 +45,7 @@
              , a.ticket_suspend_end_date
              , a.ticket_use_cnt
              , a.original_ticket_id
+             , a.ticket_relay_yn
              , b.trainer_product_id
              , b.trainer_id
              , b.trainer_product_name as ticket_name

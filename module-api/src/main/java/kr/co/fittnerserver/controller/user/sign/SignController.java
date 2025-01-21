@@ -34,15 +34,17 @@ public class SignController {
     @GetMapping("/sign/reservations")
     public ResponseEntity<ApiResponseMessage<SignResrvationResDto>> getReservations(@Parameter(description = "예약 시작 일자", example = "20250101")
                                                                                     @RequestParam(value = "reservationStartDate") String reservationStartDate,
+                                                                                    @Parameter(description = "센터ID", example = "1")
+                                                                                    @RequestParam(value = "centerId") String centerId,
                                                                                     @ModelAttribute FittnerPageable pageable,
                                                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.build(signService.getReservations(reservationStartDate,pageable,customUserDetails));
+        return FittnerResponse.build(signService.getReservations(reservationStartDate,centerId,pageable,customUserDetails));
     }
 
     @Operation(summary = "서명할 예약 리스트 조회 API", description = "서명할 예약 리스트 조회 API 입니다.")
     @GetMapping("/sign/reservations/{ticketId}")
     public ResponseEntity<ApiResponseMessage<List<SignResrvationForMemberResDto>>> getReservationsForMember(@Parameter(description = "이용권ID", example = "55531c95-cb79-11ef-b7c9-0242ac190002")
-                                                                                                      @PathVariable(name = "ticketId") String ticketId,
+                                                                                                            @PathVariable(name = "ticketId") String ticketId,
                                                                                                             @ModelAttribute FittnerPageable pageable,
                                                                                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(signService.getReservationsForMember(ticketId,customUserDetails,pageable));

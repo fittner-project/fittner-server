@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,13 +39,16 @@ public class SignService {
     private final ReservationMapper reservationMapper;
     private final UserMapper userMapper;
 
-    public SignResrvationResDto getReservations(String reservationStartDate, FittnerPageable pageable, CustomUserDetails customUserDetails) throws Exception {
+    public SignResrvationResDto getReservations(String reservationStartDate, String centerId, FittnerPageable pageable, CustomUserDetails customUserDetails) throws Exception {
 
         SignResrvationResDto r = new SignResrvationResDto();
 
-        int totalCnt = signMapper.selectReservationByTrainerIdCnt(customUserDetails.getTrainerId(), reservationStartDate);
+        int totalCnt = signMapper.selectReservationByTrainerIdAndCenterIdCnt(centerId, customUserDetails.getTrainerId(), reservationStartDate);
 
-        List<SignResrvationDto> reservationDtoList = signMapper.selectReservationByTrainerId(customUserDetails.getTrainerId(), reservationStartDate, pageable.getCurrentPageNo());
+        List<SignResrvationDto> reservationDtoList = new ArrayList<>();
+        if(totalCnt > 0){
+            reservationDtoList = signMapper.selectReservationByTrainerIdAndCenterId(centerId, customUserDetails.getTrainerId(), reservationStartDate, pageable.getCurrentPageNo());
+        }
 
         r.setReservationTotalCnt(String.valueOf(totalCnt));
         r.setReservationList(reservationDtoList);

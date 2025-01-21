@@ -3,6 +3,7 @@ package kr.co.fittnerserver.entity.user;
 import jakarta.persistence.*;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.entity.admin.Center;
+import kr.co.fittnerserver.entity.admin.CenterGroup;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
 import kr.co.fittnerserver.entity.user.enums.TrainerSnsKind;
 import kr.co.fittnerserver.entity.user.enums.TrainerStatus;
@@ -57,6 +58,10 @@ public class Trainer extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "center_id")
     private Center center;
+
+    @ManyToOne
+    @JoinColumn(name = "center_group_id")
+    private CenterGroup centerGroup;
 
     public Trainer(JoinReqDto joinReqDto,Center center) throws Exception {
         this.trainerPhone = joinReqDto.getTrainerPhone();

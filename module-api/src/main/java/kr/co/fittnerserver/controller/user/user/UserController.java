@@ -32,7 +32,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.")
+    @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.",operationId = "test")
     @PostMapping("/join")
     public ResponseEntity<ApiResponseMessage<Object>> login(@RequestBody JoinReqDto joinReqDto) throws Exception {
         userService.joinProcess(joinReqDto);

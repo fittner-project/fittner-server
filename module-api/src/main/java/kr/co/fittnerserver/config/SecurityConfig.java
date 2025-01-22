@@ -36,7 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/user/common/status-chk","/api/v1/auth/apple-redirect-url","/api/v1/user/terms","/api/v1/user/common/splash","/api/v1/common/file/show/**","/api/v1/user/common/app/version-chk","/api/v1/user/center/list","/api/v1/user/join","/actuator/**", "/api/v1/auth/login","/api/v1/auth/apple-info", "/api/v1/auth/refresh-token", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/user/common/status-chk", "/api/v1/auth/apple-redirect-url", "/api/v1/user/terms", "/api/v1/user/common/splash", "/api/v1/common/file/show/**", "/api/v1/user/common/app/version-chk", "/api/v1/user/center/list", "/api/v1/user/join", "/actuator/**", "/api/v1/auth/login", "/api/v1/auth/apple-info", "/api/v1/auth/refresh-token", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -62,7 +62,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-/*    @Bean
+    @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
@@ -77,22 +77,7 @@ public class SecurityConfig {
 
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
-    }*/
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("https://m.fittner.co.kr"); // 실제 도메인으로 변경
-        config.addAllowedOrigin("https://api.fittner.co.kr"); // 실제 도메인으로 변경
-        config.addAllowedOrigin("https://appleid.apple.com"); //apple
-        config.addAllowedOrigin("http://localhost:8080"); // 로컬 테스트용
-        config.addAllowedOrigin("http://localhost:3000"); //프론트 로컬용
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
     }
+
+
 }

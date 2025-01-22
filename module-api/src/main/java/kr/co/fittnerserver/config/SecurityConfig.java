@@ -66,9 +66,9 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        //config.addAllowedOrigin("*");
-        config.addAllowedOrigin("https://m.fittner.co.kr");
+        config.setAllowCredentials(false);
+        config.addAllowedOrigin("*");
+        //config.addAllowedOrigin("https://m.fittner.co.kr");
         /*config.addAllowedOrigin("https://m.fittner.co.kr"); // 실제 도메인으로 변경
         config.addAllowedOrigin("https://api.fittner.co.kr"); // 실제 도메인으로 변경
         config.addAllowedOrigin("https://appleid.apple.com"); //apple

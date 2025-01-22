@@ -32,8 +32,7 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
         boolean logChkeck = Arrays.stream(NOT_ALLOW_LOG)
                 .anyMatch(item -> request.getRequestURI().contains(item));
 
-        //if(!logChkeck){
-        if(1==2){
+        if(!logChkeck){
 
             //requset(custom), response(caching)
             CustomHttpServletRequestWrapper wrappedRequest = new CustomHttpServletRequestWrapper(request); //요청을 CustomHttpServletRequestWrapper로 감싸기

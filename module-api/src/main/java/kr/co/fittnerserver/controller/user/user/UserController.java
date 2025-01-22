@@ -39,9 +39,9 @@ public class UserController {
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "트레이너 계정 탈퇴", description = "트레이너 계정 탈퇴 API 입니다.")
+    @Operation(summary = "트레이너 계정 탈퇴", description = "트레이너 계정 탈퇴 API 입니다.",operationId = "test2")
     @PostMapping("/drop")
-    public ResponseEntity<ApiResponseMessage<Object>> dropTrainer(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+    public ResponseEntity<ApiResponseMessage<Object>> join(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         userService.dropTrainer(request, customUserDetails);
         return FittnerResponse.ok();
     }

@@ -275,6 +275,12 @@ public class UserService {
 
     @Transactional
     public void dropTrainer(HttpServletRequest request, CustomUserDetails customUserDetails) {
+        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
+
+        trainer.dropInfo();
+
+
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

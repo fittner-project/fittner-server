@@ -41,7 +41,7 @@ public enum CommonErrorCode {
     NOT_FOUND_RESERVATION("H027","수업 정보를 찾을 수 없습니다."),
     ALREADY_SIGN("H028","이미 처리된 예약입니다."),
     NOT_FOUND_SETTLEMENT("H029","정산 정책을 찾을 수 없습니다."),
-    ;
+    NOT_ACTIVE_TRAINER("H030","승인 대기중인 트레이너입니다.");
 
 
     private final String code;

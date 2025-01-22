@@ -14,6 +14,7 @@ import kr.co.fittnerserver.dto.user.user.response.TokenResDto;
 import kr.co.fittnerserver.entity.BlackListToken;
 import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.entity.user.TrainerRefreshToken;
+import kr.co.fittnerserver.entity.user.enums.TrainerStatus;
 import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.repository.BlackListTokenRepository;
@@ -39,7 +40,6 @@ import java.util.List;
 public class LoginService {
 
     private final JwtTokenUtil jwtTokenUtil;
-    private final AppleJwtUtil appleJwtUtil;
     private final TrainerRepository trainerRepository;
     private final TrainerRefreshTokenRepository trainerRefreshTokenRepository;
     private final BlackListTokenRepository blackListTokenRepository;
@@ -49,6 +49,10 @@ public class LoginService {
     public TokenResDto loginProcess(LoginRequestDto loginRequestDto) throws Exception {
         Trainer trainer = trainerRepository.findByTrainerEmail(AES256Cipher.encrypt(loginRequestDto.getTrainerEmail()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
+
+        if(trainer.getTrainerStatus().equals(TrainerStatus.INACTIVE)) {
+            throw new CommonException(CommonErrorCode.NOT_ACTIVE_TRAINER.getCode(), CommonErrorCode.NOT_ACTIVE_TRAINER.getMessage());
+        }
 
         //엑세스 토큰 생성
         String accessToken = jwtTokenUtil.generateAccessToken(trainer.getTrainerId());

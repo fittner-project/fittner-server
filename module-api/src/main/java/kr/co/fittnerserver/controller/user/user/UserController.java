@@ -32,19 +32,20 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.",operationId = "test")
+    @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.", operationId = "test")
     @PostMapping("/join")
     public ResponseEntity<ApiResponseMessage<Object>> join(@RequestBody JoinReqDto joinReqDto) throws Exception {
         userService.joinProcess(joinReqDto);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "트레이너 계정 탈퇴", description = "트레이너 계정 탈퇴 API 입니다.",operationId = "test2")
+    @Operation(summary = "트레이너 계정 탈퇴", description = "트레이너 계정 탈퇴 API 입니다.", operationId = "test2")
     @PostMapping("/drop")
     public ResponseEntity<ApiResponseMessage<Object>> join(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         userService.dropTrainer(request, customUserDetails);
         return FittnerResponse.ok();
     }
+
 
     @Operation(summary = "메인에서 트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
     @GetMapping("/main/centers")
@@ -61,7 +62,7 @@ public class UserController {
 
     @Operation(summary = "트레이너의 회원 목록 조회 API", description = "트레이너의 회원 목록 조회 API 입니다.")
     @GetMapping("/members")
-    public ResponseEntity<?> members(){
+    public ResponseEntity<?> members() {
         return FittnerResponse.buildList(userService.getMembers());
     }
 

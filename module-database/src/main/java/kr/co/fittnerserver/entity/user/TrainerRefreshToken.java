@@ -10,6 +10,7 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -35,6 +36,7 @@ public class TrainerRefreshToken extends BaseTimeEntity implements Serializable 
     private Trainer trainer;
 
     public void updateToken(String refreshToken) {
+        this.refreshTokenId = String.valueOf(UUID.randomUUID());
         this.refreshToken = refreshToken;
     }
     public TrainerRefreshToken(Trainer trainer, String refreshToken) {

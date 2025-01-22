@@ -46,9 +46,6 @@ public class Trainer extends BaseTimeEntity {
     @Comment(value = "CI")
     @Column(length = 150)
     private String trainerCiNo;
-    @Comment(value = "트레이너 탈퇴유무")
-    @Column(length = 1, columnDefinition = "char(1) default 'N'")
-    private String trainerDropYn;
     @Comment(value = "트레이너 FCM TOKEN")
     @Column(length = 200)
     private String trainerFcmToken;
@@ -69,10 +66,18 @@ public class Trainer extends BaseTimeEntity {
         this.trainerEmail = joinReqDto.getTrainerEmail();
         this.trainerSnsKind = joinReqDto.getTrainerSnsKind();
         this.trainerStatus = TrainerStatus.INACTIVE;
-        this.trainerDropYn = "N";
         this.trainerProductChangeYn = "N";
         this.trainerFcmToken = joinReqDto.getTrainerFcmToken();
         this.trainerCiNo = joinReqDto.getTrainerCiNo();
         this.center = center;
+    }
+
+    public void dropInfo() {
+        this.trainerStatus = TrainerStatus.DROP;
+        this.trainerEmail = "";
+        this.trainerPhone = "";
+        this.trainerName = "";
+        this.trainerCiNo = "";
+        this.trainerFcmToken = "";
     }
 }

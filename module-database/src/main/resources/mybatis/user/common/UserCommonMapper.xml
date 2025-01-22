@@ -15,7 +15,7 @@
         /* UserCommonMapper.statusChk */
         select trainer_status
           from trainer
-         where trainer_id = #{trainerId}
+         where trainer_email = #{trainerEmail}
     </select>
 </mapper>
 

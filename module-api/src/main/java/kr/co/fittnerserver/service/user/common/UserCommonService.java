@@ -1,6 +1,8 @@
 package kr.co.fittnerserver.service.user.common;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.common.response.BrandColorResDto;
 import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
@@ -12,6 +14,7 @@ import kr.co.fittnerserver.entity.user.Trainer;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.common.UserCommonMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
+import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +49,15 @@ public class UserCommonService {
         return r;
     }
 
-    public StatusChkResDto statusChk(CustomUserDetails customUserDetails) throws Exception{
-        return userCommonMapper.statusChk(customUserDetails.getTrainerId());
+    public StatusChkResDto statusChk(String trainerEmail) throws Exception{
+        StatusChkResDto r = new StatusChkResDto();
+
+        r = userCommonMapper.statusChk(AES256Cipher.encrypt(trainerEmail));
+        if(r == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()); //트레이너를 찾을 수 없습니다.
+        }
+
+        return r;
     }
 
     public SplashResDto getSplash(String accessToken){

@@ -35,11 +35,11 @@ public class UserCommonController {
         return FittnerResponse.build(userCommonService.hardUpdate(appOsType, appVersion));
     }
 
-    @Operation(summary = "트레이너 상태 체크 API", description = "트레이너 상태 체크 API 입니다.</br>" +
-                                                             "(trainerStatus 응답 필드가 'STOP'일때만 잠금팝업)")
+    @Operation(summary = "트레이너 상태 체크 API", description = "트레이너 상태 체크 API 입니다.")
     @GetMapping("/status-chk")
-    public ResponseEntity<ApiResponseMessage<StatusChkResDto>> statusChk(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.build(userCommonService.statusChk(customUserDetails));
+    public ResponseEntity<ApiResponseMessage<StatusChkResDto>> statusChk(@Parameter(description = "트레이너 이메일", example = "test001@naver.com")
+                                                                         @RequestParam(value = "trainerEmail") String trainerEmail) throws Exception {
+        return FittnerResponse.build(userCommonService.statusChk(trainerEmail));
     }
 
     @Operation(summary = "스플래시 API", description = "스플래시 조회 API 입니다.")

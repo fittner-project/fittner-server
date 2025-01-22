@@ -46,7 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/v1/common/file/show/**",
             "/api/v1/user/common/splash",
             "/api/v1/user/terms",
-            "/api/v1/auth/apple-redirect-url"
+            "/api/v1/auth/apple-redirect-url",
+            "/api/v1/user/common/status-chk"
     );
 
     @Override

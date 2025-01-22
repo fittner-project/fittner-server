@@ -66,12 +66,13 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("https://m.fittner.co.kr"); // 실제 도메인으로 변경
+        config.setAllowCredentials(false);
+        config.addAllowedOrigin("*");
+        /*config.addAllowedOrigin("https://m.fittner.co.kr"); // 실제 도메인으로 변경
         config.addAllowedOrigin("https://api.fittner.co.kr"); // 실제 도메인으로 변경
         config.addAllowedOrigin("https://appleid.apple.com"); //apple
         config.addAllowedOrigin("http://localhost:8080"); // 로컬 테스트용
-        config.addAllowedOrigin("http://localhost:3000"); //프론트 로컬용
+        config.addAllowedOrigin("http://localhost:3000"); //프론트 로컬용*/
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 

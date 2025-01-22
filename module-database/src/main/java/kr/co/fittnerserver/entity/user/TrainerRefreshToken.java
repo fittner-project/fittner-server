@@ -36,7 +36,6 @@ public class TrainerRefreshToken extends BaseTimeEntity implements Serializable 
     private Trainer trainer;
 
     public void updateToken(String refreshToken) {
-        this.refreshTokenId = String.valueOf(UUID.randomUUID());
         this.refreshToken = refreshToken;
     }
     public TrainerRefreshToken(Trainer trainer, String refreshToken) {

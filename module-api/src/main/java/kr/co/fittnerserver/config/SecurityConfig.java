@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -61,7 +62,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+/*    @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
@@ -76,5 +77,22 @@ public class SecurityConfig {
 
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }*/
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("https://m.fittner.co.kr"); // 실제 도메인으로 변경
+        config.addAllowedOrigin("https://api.fittner.co.kr"); // 실제 도메인으로 변경
+        config.addAllowedOrigin("https://appleid.apple.com"); //apple
+        config.addAllowedOrigin("http://localhost:8080"); // 로컬 테스트용
+        config.addAllowedOrigin("http://localhost:3000"); //프론트 로컬용
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }

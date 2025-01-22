@@ -34,7 +34,7 @@ public class UserController {
 
     @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.",operationId = "test")
     @PostMapping("/join")
-    public ResponseEntity<ApiResponseMessage<Object>> login(@RequestBody JoinReqDto joinReqDto) throws Exception {
+    public ResponseEntity<ApiResponseMessage<Object>> join(@RequestBody JoinReqDto joinReqDto) throws Exception {
         userService.joinProcess(joinReqDto);
         return FittnerResponse.ok();
     }

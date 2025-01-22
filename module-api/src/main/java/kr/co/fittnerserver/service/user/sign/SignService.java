@@ -10,6 +10,7 @@ import kr.co.fittnerserver.dto.user.sign.request.SignReqDto;
 import kr.co.fittnerserver.dto.user.sign.response.SignResrvationDto;
 import kr.co.fittnerserver.dto.user.sign.response.SignResrvationForMemberResDto;
 import kr.co.fittnerserver.dto.user.sign.response.SignResrvationResDto;
+import kr.co.fittnerserver.entity.admin.enums.TrainerSettlementCode;
 import kr.co.fittnerserver.entity.common.File;
 import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.mapper.file.FileMapper;
@@ -25,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,13 +40,16 @@ public class SignService {
     private final ReservationMapper reservationMapper;
     private final UserMapper userMapper;
 
-    public SignResrvationResDto getReservations(String reservationStartDate, FittnerPageable pageable, CustomUserDetails customUserDetails) throws Exception {
+    public SignResrvationResDto getReservations(String reservationStartDate, String centerId, FittnerPageable pageable, CustomUserDetails customUserDetails) throws Exception {
 
         SignResrvationResDto r = new SignResrvationResDto();
 
-        int totalCnt = signMapper.selectReservationByTrainerIdCnt(customUserDetails.getTrainerId(), reservationStartDate);
+        int totalCnt = signMapper.selectReservationByTrainerIdAndCenterIdCnt(centerId, customUserDetails.getTrainerId(), reservationStartDate);
 
-        List<SignResrvationDto> reservationDtoList = signMapper.selectReservationByTrainerId(customUserDetails.getTrainerId(), reservationStartDate, pageable.getCurrentPageNo());
+        List<SignResrvationDto> reservationDtoList = new ArrayList<>();
+        if(totalCnt > 0){
+            reservationDtoList = signMapper.selectReservationByTrainerIdAndCenterId(centerId, customUserDetails.getTrainerId(), reservationStartDate, pageable.getCurrentPageNo());
+        }
 
         r.setReservationTotalCnt(String.valueOf(totalCnt));
         r.setReservationList(reservationDtoList);
@@ -74,14 +79,24 @@ public class SignService {
             throw new CommonException(CommonErrorCode.ALREADY_SIGN.getCode(), CommonErrorCode.ALREADY_SIGN.getMessage()); //이미 처리된 예약입니다.
         }
 
-        //정산금액 정책 체크
-        TrainerSettlementDto trainerSettlementDto = userMapper.selectTrainerSettlementByTrainerIdAndSettlementCode(customUserDetails.getTrainerId(), signReqDto.getSignType());
-        if(trainerSettlementDto == null){
-            throw new CommonException(CommonErrorCode.NOT_FOUND_SETTLEMENT.getCode(), CommonErrorCode.NOT_FOUND_SETTLEMENT.getMessage()); //정산 정책을 찾을 수 없습니다.
-        }
+        //이용권 체크
         TicketDto ticketDto = ticketMapper.selectTicketByTicketId(reservationDto.getTicketId(), "NORMAL");
         if(ticketDto == null){
             throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
+        }
+
+        //정산금액 정책 체크
+        String settlementCode = signReqDto.getSignType();
+        if("SIGN".equals(settlementCode)){
+            if("Y".equals(ticketDto.getTicketRelayYn())){
+                settlementCode = String.valueOf(TrainerSettlementCode.RE); //재등록 회원 정산코드
+            }else{
+                settlementCode = String.valueOf(TrainerSettlementCode.NEW); //신규 회원 정산코드
+            }
+        }
+        TrainerSettlementDto trainerSettlementDto = userMapper.selectTrainerSettlementByTrainerIdAndSettlementCode(customUserDetails.getTrainerId(), settlementCode);
+        if(trainerSettlementDto == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_SETTLEMENT.getCode(), CommonErrorCode.NOT_FOUND_SETTLEMENT.getMessage()); //정산 정책을 찾을 수 없습니다.
         }
 
         //서명 저장

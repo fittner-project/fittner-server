@@ -1,6 +1,8 @@
 package kr.co.fittnerserver.service.user.mypage;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.user.TermsDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
@@ -10,6 +12,7 @@ import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.myPage.MyPageMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.results.FittnerPageable;
+import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +101,18 @@ public class MyPageService {
 
     public List<PushSetResDto> getPush(CustomUserDetails customUserDetails) throws Exception{
         return myPageMapper.selectPushSetByTrainerId(customUserDetails.getTrainerId());
+    }
+
+    public MyPageInfoResDto myPageInfo(CustomUserDetails customUserDetails) throws Exception{
+        MyPageInfoResDto r = new MyPageInfoResDto();
+
+        TrainerDto trainerDto = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+
+        r.setTrainerEmail(AES256Cipher.decrypt(trainerDto.getTrainerEmail()));
+        r.setTrainerName(trainerDto.getTrainerName());
+        r.setTrainerSnsKind(trainerDto.getTrainerSnsKind());
+
+        return r;
     }
 
 

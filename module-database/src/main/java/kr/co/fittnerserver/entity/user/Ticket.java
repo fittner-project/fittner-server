@@ -47,6 +47,9 @@ public class Ticket extends BaseTimeEntity {
     @Comment(value = "원티켓ID")
     @Column(length = 38)
     private String originalTicketId;
+    @Comment(value = "연장하기 티켓")
+    @Column(length = 1, columnDefinition = "char(1) default 'N'")
+    private String ticketRelayYn;
 
     @ManyToOne
     @JoinColumn(name = "trainer_product_id")

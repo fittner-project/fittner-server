@@ -36,21 +36,21 @@ public class AuthController {
         return loginService.redirectUrl(appleRedirectReqDto);
     }
 
-    @Operation(summary = "트레이너 로그인 API", description = "트레이너 로그인 API 입니다.")
+    @Operation(summary = "트레이너 로그인 API", description = "트레이너 로그인 API 입니다.",operationId = "postAuthLogin")
     @PostMapping("/login")
     public ResponseEntity<ApiResponseMessage<TokenResDto>> login(@RequestBody LoginRequestDto loginRequestDto) throws
             Exception {
         return FittnerResponse.build(loginService.loginProcess(loginRequestDto));
     }
 
-    @Operation(summary = "트레이너 로그아웃 API", description = "트레이너 로그아웃 API 입니다.", security = @SecurityRequirement(name = "Authorization"))
+    @Operation(summary = "트레이너 로그아웃 API", description = "트레이너 로그아웃 API 입니다.",operationId = "postAuthLogout", security = @SecurityRequirement(name = "Authorization"))
     @PostMapping("/logout")
     public ResponseEntity<ApiResponseMessage<Object>> logout(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         loginService.logoutProcess(request, customUserDetails);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "엑세스 토큰 재발급 API", description = "엑세스 토큰을 재발급 받습니다.")
+    @Operation(summary = "엑세스 토큰 재발급 API", description = "엑세스 토큰을 재발급 받습니다.",operationId = "postAuthRefreshToken")
     @PostMapping("/refresh-token")
     public ResponseEntity<ApiResponseMessage<TokenResDto>> makeAccessToken(@RequestBody AccessTokenReqDto
                                                                                    accessTokenReqDto) throws Exception {

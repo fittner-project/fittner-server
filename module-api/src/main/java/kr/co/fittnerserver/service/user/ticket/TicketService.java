@@ -15,7 +15,6 @@ import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Refund;
-import kr.co.fittnerserver.entity.user.Reservation;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
@@ -32,7 +31,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TIcketService {
+public class TicketService {
 
     final TicketMapper ticketMapper;
     final CommonMapper commonMapper;

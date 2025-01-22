@@ -25,14 +25,14 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @Operation(summary = "트레이너가 수업 등록할때 필요한 색상 리스트 API", description = "트레이너가 수업 등록할때 필요한 색상 리스트 API입니다.")
+    @Operation(summary = "트레이너가 수업 등록할때 필요한 색상 리스트 API", description = "트레이너가 수업 등록할때 필요한 색상 리스트 API입니다.",operationId = "getUserReservationColors")
     @GetMapping("/reservation/colors")
     public ResponseEntity<ApiResponseMessage<ReservationColorResDto>> getColors() throws Exception {
         return FittnerResponse.build(reservationService.getColors());
 
     }
 
-    @Operation(summary = "트레이너가 수업 등록하는 API", description = "트레이너가 수업을 등록하는 API 입니다.")
+    @Operation(summary = "트레이너가 수업 등록하는 API", description = "트레이너가 수업을 등록하는 API 입니다.",operationId = "postUserReservation")
     @PostMapping("/reservation")
     public ResponseEntity<ApiResponseMessage<Object>> reservation(@RequestBody ReservationReqDto reservationReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         reservationService.reservation(reservationReqDto, customUserDetails);

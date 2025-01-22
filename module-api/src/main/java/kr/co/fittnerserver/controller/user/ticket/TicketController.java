@@ -14,7 +14,7 @@ import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
-import kr.co.fittnerserver.service.user.ticket.TIcketService;
+import kr.co.fittnerserver.service.user.ticket.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,61 +30,61 @@ import java.util.List;
 @Tag(name = "이용권", description = "이용권(티켓) 처리입니다.")
 public class TicketController {
 
-    final TIcketService tIcketService;
+    final TicketService ticketService;
 
-    @Operation(summary = "전체 이용권 리스트 조회 API", description = "전체 이용권 리스트 조회 API 입니다.")
+    @Operation(summary = "전체 이용권 리스트 조회 API", description = "전체 이용권 리스트 조회 API 입니다.", operationId = "getUserTickets")
     @GetMapping("/tickets")
     public ResponseEntity<ApiResponseMessage<List<TicketListResDto>>> getTickets(@Parameter(name = "ticketStatus", description = "티켓상태", example = "TOTAL|ING|STOP|ASSIGN_TO|ASSIGN_FROM|REFUND|BEFORE|AFTER")
                                                                                  @RequestParam(value = "ticketStatus") String ticketStatus,
                                                                                  @ModelAttribute FittnerPageable pageable,
                                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        return FittnerResponse.buildList(tIcketService.getTickets(ticketStatus, pageable, customUserDetails));
+        return FittnerResponse.buildList(ticketService.getTickets(ticketStatus, pageable, customUserDetails));
     }
 
-    @Operation(summary = "이용권 상세 조회 API", description = "이용권 상세 조회 API 입니다.")
+    @Operation(summary = "이용권 상세 조회 API", description = "이용권 상세 조회 API 입니다.",operationId = "getUserTicketTicketId")
     @GetMapping("/ticket/{ticketId}")
     public ResponseEntity<ApiResponseMessage<TicketDetailResDto>> getTicketDetail(@Parameter(name = "ticketId", description = "티켓ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
                                                                                   @RequestParam(name = "ticketId") String ticketId,
                                                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        return FittnerResponse.build(tIcketService.getTicketDetail(ticketId, customUserDetails));
+        return FittnerResponse.build(ticketService.getTicketDetail(ticketId, customUserDetails));
     }
 
-    @Operation(summary = "이용권 양도 정보 조회 API", description = "이용권 양도 정보 조회 API 입니다.")
+    @Operation(summary = "이용권 양도 정보 조회 API", description = "이용권 양도 정보 조회 API 입니다.",operationId = "getUserTicketAssignInfo")
     @GetMapping("/ticket/assign-info")
     public ResponseEntity<ApiResponseMessage<AssignToInfoResDto>> ticketAssignToInfo(@Parameter(name = "ticketId", description = "티켓ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
                                                                                      @RequestParam(name = "ticketId") String ticketId,
                                                                                      @Parameter(name = "memberId", description = "회원ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
                                                                                      @RequestParam(name = "memberId") String memberId,
                                                                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
-        return FittnerResponse.build(tIcketService.ticketAssignToInfo(ticketId, memberId, customUserDetails));
+        return FittnerResponse.build(ticketService.ticketAssignToInfo(ticketId, memberId, customUserDetails));
     }
 
-    @Operation(summary = "이용권 기존 회원 양도 API", description = "이용권 기존 회원 양도 API 입니다.")
+    @Operation(summary = "이용권 기존 회원 양도 API", description = "이용권 기존 회원 양도 API 입니다.",operationId = "postUserTicketAssignOldMember")
     @PostMapping("/ticket/assign/old-member")
     public ResponseEntity<ApiResponseMessage<Object>> ticketAssignToOldMember(@RequestBody AssignToOldMemberReqDto assignToOldMemberReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
-        tIcketService.ticketAssignToOldMember(assignToOldMemberReqDto, customUserDetails);
+        ticketService.ticketAssignToOldMember(assignToOldMemberReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "이용권 신규 회원 양도 API", description = "이용권 신규 회원 양도 API 입니다.")
+    @Operation(summary = "이용권 신규 회원 양도 API", description = "이용권 신규 회원 양도 API 입니다.",operationId = "postUserTicketAssignNewMember")
     @PostMapping("/ticket/assign/new-member")
     public ResponseEntity<ApiResponseMessage<Object>> ticketAssignToNewMember(@RequestBody AssignToNewMemberReqDto assignToNewMemberReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
-        tIcketService.ticketAssignToNewMember(assignToNewMemberReqDto, customUserDetails);
+        ticketService.ticketAssignToNewMember(assignToNewMemberReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "이용권 연장하기 API", description = "이용권 연장하기 API 입니다.")
+    @Operation(summary = "이용권 연장하기 API", description = "이용권 연장하기 API 입니다.",operationId = "postUserTicketRelay")
     @PostMapping("/ticket/relay")
     public ResponseEntity<ApiResponseMessage<Object>> ticketRelay(@RequestBody RelayReqDto relayReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
-        tIcketService.ticketRelay(relayReqDto, customUserDetails);
+        ticketService.ticketRelay(relayReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "이용권 환불 정보 조회 API", description = "이용권 환불 정보 조회 API 입니다.")
+    @Operation(summary = "이용권 환불 정보 조회 API", description = "이용권 환불 정보 조회 API 입니다.",operationId = "getUserTicketRefundInfo")
     @GetMapping("/ticket/refund-info")
     public ResponseEntity<ApiResponseMessage<RefundInfoResDto>> ticketRefundInfo(@Parameter(name = "ticketId", description = "티켓ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
                                                                                  @RequestParam(name = "ticketId") String ticketId,
                                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
-        return FittnerResponse.build(tIcketService.ticketRefundInfo(ticketId, customUserDetails));
+        return FittnerResponse.build(ticketService.ticketRefundInfo(ticketId, customUserDetails));
     }
 }

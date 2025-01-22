@@ -26,7 +26,7 @@ public class UserCommonController {
 
     private final UserCommonService userCommonService;
 
-    @Operation(summary = "앱 버전 확인 조회 API", description = "앱 버전 확인 API 입니다.")
+    @Operation(summary = "앱 버전 확인 조회 API", description = "앱 버전 확인 API 입니다.",operationId = "getUserCommonAppVersionChk")
     @GetMapping("/app/version-chk")
     public ResponseEntity<ApiResponseMessage<HardUpdateResDto>> hardUpdate(@Parameter(description = "앱os종류 (AOS | IOS)", example = "AOS")
                                                                            @RequestParam(value = "appOsType") String appOsType,
@@ -35,21 +35,21 @@ public class UserCommonController {
         return FittnerResponse.build(userCommonService.hardUpdate(appOsType, appVersion));
     }
 
-    @Operation(summary = "트레이너 상태 체크 API", description = "트레이너 상태 체크 API 입니다.")
+    @Operation(summary = "트레이너 상태 체크 API", description = "트레이너 상태 체크 API 입니다.",operationId = "getUserCommonStatusChk")
     @GetMapping("/status-chk")
     public ResponseEntity<ApiResponseMessage<StatusChkResDto>> statusChk(@Parameter(description = "트레이너 이메일", example = "test001@naver.com")
                                                                          @RequestParam(value = "trainerEmail") String trainerEmail) throws Exception {
         return FittnerResponse.build(userCommonService.statusChk(trainerEmail));
     }
 
-    @Operation(summary = "스플래시 API", description = "스플래시 조회 API 입니다.")
+    @Operation(summary = "스플래시 API", description = "스플래시 조회 API 입니다.",operationId = "getUserCommonSplash")
     @GetMapping("/splash")
     public ResponseEntity<ApiResponseMessage<SplashResDto>> getSplash(@Parameter(description = "승인토큰", example = "")
                                                                       @RequestParam(value = "accessToken", required = false) String accessToken) {
         return FittnerResponse.build(userCommonService.getSplash(accessToken));
     }
 
-    @Operation(summary = "브랜드컬러 조회 API", description = "브랜드컬러 조회 API 입니다.")
+    @Operation(summary = "브랜드컬러 조회 API", description = "브랜드컬러 조회 API 입니다.",operationId = "getUserCommonBrandColor")
     @GetMapping("/brand-color")
     public ResponseEntity<ApiResponseMessage<BrandColorResDto>> getBrandColor(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         return FittnerResponse.build(userCommonService.getBrandColor(customUserDetails));

@@ -32,74 +32,74 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.", operationId = "test")
+    @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.", operationId = "postUserJoin")
     @PostMapping("/join")
     public ResponseEntity<ApiResponseMessage<Object>> join(@RequestBody JoinReqDto joinReqDto) throws Exception {
         userService.joinProcess(joinReqDto);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "트레이너 계정 탈퇴", description = "트레이너 계정 탈퇴 API 입니다.", operationId = "test2")
+    @Operation(summary = "트레이너 계정 탈퇴", description = "트레이너 계정 탈퇴 API 입니다.", operationId = "postUserDrop")
     @PostMapping("/drop")
-    public ResponseEntity<ApiResponseMessage<Object>> join(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+    public ResponseEntity<ApiResponseMessage<Object>> userDrop(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         userService.dropTrainer(request, customUserDetails);
         return FittnerResponse.ok();
     }
 
 
-    @Operation(summary = "메인에서 트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
+    @Operation(summary = "메인에서 트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.", operationId = "getUserMainCenters")
     @GetMapping("/main/centers")
     public ResponseEntity<ApiResponseMessage<PageResponseDto<MainUserCenterListResDto>>> mainCenterList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildPage(userService.getMainCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
     }
 
-    @Operation(summary = "트레이너가 회원을 등록하는 API", description = "트레이너가 회원을 등록하는 API 입니다.")
+    @Operation(summary = "트레이너가 회원을 등록하는 API", description = "트레이너가 회원을 등록하는 API 입니다.", operationId = "postUserRegister")
     @PostMapping("/register")
     public ResponseEntity<ApiResponseMessage<Object>> register(@RequestBody MemberRegisterReqDto memberRegisterReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         userService.registerUser(memberRegisterReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "트레이너의 회원 목록 조회 API", description = "트레이너의 회원 목록 조회 API 입니다.")
+    @Operation(summary = "트레이너의 회원 목록 조회 API", description = "트레이너의 회원 목록 조회 API 입니다.", operationId = "getUserMembers")
     @GetMapping("/members")
     public ResponseEntity<?> members() {
         return FittnerResponse.buildList(userService.getMembers());
     }
 
-    @Operation(summary = "트레이너의 회원 상세 조회 API", description = "트레이너의 회원 상세 조회 API 입니다.")
+    @Operation(summary = "트레이너의 회원 상세 조회 API", description = "트레이너의 회원 상세 조회 API 입니다.", operationId = "getUserMemberMemberId")
     @GetMapping("/member/{memberId}")
     public ResponseEntity<ApiResponseMessage<List<MemberDetailResDto>>> memberDetail(@PathVariable(value = "memberId") String memberId) throws Exception {
         return FittnerResponse.buildList(userService.getMemberTicketDetailInfo(memberId));
     }
 
 
-    @Operation(summary = "센터 목록 조회 API", description = "센터 목록 조회 API 입니다.")
+    @Operation(summary = "센터 목록 조회 API", description = "센터 목록 조회 API 입니다.",operationId = "getUserCenterList")
     @GetMapping("/center/list")
     public ResponseEntity<ApiResponseMessage<List<CenterListResDto>>> centerList() throws Exception {
         return FittnerResponse.buildList(userService.getCenterList());
     }
 
-    @Operation(summary = "트레이너 정보 조회 API", description = "트레이너 정보 조회 API 입니다.")
+    @Operation(summary = "트레이너 정보 조회 API", description = "트레이너 정보 조회 API 입니다.",operationId = "getUserInfo")
     @GetMapping("/info")
     public ResponseEntity<ApiResponseMessage<UserInfoResDto>> getUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.build(userService.getUserInfo(customUserDetails));
     }
 
-    @Operation(summary = "트레이너의 센터 등록 API", description = "트레이너의 센터 등록 API 입니다.")
+    @Operation(summary = "트레이너의 센터 등록 API", description = "트레이너의 센터 등록 API 입니다.",operationId = "postUserCenter")
     @PostMapping("/center")
     public ResponseEntity<ApiResponseMessage<Object>> registerCenter(@RequestBody CenterRegisterReqDto centerRegisterReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         userService.registerCenter(centerRegisterReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.")
+    @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.",operationId = "getUserCenters")
     @GetMapping("/centers")
     public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ModelAttribute FittnerPageable pageable,
                                                                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildPage(userService.getCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
     }
 
-    @Operation(summary = "트레이너 본인이 승인요청한걸 승인취소하는 API", description = "트레이너 본인이 승인요청한걸 승인취소하는 API 입니다.")
+    @Operation(summary = "트레이너 본인이 승인요청한걸 승인취소하는 API", description = "트레이너 본인이 승인요청한걸 승인취소하는 API 입니다.",operationId = "deleteUserCenter")
     @DeleteMapping("/center")
     public ResponseEntity<ApiResponseMessage<Object>> cancelCenterApproval(@RequestBody CancelCenterApprovalReqDto cancelCenterApprovalReqDto,
                                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
@@ -107,7 +107,7 @@ public class UserController {
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "회원가입 약관 조회 API", description = "회원가입 약관 조회 API 입니다.")
+    @Operation(summary = "회원가입 약관 조회 API", description = "회원가입 약관 조회 API 입니다.",operationId = "getUserTerms")
     @GetMapping("/terms")
     public ResponseEntity<ApiResponseMessage<List<TermsResDto>>> getJoinTerms() throws Exception {
         return FittnerResponse.buildList(userService.getJoinTerms());

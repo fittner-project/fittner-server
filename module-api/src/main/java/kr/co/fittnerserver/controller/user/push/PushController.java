@@ -28,19 +28,19 @@ public class PushController {
 
     final PushService pushService;
 
-    @Operation(summary = "신규 알림 여부 조회 API", description = "신규 알림이 있는지(안읽은 알림) 확인하는 API 입니다.")
+    @Operation(summary = "신규 알림 여부 조회 API", description = "신규 알림이 있는지(안읽은 알림) 확인하는 API 입니다.",operationId = "getUserPushChk")
     @GetMapping("/push/chk")
     public ResponseEntity<ApiResponseMessage<PushChkResDto>> pushChk(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.build(pushService.pushChk(customUserDetails));
     }
 
-    @Operation(summary = "알림 리스트 조회 API", description = "알림 리스트 조회 API 입니다.")
+    @Operation(summary = "알림 리스트 조회 API", description = "알림 리스트 조회 API 입니다.",operationId = "getUserPushs")
     @GetMapping("/pushs")
     public ResponseEntity<ApiResponseMessage<List<PushResDto>>> getPushs(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(pushService.getPushs(pageable, customUserDetails));
     }
 
-    @Operation(summary = "알림 읽음 API", description = "알림 읽음 API 입니다.")
+    @Operation(summary = "알림 읽음 API", description = "알림 읽음 API 입니다.",operationId = "postUserPushRead")
     @PostMapping("/push/read")
     public ResponseEntity<ApiResponseMessage<Object>> pushRead(@RequestBody PushReadReqDto pushReadReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         pushService.pushRead(pushReadReqDto, customUserDetails);

@@ -3,7 +3,6 @@ package kr.co.fittnerserver.controller.user.common;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.common.response.BrandColorResDto;
 import kr.co.fittnerserver.dto.user.common.response.HardUpdateResDto;
@@ -45,8 +44,9 @@ public class UserCommonController {
 
     @Operation(summary = "스플래시 API", description = "스플래시 조회 API 입니다.",operationId = "getUserCommonSplash")
     @GetMapping("/splash")
-    public ResponseEntity<ApiResponseMessage<SplashResDto>> getSplash(HttpServletRequest request) {
-        return FittnerResponse.build(userCommonService.getSplash(request));
+    public ResponseEntity<ApiResponseMessage<SplashResDto>> getSplash(@Parameter(description = "승인토큰", example = "")
+                                                                      @RequestParam(value = "accessToken", required = false) String accessToken) {
+        return FittnerResponse.build(userCommonService.getSplash(accessToken));
     }
 
     @Operation(summary = "브랜드컬러 조회 API", description = "브랜드컬러 조회 API 입니다.",operationId = "getUserCommonBrandColor")

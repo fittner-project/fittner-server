@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.service.user.common;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
@@ -60,32 +61,39 @@ public class UserCommonService {
         return r;
     }
 
-    public SplashResDto getSplash(String accessToken){
+    public SplashResDto getSplash(HttpServletRequest request) {
 
-        //응답값
-        SplashResDto r = new SplashResDto();
+        String authorizationHeader = request.getHeader("Authorization");
 
-        //기본 이미지 url
-        String defaultImgUrl = "https://api.fittner.co.kr/api/v1/common/file/show/1Ec3Eb2h1B9";
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            // Bearer 토큰 부분만 추출
+            String accessToken = authorizationHeader.substring(7); // "Bearer " 부분을 제거
+            //응답값
+            SplashResDto r = new SplashResDto();
 
-        try {
-            if(!StringUtils.isEmpty(accessToken)){
-                TrainerDto trainer = userMapper.selectTrainerByTrainerId(jwtTokenUtil.validateTokenAndGetTrainerId(accessToken));
-                if(trainer != null){
-                    CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("SPLASH",trainer.getCenterId());
-                    r.setSplashImgUrl(commonCode.getCommonCodeMemo());
+            //기본 이미지 url
+            String defaultImgUrl = "https://api.fittner.co.kr/api/v1/common/file/show/1Ec3Eb2h1B9";
+
+            try {
+                if(!StringUtils.isEmpty(accessToken)){
+                    TrainerDto trainer = userMapper.selectTrainerByTrainerId(jwtTokenUtil.validateTokenAndGetTrainerId(accessToken));
+                    if(trainer != null){
+                        CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("SPLASH",trainer.getCenterId());
+                        r.setSplashImgUrl(commonCode.getCommonCodeMemo());
+                    }
                 }
-            }
 
-            if(StringUtils.isEmpty(r.getSplashImgUrl())){
+                if(StringUtils.isEmpty(r.getSplashImgUrl())){
+                    r.setSplashImgUrl(defaultImgUrl); //기본이미지
+                }
+
+            }catch (Exception e){
                 r.setSplashImgUrl(defaultImgUrl); //기본이미지
             }
 
-        }catch (Exception e){
-            r.setSplashImgUrl(defaultImgUrl); //기본이미지
+            return r;
         }
-
-        return r;
+        throw new CommonException(CommonErrorCode.NOT_FOUND_AUTH_HEADER.getCode(), CommonErrorCode.NOT_FOUND_AUTH_HEADER.getMessage());
     }
 
     public BrandColorResDto getBrandColor(CustomUserDetails customUserDetails){

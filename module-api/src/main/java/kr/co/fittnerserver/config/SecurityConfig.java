@@ -74,6 +74,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("https://appleid.apple.com"); //apple
         config.addAllowedOrigin("http://localhost:8080"); // 로컬 테스트용
         config.addAllowedOrigin("http://localhost:3000"); //프론트 로컬용*/
+        config.addExposedHeader("Authorization");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 

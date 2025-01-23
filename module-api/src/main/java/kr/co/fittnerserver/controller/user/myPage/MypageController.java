@@ -29,30 +29,36 @@ public class MypageController {
 
     final MyPageService myPageService;
 
-    @Operation(summary = "수익관리 요약 조회 API", description = "수익관리 요약 API 입니다.",operationId = "getUserMyPageSalesInfo")
-    @GetMapping("/myPage/sales-info")
-    public ResponseEntity<ApiResponseMessage<SalesInfoResDto>> getSalesInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.build(myPageService.getSalesInfo(customUserDetails));
+    @Operation(summary = "수익관리 헤더 조회 API", description = "수익관리 헤더 조회 API 입니다.", operationId = "getUserMyPageSales")
+    @GetMapping("/myPage/sales")
+    public ResponseEntity<ApiResponseMessage<SalesResDto>> getSales(@Parameter(description = "센터ID", example = "1")
+                                                                    @RequestParam(value = "centerId") String centerId,
+                                                                    @Parameter(description = "예약시작월", example = "202501")
+                                                                    @RequestParam(value = "reservationStartMonth", required = false) String reservationStartMonth,
+                                                                    @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.build(myPageService.getSales(centerId, reservationStartMonth, customUserDetails));
     }
 
-    @Operation(summary = "수익관리 조회 API", description = "수익관리 조회 API 입니다.",operationId = "getUserMyPageSalesReservationStartMonth")
-    @GetMapping("/myPage/sales/{reservationStartMonth}")
-    public ResponseEntity<ApiResponseMessage<List<SalesResDto>>> getSales(@Parameter(name = "reservationStartMonth", description = "예약시작월", example = "202501")
-                                                                    @PathVariable(name = "reservationStartMonth") String reservationStartMonth,
-                                                                          @ModelAttribute FittnerPageable pageable,
-                                                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildList(myPageService.getSales(reservationStartMonth,customUserDetails,pageable));
+    @Operation(summary = "수익관리 바디 조회 API", description = "수익관리 바디 조회 API 입니다.", operationId = "getUserMyPageSalesInfo")
+    @GetMapping("/myPage/sales/info")
+    public ResponseEntity<ApiResponseMessage<List<SalesInfoResDto>>> getSalesInfo(@Parameter(name = "reservationStartMonth", description = "예약시작월", example = "202501")
+                                                                                  @RequestParam(name = "reservationStartMonth") String reservationStartMonth,
+                                                                                  @Parameter(description = "센터ID", example = "1")
+                                                                                  @RequestParam(value = "centerId") String centerId,
+                                                                                  @ModelAttribute FittnerPageable pageable,
+                                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(myPageService.getSalesInfo(centerId,reservationStartMonth,customUserDetails,pageable));
     }
 
-    @Operation(summary = "수익관리 상세 조회 API", description = "수익관리 상세 조회 API 입니다.",operationId = "getUserMyPageSalesDetail")
-    @GetMapping("/myPage/sales/detail")
-    public ResponseEntity<ApiResponseMessage<List<SalesDetailResDto>>> getSalesDetail(@Parameter(name = "reservationStartMonth", description = "예약시작월", example = "202501")
-                                                                                      @RequestParam(value = "reservationStartMonth") String reservationStartMonth,
-                                                                                      @Parameter(description = "티켓ID", example = "dfb99734-ccd9-11ef-b7c9-0242ac190002")
-                                                                                      @RequestParam(value = "ticketId") String ticketId,
-                                                                                      @ModelAttribute FittnerPageable pageable,
-                                                                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildList(myPageService.getSalesDetail(reservationStartMonth,ticketId,customUserDetails,pageable));
+    @Operation(summary = "수익관리 바디 상세 조회 API", description = "수익관리 바디 상세 조회 API 입니다.", operationId = "getUserMyPageSalesInfoDetail")
+    @GetMapping("/myPage/sales/info/detail")
+    public ResponseEntity<ApiResponseMessage<List<SalesInfoDetailResDto>>> getSalesInfoDetail(@Parameter(name = "reservationStartMonth", description = "예약시작월(202501 or TOTAL)", example = "202501")
+                                                                                              @RequestParam(value = "reservationStartMonth") String reservationStartMonth,
+                                                                                              @Parameter(description = "티켓ID", example = "dfb99734-ccd9-11ef-b7c9-0242ac190002")
+                                                                                              @RequestParam(value = "ticketId") String ticketId,
+                                                                                              @ModelAttribute FittnerPageable pageable,
+                                                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(myPageService.getSalesInfoDetail(reservationStartMonth,ticketId,customUserDetails,pageable));
     }
 
     @Operation(summary = "공지사항 조회 API", description = "공지사항 조회 API 입니다.",operationId = "getUserMyPageNotices")

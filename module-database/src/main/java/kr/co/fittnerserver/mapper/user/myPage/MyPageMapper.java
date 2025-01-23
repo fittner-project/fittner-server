@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper
 public interface MyPageMapper {
 
-    SalesInfoResDto getSalesInfo(String trainerId, String reservationStartMonth);
+    SalesResDto selectReservationForSalesHeader(String centerId, String trainerId, String reservationStartMonth);
 
-    List<SalesResDto> getSales(String trainerId, String reservationStartMonth, int currentPageNo);
+    List<SalesInfoResDto> selectReservationForSalesBody(String centerId, String trainerId, String reservationStartMonth, int currentPageNo);
 
-    List<SalesDetailResDto> getSalesDetail(String trainerId, String ticketId, String reservationStartMonth, int currentPageNo);
+    List<SalesInfoDetailResDto> selectReservationForSalesBodyDetail(String ticketId, String trainerId, String reservationStartMonth, int currentPageNo);
 
     List<NoticeResDto> selectNoticeByCenterIdAndTrainerId(int currentPageNo, String centerId, String trainerId);
 

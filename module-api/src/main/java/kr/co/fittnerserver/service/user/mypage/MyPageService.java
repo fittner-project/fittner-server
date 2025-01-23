@@ -1,8 +1,6 @@
 package kr.co.fittnerserver.service.user.mypage;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.common.CommonErrorCode;
-import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.user.TermsDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
@@ -16,6 +14,7 @@ import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,16 +29,21 @@ public class MyPageService {
     final UserMapper userMapper;
     final CommonMapper commonMapper;
 
-    public SalesInfoResDto getSalesInfo(CustomUserDetails customUserDetails) throws Exception{
-        return myPageMapper.getSalesInfo(customUserDetails.getTrainerId(), Util.getFormattedToday("yyyyMmdd"));
+    public SalesResDto getSales(String centerId, String reservationStartMonth, CustomUserDetails customUserDetails) throws Exception{
+        //예약시작월 없을 경우 기본값
+        if(StringUtils.isEmpty(reservationStartMonth)){
+            reservationStartMonth = Util.getFormattedToday("yyyyMMdd");
+        }
+
+        return myPageMapper.selectReservationForSalesHeader(centerId, customUserDetails.getTrainerId(), reservationStartMonth);
     }
 
-    public List<SalesResDto> getSales(String reservationStartMonth, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
-        return myPageMapper.getSales(reservationStartMonth, customUserDetails.getTrainerId(), pageable.getCurrentPageNo());
+    public List<SalesInfoResDto> getSalesInfo(String centerId, String reservationStartMonth, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
+        return myPageMapper.selectReservationForSalesBody(centerId, customUserDetails.getTrainerId(), reservationStartMonth, pageable.getCurrentPageNo());
     }
 
-    public List<SalesDetailResDto> getSalesDetail(String reservationStartMonth, String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
-        return myPageMapper.getSalesDetail(reservationStartMonth, ticketId, customUserDetails.getTrainerId(), pageable.getCurrentPageNo());
+    public List<SalesInfoDetailResDto> getSalesInfoDetail(String reservationStartMonth, String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
+        return myPageMapper.selectReservationForSalesBodyDetail(ticketId, customUserDetails.getTrainerId(), reservationStartMonth, pageable.getCurrentPageNo());
     }
 
     public List<NoticeResDto> getNotices(CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception {

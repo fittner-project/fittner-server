@@ -33,21 +33,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final DropTrainerRepository dropTrainerRepository;
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
     private static final List<String> EXCLUDED_URLS = Arrays.asList(
-            "/api/v1/auth/apple-info",
-            "/api/v1/auth/login",
-            "/api/v1/auth/refresh-token",
+            //기본
             "/actuator/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
+
+            //api
+            "/api/v1/auth/login",
+            "/api/v1/auth/refresh-token",
+            "/api/v1/auth/apple-redirect-url",
+            "/api/v1/common/file/show/**",
+            "/api/v1/user/common/app/version-chk",
+            "/api/v1/user/common/splash",
+            "/api/v1/user/common/status-chk",
             "/api/v1/user/join",
             "/api/v1/user/center/list",
-            "/api/v1/user/common/app/version-chk",
-            "/api/v1/common/file/show/**",
-            "/api/v1/user/common/splash",
-            "/api/v1/user/terms",
-            "/api/v1/auth/apple-redirect-url",
-            "/api/v1/user/common/status-chk"
+            "/api/v1/user/terms"
     );
 
     @Override

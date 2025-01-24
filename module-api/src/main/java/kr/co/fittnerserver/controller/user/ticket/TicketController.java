@@ -34,18 +34,17 @@ public class TicketController {
 
     @Operation(summary = "전체 이용권 리스트 조회 API", description = "전체 이용권 리스트 조회 API 입니다.", operationId = "getUserTickets")
     @GetMapping("/tickets")
-    public ResponseEntity<ApiResponseMessage<List<TicketListResDto>>> getTickets(@Parameter(name = "ticketStatus", description = "티켓상태", example = "TOTAL|ING|STOP|ASSIGN_TO|ASSIGN_FROM|REFUND|BEFORE|AFTER")
-                                                                                 @RequestParam(value = "ticketStatus") String ticketStatus,
-                                                                                 @ModelAttribute FittnerPageable pageable,
-                                                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        return FittnerResponse.buildList(ticketService.getTickets(ticketStatus, pageable, customUserDetails));
+    public ResponseEntity<ApiResponseMessage<List<TicketListResDto>>> getTickets(@Parameter(name = "ticketCode", description = "이용권 코드(TOTAL | ING | STOP | ASSIGN_TO | ASSIGN_FROM | REFUND | AFTER)", example = "TOTAL")
+                                                                                 @RequestParam(value = "ticketCode") String ticketCode,
+                                                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
+        return FittnerResponse.buildList(ticketService.getTickets(ticketCode, customUserDetails));
     }
 
     @Operation(summary = "이용권 상세 조회 API", description = "이용권 상세 조회 API 입니다.",operationId = "getUserTicketTicketId")
     @GetMapping("/ticket/{ticketId}")
-    public ResponseEntity<ApiResponseMessage<TicketDetailResDto>> getTicketDetail(@Parameter(name = "ticketId", description = "티켓ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
-                                                                                  @RequestParam(name = "ticketId") String ticketId,
-                                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<ApiResponseMessage<TicketDetailResDto>> getTicketDetail(@Parameter(name = "ticketId", description = "이용권ID", example = "03fa7063-d6e2-11ef-b7c9-0242ac190002")
+                                                                                  @PathVariable(name = "ticketId") String ticketId,
+                                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         return FittnerResponse.build(ticketService.getTicketDetail(ticketId, customUserDetails));
     }
 

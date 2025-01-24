@@ -20,12 +20,14 @@ import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.results.FittnerPageable;
+import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,63 +40,104 @@ public class TicketService {
     final UserMapper userMapper;
     final ReservationMapper reservationMapper;
 
-    public List<TicketListResDto> getTickets(String ticketStatus, FittnerPageable pageable, CustomUserDetails customUserDetails){
-        return ticketMapper.getTickets(ticketStatus,pageable.getCurrentPageNo(),customUserDetails.getTrainerId());
+    public List<TicketListResDto> getTickets(String ticketCode, CustomUserDetails customUserDetails) throws Exception{
+        List<TicketListResDto> r = new ArrayList<>();
+
+        if("TOTAL".equals(ticketCode)){
+            ticketCode = ""; //전체일때 조건 초기화
+        }
+
+        TicketDto param = new TicketDto();
+        param.setTrainerId(customUserDetails.getTrainerId());
+        param.setTicketCode(ticketCode);
+
+        List<TicketDto> ticketDtoList = ticketMapper.selectTicketByForOption(param);
+
+        for(TicketDto data : ticketDtoList){
+            TicketListResDto ticketListResDto = new TicketListResDto();
+            ticketListResDto.setTicketId(data.getTicketId());
+            ticketListResDto.setTicketCode(data.getTicketCode());
+            ticketListResDto.setMemeberName(data.getMemberName());
+            ticketListResDto.setTicketName(data.getTicketName());
+            ticketListResDto.setTicketStartDate(data.getTicketStartDate());
+            ticketListResDto.setTicketEndDate(data.getTicketEndDate());
+            ticketListResDto.setMemberPohoneEnd(data.getMemberPhoneEnd());
+            ticketListResDto.setTicketTotalCnt(data.getTicketTotalCnt());
+
+            r.add(ticketListResDto);
+        }
+
+        return r;
     }
 
-    public TicketDetailResDto getTicketDetail(String ticketId, CustomUserDetails customUserDetails){
+    public TicketDetailResDto getTicketDetail(String ticketId, CustomUserDetails customUserDetails) throws Exception{
         TicketDetailResDto r = new TicketDetailResDto();
 
         //이용권 정보
-        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(ticketId, "NORMAL");
+        TicketDto param = new TicketDto();
+        param.setTicketId(ticketId);
+        List<TicketDto> ticketDtoList = ticketMapper.selectTicketByForOption(param);
 
-        if(ticketDto == null){
-            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage());
+        if(ticketDtoList == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
         }
 
-        //티켓 정보 set
-        r.setTicketCodeName(ticketDto.getTicketCodeName());
-        r.setTicketName(ticketDto.getTicketName());
-        r.setTicketStartDate(ticketDto.getTicketStartDate());
-        r.setTicketEndDate(ticketDto.getTicketEndDate());
-        r.setTicketUseCnt(ticketDto.getTicketUseCnt());
-        r.setTicketTotalCnt(ticketDto.getTicketTotalCnt());
-        r.setTicketPrice(ticketDto.getTicketPrice());
+        //이용권은 1개만 조회 가능
+        TicketDto ticketDto = ticketDtoList.get(0);
+
+        //이용권 정보 set
+        TicketDetailResDto.TicketInfo ticketInfo = new TicketDetailResDto.TicketInfo();
+        ticketInfo.setTicketCode(ticketDto.getTicketCode());
+        ticketInfo.setTicketCodeName(ticketDto.getTicketCodeName());
+        ticketInfo.setTicketName(ticketDto.getTicketName());
+        ticketInfo.setTicketStartDate(ticketDto.getTicketStartDate());
+        ticketInfo.setTicketEndDate(ticketDto.getTicketEndDate());
+        ticketInfo.setTicketUseCnt(ticketDto.getTicketUseCnt());
+        ticketInfo.setTicketTotalCnt(ticketDto.getTicketTotalCnt());
+        ticketInfo.setTicketPrice(ticketDto.getTicketPrice());
+        r.setTicketInfo(ticketInfo);
 
         //회원 정보 set
-        r.setMemeberName(ticketDto.getMemberName());
-        r.setMemberPhone(ticketDto.getMemberPhone());
-        r.setMemberGender(ticketDto.getMemberGender());
-        r.setMemberBirth(ticketDto.getMemberBirth());
-        r.setMemberAddress(ticketDto.getMemberAdress());
-        r.setMemberMomo(ticketDto.getMemberMemo());
-        r.setMemberJoinPath(ticketDto.getMemberJoinPath());
+        //TODO 회원 개인정보 암호화 누락들 추가(현재 핸드폰만 되어있음)
+        TicketDetailResDto.MemberInfo memberInfo = new TicketDetailResDto.MemberInfo();
+        memberInfo.setMemeberName(ticketDto.getMemberName());
+        memberInfo.setMemberPhone(AES256Cipher.decrypt(ticketDto.getMemberPhone()));
+        memberInfo.setMemberGender(ticketDto.getMemberGender());
+        memberInfo.setMemberBirth(ticketDto.getMemberBirth());
+        memberInfo.setMemberAddress(ticketDto.getMemberAdress());
+        memberInfo.setMemberMomo(ticketDto.getMemberMemo());
+        memberInfo.setMemberJoinPath(ticketDto.getMemberJoinPath());
+        r.setMemberInfo(memberInfo);
 
-        //이용권 구분
-        TicketDto ticketDtoAssign = null;
+        //이용권 코드에 따른 추가정보(양도,환불)
+        TicketDto assign = null;
         Refund refund = null;
         if("ASSIGN_FROM".equals(ticketDto.getTicketCode())){
-            ticketDtoAssign = ticketMapper.selectTicketByTicketId(ticketDto.getOriginalTicketId(), "NORMAL");
+            assign = ticketMapper.selectTicketByTicketId(ticketDto.getOriginalTicketId(), "NORMAL");
         }else if("ASSIGN_TO".equals(ticketDto.getTicketCode())){
-            ticketDtoAssign = ticketMapper.selectTicketByTicketId(ticketDto.getTicketId(), "ORIGINAL");
+            assign = ticketMapper.selectTicketByTicketId(ticketDto.getTicketId(), "ORIGINAL");
         }else if("REFUND".equals(ticketDto.getTicketCode())){
             refund = ticketMapper.selectRefund(ticketDto.getTicketId());
         }
 
         //양도 정보 set
-        if(ticketDtoAssign != null){
-            r.setAssignCenterName(ticketDto.getCenterName());
-            r.setAssignTrainerName(ticketDto.getTrainerName());
-            r.setAssignDate(ticketDto.getCreatedDate());
-            r.setAssignCnt(ticketDto.getTicketTotalCnt());
-            r.setAssignMemberName(ticketDto.getMemberName());
+        if(assign != null){
+            TicketDetailResDto.AssignInfo assignInfo = new TicketDetailResDto.AssignInfo();
+            assignInfo.setAssignCenterName(ticketDto.getCenterName());
+            assignInfo.setAssignTrainerName(ticketDto.getTrainerName());
+            assignInfo.setAssignDate(ticketDto.getCreatedDate());
+            assignInfo.setAssignCnt(ticketDto.getTicketTotalCnt());
+            assignInfo.setAssignMemberName(ticketDto.getMemberName());
+            r.setAssignInfo(assignInfo);
         }
 
         //환불 정보 set
         if(refund != null){
-            r.setRefundCnt(String.valueOf(refund.getRefundCnt()));
-            r.setRefundPrice(refund.getRefundPrice());
-            r.setRefundDateTime(refund.getRefundDateTime());
+            TicketDetailResDto.RefundInfo refundInfo = new TicketDetailResDto.RefundInfo();
+            refundInfo.setRefundCnt(String.valueOf(refund.getRefundCnt()));
+            refundInfo.setRefundPrice(refund.getRefundPrice());
+            refundInfo.setRefundDateTime(refund.getRefundDateTime());
+            r.setRefundInfo(refundInfo);
         }
 
         return r;

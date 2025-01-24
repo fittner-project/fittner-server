@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface TicketMapper {
 
-    List<TicketListResDto> getTickets(String ticketStatus, int currentPageNo, String trainerId);
+    List<TicketDto> selectTicketByForOption(TicketDto ticketDto);
 
     TicketDto selectTicketByTicketId(String ticketId, String gubn);
 

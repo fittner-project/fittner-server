@@ -222,17 +222,20 @@
 
     <update id="updateTermsAgree">
         /* MyPageMapper.updatePushSet */
+        with temp as (
+            select a.terms_agree_id
+              from terms_agree a
+         left join terms b
+                on a.terms_id = b.terms_id
+             where a.trainer_id = #{trainerId}
+               and b.terms_kind = 'ADVERTISE'
+        )
         update terms_agree
            set terms_agree_yn = 'Y'
              , terms_id = #{termsId}
              , modified_by = #{trainerId}
              , modified_date = CURRENT_TIMESTAMP
-         where terms_agree_id = (select a.terms_agree_id
-                                   from terms_agree a
-                              left join terms b
-                                     on a.terms_id = b.terms_id
-                                  where a.trainer_id = #{trainerId}
-                                    and b.terms_kind = 'ADVERTISE')
+         where terms_agree_id = (select terms_agree_id from temp)
     </update>
 
     <select id="selectPushSetByTrainerId" resultType="PushSetResDto">

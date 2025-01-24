@@ -47,8 +47,8 @@
                    and a.trainer_id = #{trainerId}
                    and a.center_id = #{centerId}
                ) all_list
-        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
-          and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 0 else (#{currentPageNo}-1)*10 end
+          and all_list.row_num <![CDATA[<=]]> #{currentPageNo}*10
 
     </select>
 
@@ -78,8 +78,8 @@
                    and a.ticket_id = #{ticketId}
                    and a.trainer_id = #{trainerId}
                ) all_list
-        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
-          and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 0 else (#{currentPageNo}-1)*10 end
+          and all_list.row_num <![CDATA[<=]]> #{currentPageNo}*10
     </select>
 
     <insert id="insertSign">

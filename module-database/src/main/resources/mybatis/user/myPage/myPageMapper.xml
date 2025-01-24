@@ -88,8 +88,8 @@
                      , b.ticket_start_date
                      , b.ticket_end_date
                ) all_list
-         where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
-           and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+         where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 0 else (#{currentPageNo}-1)*10 end
+           and all_list.row_num <![CDATA[<=]]> #{currentPageNo}*10
     </select>
 
     <select id="selectReservationForSalesBodyDetail" resultType="SalesInfoDetailResDto">
@@ -124,8 +124,8 @@
                   </if>
                   and a.reservation_delete_yn = 'N'
               ) all_list
-        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
-          and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+        where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 0 else (#{currentPageNo}-1)*10 end
+          and all_list.row_num <![CDATA[<=]]> #{currentPageNo}*10
     </select>
 
     <select id="selectNoticeByCenterIdAndTrainerId" resultType="NoticeResDto">
@@ -149,8 +149,8 @@
                    and b.trainer_id = #{trainerId}
                  where a.center_id = #{centerId}
                 ) all_list
-            where all_list.row_num >= case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 1 else (#{currentPageNo}-1)*10 end
-              and all_list.row_num <![CDATA[<]]> #{currentPageNo}*10
+            where all_list.row_num > case when #{currentPageNo} is null or #{currentPageNo}=0 or #{currentPageNo}=1 then 0 else (#{currentPageNo}-1)*10 end
+              and all_list.row_num <![CDATA[<=]]> #{currentPageNo}*10
     </select>
 
     <select id="selectNoticeReadCountByNoticeIdAndTrainerId" resultType="int">

@@ -6,7 +6,7 @@
         /* PushMapper.pushChk */
         select case when count(*) > 0 then 'Y'
                     else 'N'
-                end as push_chk_yn
+                end as new_push_yn
           from push
          where trainer_id = #{trainerId}
            and push_read_yn = 'N'

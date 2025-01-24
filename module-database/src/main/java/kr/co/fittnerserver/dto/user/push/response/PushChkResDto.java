@@ -1,9 +1,11 @@
 package kr.co.fittnerserver.dto.user.push.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class PushChkResDto {
 
-    private String pushChkYn;
+    @Schema(description = "신규알림여부",example = "Y")
+    private String newPushYn;
 }

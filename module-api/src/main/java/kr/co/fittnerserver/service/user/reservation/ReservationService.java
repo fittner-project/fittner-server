@@ -4,7 +4,9 @@ import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.reservation.request.ReservationReqDto;
+import kr.co.fittnerserver.dto.user.reservation.request.ReservationSearchDto;
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationColorResDto;
+import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Reservation;
 import kr.co.fittnerserver.entity.user.Ticket;
@@ -19,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Slf4j
@@ -47,5 +51,10 @@ public class ReservationService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
         reservationRepository.save(new Reservation(reservationReqDto,member,ticket,trainer));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationMemberResDto> getReservations(ReservationSearchDto reservationSearchDto, CustomUserDetails customUserDetails) {
+        return reservationRepository.getReservationMemberDataList(reservationSearchDto.getReservationStartDate(), reservationSearchDto.getReservationEndDate(), customUserDetails.getTrainerId());
     }
 }

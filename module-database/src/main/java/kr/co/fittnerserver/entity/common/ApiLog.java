@@ -27,7 +27,7 @@ public class ApiLog {
 
     @Comment(value = "요청일자")
     @Column(length = 8)
-    private String reqDate;
+    private int reqDate;
 
     @Comment(value = "요청시간")
     @Column(length = 6)

@@ -1,9 +1,12 @@
 package kr.co.fittnerserver.entity.user.enums;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public enum ReservationColor {
     COLOR_007AFF("007AFF"),
     COLOR_FF3B30("FF3B30");
@@ -12,10 +15,6 @@ public enum ReservationColor {
 
     ReservationColor(String colorCode) {
         this.colorCode = colorCode;
-    }
-
-    public String getColorCode() {
-        return colorCode;
     }
 
     public static List<String> getColorCodes() {

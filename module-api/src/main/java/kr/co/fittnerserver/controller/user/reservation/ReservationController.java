@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.reservation.request.ReservationReqDto;
+import kr.co.fittnerserver.dto.user.reservation.request.ReservationSearchDto;
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationColorResDto;
+import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.user.reservation.ReservationService;
@@ -39,6 +41,11 @@ public class ReservationController {
         return FittnerResponse.ok();
     }
 
-    //@Operation(summary = "트레이너의 회원 수업 목록 리스트 API", description = "트레이너의 회원 수업 목록 리스트 API 입니다.")
+    @Operation(summary = "트레이너의 회원 수업 목록 리스트 API", description = "트레이너의 회원 수업 목록 리스트 API 입니다.")
+    @GetMapping("/reservations")
+    public ResponseEntity<ApiResponseMessage<List<ReservationMemberResDto>>> getReservations(@ModelAttribute ReservationSearchDto reservationSearchDto,
+                                                                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(reservationService.getReservations(reservationSearchDto, customUserDetails));
+    }
 
 }

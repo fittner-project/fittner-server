@@ -10,9 +10,9 @@ import java.util.List;
 @Mapper
 public interface PushMapper {
 
-    PushChkResDto pushChk(String trainerId);
+    PushChkResDto selectPushForNew(String centerId, String trainerId);
 
-    List<PushResDto> selectPushByTrainerId(int currentPageNo, String trainerId);
+    List<PushResDto> selectPushByTrainerId(int currentPageNo, String trainerId, String centerId);
 
     void updatePushByPushId(String pushId, String trainerId);
 }

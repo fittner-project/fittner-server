@@ -72,7 +72,7 @@ public class UserCommonService {
             if(!StringUtils.isEmpty(accessToken)){
                 TrainerDto trainer = userMapper.selectTrainerByTrainerId(jwtTokenUtil.validateTokenAndGetTrainerId(accessToken));
                 if(trainer != null){
-                    CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("SPLASH",trainer.getCenterId());
+                    CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("SPLASH",trainer.getCenterId()); //TODO 센터:트레이너(n:1) 이므로 고민해야함
                     r.setSplashImgUrl(commonCode.getCommonCodeMemo());
                 }
             }
@@ -96,7 +96,7 @@ public class UserCommonService {
 
             TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
 
-            CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("BRANDCOLOR", trainer.getCenterId());
+            CommonCode commonCode = commonMapper.selectCommonCodeByGrpCommonCodeAndCommonCode("BRANDCOLOR", trainer.getCenterId()); //TODO 센터:트레이너(n:1) 이므로 고민해야함
 
             if (commonCode != null) {
                 //format : greyTypeA=#909090&greyTypeB=#D0D0D0&greyTypeC=#92KS00

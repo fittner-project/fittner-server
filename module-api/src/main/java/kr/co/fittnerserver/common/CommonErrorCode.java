@@ -31,7 +31,7 @@ public enum CommonErrorCode {
     NOT_MATCH_TRAINER("H019","트레이너 정보가 일치하지 않습니다."),
     APPLE_FAIL("H020","애플 통신 중 에러가 발생하였습니다."),
     NOT_FOUND_TRAINER_PRODUCT("H021","트레이너 상품을 찾을 수 없습니다."),
-    NOT_ASSIGN_SAME_MEMBER("H022","동일회원에게 양도가 불가능합니다."),
+    NOT_ASSIGN_SELF("H022","본인에게는 양도가 불가능합니다."),
     ERR_TICKET_START_END_DATE("H023","티켓 이용일이 잘못되었습니다."),
     NOT_FOUND_TERMS("H024","약관을 찾을 수 없습니다."),
     NOT_FOUND_TERMS_AGREE("H025","약관 동의 정보를 찾을 수 없습니다."),
@@ -41,7 +41,11 @@ public enum CommonErrorCode {
     NOT_FOUND_RESERVATION("H027","수업 정보를 찾을 수 없습니다."),
     ALREADY_SIGN("H028","이미 처리된 예약입니다."),
     NOT_FOUND_SETTLEMENT("H029","정산 정책을 찾을 수 없습니다."),
-    NOT_ACTIVE_TRAINER("H030","승인 대기중인 트레이너입니다.");
+    NOT_ACTIVE_TRAINER("H030","승인 대기중인 트레이너입니다."),
+    NOT_ALLOW_TRAINER_MEMBER("H031","트레이너에 소속된 회원이 아닙니다."),
+    NOT_REFUND("H032","환불이 불가능한 이용권입니다."),
+    NOT_ASSIGN("H033","양도가 불가능한 이용권입니다.")
+    ;
 
 
     private final String code;

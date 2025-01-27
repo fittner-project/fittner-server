@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.controller.user.push;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.push.request.PushReadReqDto;
@@ -30,14 +31,18 @@ public class PushController {
 
     @Operation(summary = "신규 알림 여부 조회 API", description = "신규 알림이 있는지(안읽은 알림) 확인하는 API 입니다.",operationId = "getUserPushChk")
     @GetMapping("/push/chk")
-    public ResponseEntity<ApiResponseMessage<PushChkResDto>> pushChk(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.build(pushService.pushChk(customUserDetails));
+    public ResponseEntity<ApiResponseMessage<PushChkResDto>> pushChk(@Parameter(description = "센터ID", example = "1")
+                                                                     @RequestParam(value = "centerId") String centerId,
+                                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.build(pushService.pushChk(centerId, customUserDetails));
     }
 
     @Operation(summary = "알림 리스트 조회 API", description = "알림 리스트 조회 API 입니다.",operationId = "getUserPushs")
     @GetMapping("/pushs")
-    public ResponseEntity<ApiResponseMessage<List<PushResDto>>> getPushs(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildList(pushService.getPushs(pageable, customUserDetails));
+    public ResponseEntity<ApiResponseMessage<List<PushResDto>>> getPushs(@Parameter(description = "센터ID", example = "1")
+                                                                         @RequestParam(value = "centerId") String centerId,
+                                                                         @ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(pushService.getPushs(centerId, pageable, customUserDetails));
     }
 
     @Operation(summary = "알림 읽음 API", description = "알림 읽음 API 입니다.",operationId = "postUserPushRead")

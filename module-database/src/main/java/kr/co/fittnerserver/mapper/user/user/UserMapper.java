@@ -21,4 +21,5 @@ public interface UserMapper {
 
     TrainerSettlementDto selectTrainerSettlementByTrainerSettlementId(String trainerSettlementId);
     TrainerSettlementDto selectTrainerSettlementByTrainerIdAndSettlementCode(String trainerId, String trainerSettlementCode);
+
 }

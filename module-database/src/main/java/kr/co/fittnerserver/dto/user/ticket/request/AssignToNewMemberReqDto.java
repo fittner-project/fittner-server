@@ -39,10 +39,6 @@ public class AssignToNewMemberReqDto {
     @NotBlank
     private String memberAddress;
 
-    @Schema(description = "트레이너 상품 키값", example = "3803f0e5-d4d3-11ef-b7c9-0242ac190002")
-    @NotBlank
-    private String trainerProductId;
-
     @Schema(description = "상품명", example = "프리미엄PT20")
     @NotBlank
     private String productName;
@@ -68,6 +64,5 @@ public class AssignToNewMemberReqDto {
 
     @Schema(description = "가입 경로", example = "지인 소개")
     private String memberJoinPath;
-
 
 }

@@ -47,12 +47,6 @@ public class UserController {
     }
 
 
-    @Operation(summary = "메인에서 트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.", operationId = "getUserMainCenters")
-    @GetMapping("/main/centers")
-    public ResponseEntity<ApiResponseMessage<PageResponseDto<MainUserCenterListResDto>>> mainCenterList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildPage(userService.getMainCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
-    }
-
     @Operation(summary = "트레이너가 회원을 등록하는 API", description = "트레이너가 회원을 등록하는 API 입니다.", operationId = "postUserRegister")
     @PostMapping("/register")
     public ResponseEntity<ApiResponseMessage<Object>> register(@RequestBody MemberRegisterReqDto memberRegisterReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {

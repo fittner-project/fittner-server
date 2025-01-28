@@ -5,6 +5,7 @@ import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.reservation.request.ReservationReqDto;
 import kr.co.fittnerserver.dto.user.reservation.request.ReservationSearchDto;
+import kr.co.fittnerserver.dto.user.reservation.response.GroupedReservationMemberDto;
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationColorResDto;
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto;
 import kr.co.fittnerserver.entity.user.Member;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -54,7 +56,13 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReservationMemberResDto> getReservations(ReservationSearchDto reservationSearchDto, CustomUserDetails customUserDetails) {
-        return reservationRepository.getReservationMemberDataList(reservationSearchDto.getReservationStartDate(), reservationSearchDto.getReservationEndDate(), customUserDetails.getTrainerId());
+    public List<GroupedReservationMemberDto> getReservations(ReservationSearchDto reservationSearchDto, CustomUserDetails customUserDetails) {
+        List<ReservationMemberResDto> reservationMemberDataList = reservationRepository.getReservationMemberDataList(reservationSearchDto.getReservationStartDate(), reservationSearchDto.getReservationEndDate(), customUserDetails.getTrainerId());
+        // 데이터 그룹화
+        return reservationMemberDataList.stream()
+                .collect(Collectors.groupingBy(ReservationMemberResDto::getLastTwoDigits))
+                .entrySet().stream()
+                .map(entry -> new GroupedReservationMemberDto(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }

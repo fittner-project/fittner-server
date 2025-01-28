@@ -107,19 +107,6 @@ public class UserService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public Page<MainUserCenterListResDto> getMainCenterListByTrainer(CustomUserDetails customUserDetails, Pageable pageable) {
-        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
-
-        return new CacheablePage<>(
-                centerJoinRepository.findAllByCenterJoinApprovalYnAndTrainer("N", trainer, pageable)
-                        .map(userCenter -> MainUserCenterListResDto.builder()
-                                .centerJoinId(userCenter.getCenterJoinId())
-                                .centerName(userCenter.getCenter().getCenterName())
-                                .build()));
-    }
-
     @Transactional
     public void registerUser(MemberRegisterReqDto memberRegisterReqDto, CustomUserDetails customUserDetails) throws Exception {
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())

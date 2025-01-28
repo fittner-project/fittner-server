@@ -1,7 +1,6 @@
 package kr.co.fittnerserver.dto.user.reservation.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.co.fittnerserver.entity.user.enums.ReservationColor;
 import lombok.Data;
 
 

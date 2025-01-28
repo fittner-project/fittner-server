@@ -29,11 +29,6 @@ Content-Type: application/json
 
 
 
-### 트레이너가 지정한 센터 리스트 조회
-GET http://localhost:8080/api/v1/user/main/centers
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
-
 
 
 ### 트레이너가 지정한 회원 등록

@@ -5,6 +5,8 @@ import kr.co.fittnerserver.entity.common.CommonCode;
 import kr.co.fittnerserver.entity.user.Member;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface CommonMapper {
     String selectUUID();
@@ -12,4 +14,5 @@ public interface CommonMapper {
     CommonCode selectCommonCodeByGrpCommonCodeAndCommonCode(String grpCommonCode, String commonCode);
     Center selectCenterByCenterId(String centerId);
     Member selectMemberByMemberId(String memberId);
+    List<Member> selectMemberByCenterIdAndTrainerId(String centerId, String trainerId);
 }

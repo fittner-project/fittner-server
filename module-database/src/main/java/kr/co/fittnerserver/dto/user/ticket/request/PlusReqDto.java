@@ -5,11 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class RelayReqDto {
+public class PlusReqDto {
 
     @Schema(description = "회원ID", example = "3c7ba936-d4d3-11ef-b7c9-0242ac190002")
     @NotBlank
     private String memberId;
+
+    @Schema(description = "센터ID", example = "3c7ba936-d4d3-11ef-b7c9-0242ac190002")
+    @NotBlank
+    private String cneterId;
 
     @Schema(description = "상품명", example = "프리미엄PT20")
     @NotBlank
@@ -33,9 +37,5 @@ public class RelayReqDto {
 
     @Schema(description = "회원 메모", example = "특이사항 없음")
     private String memberMemo;
-
-    @Schema(description = "가입 경로", example = "지인 소개")
-    private String memberJoinPath;
-
 
 }

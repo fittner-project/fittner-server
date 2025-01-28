@@ -6,6 +6,9 @@ import lombok.Data;
 @Data
 public class SignResrvationDto {
 
+    @Schema(description = "이용권ID", example = "3c7ba936-d4d3-11ef-b7c9-0242ac190002")
+    private String ticketId;
+
     @Schema(description = "예약ID", example = "3c7ba936-d4d3-11ef-b7c9-0242ac190002")
     private String reservationId;
 

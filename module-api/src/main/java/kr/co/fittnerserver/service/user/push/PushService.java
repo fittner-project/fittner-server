@@ -19,12 +19,12 @@ public class PushService {
 
     final PushMapper pushMapper;
 
-    public PushChkResDto pushChk(CustomUserDetails customUserDetails){
-        return pushMapper.pushChk(customUserDetails.getTrainerId());
+    public PushChkResDto pushChk(String centerId, CustomUserDetails customUserDetails){
+        return pushMapper.selectPushForNew(centerId, customUserDetails.getTrainerId());
     }
 
-    public List<PushResDto> getPushs(FittnerPageable pageable, CustomUserDetails customUserDetails){
-        return pushMapper.selectPushByTrainerId(pageable.getCurrentPageNo(), customUserDetails.getTrainerId());
+    public List<PushResDto> getPushs(String centerId, FittnerPageable pageable, CustomUserDetails customUserDetails){
+        return pushMapper.selectPushByTrainerId(pageable.getCurrentPageNo(), customUserDetails.getTrainerId(), centerId);
     }
 
     public void pushRead(PushReadReqDto pushReadReqDto, CustomUserDetails customUserDetails) throws Exception{

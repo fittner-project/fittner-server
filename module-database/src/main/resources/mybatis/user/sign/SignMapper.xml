@@ -17,14 +17,16 @@
 
     <select id="selectReservationByTrainerIdAndCenterId" resultType="SignResrvationDto">
         /* SignMapper.selectReservationByTrainerIdAndCenterId */
-        select all_list.reservation_id
+        select all_list.ticket_id
+             , all_list.reservation_id
              , all_list.member_name
              , all_list.reservation_start_time
              , all_list.reservation_end_time
              , all_list.reservation_memo
              , all_list.reservation_status
              , all_list.reservation_use_cnt
-          from (select a.reservation_id
+          from (select a.ticket_id
+                     , a.reservation_id
                      , b.member_name
                      , a.reservation_start_time
                      , a.reservation_end_time

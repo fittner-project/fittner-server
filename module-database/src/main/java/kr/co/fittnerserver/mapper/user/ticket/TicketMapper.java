@@ -1,5 +1,6 @@
 package kr.co.fittnerserver.mapper.user.ticket;
 
+import kr.co.fittnerserver.domain.user.RefundDto;
 import kr.co.fittnerserver.domain.user.TicketDto;
 import kr.co.fittnerserver.domain.user.TrainerProductDto;
 import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
@@ -22,12 +23,14 @@ public interface TicketMapper {
 
     void insertTicket(TicketDto ticketDto);
 
-    void updateTicketForAssign(String ticketId, String trainerId);
+    void updateTicketForTicketCode(String ticketId, String trainerId, String ticketCode);
 
     void insertMember(@Param("AssignToNewMemberReqDto") AssignToNewMemberReqDto assignToNewMemberReqDto, @Param("memberPhoneEnd") String memberPhoneEnd, @Param("trainerId") String trainerId, @Param("memberId") String memberId);
 
     void insertTrainerProduct(TrainerProductDto trainerProductDto);
 
     void updateTicketForUseCnt(String ticketId);
+
+    void insertRefund(RefundDto refundDto);
 
 }

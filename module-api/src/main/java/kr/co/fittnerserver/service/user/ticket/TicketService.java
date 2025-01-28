@@ -3,12 +3,14 @@ package kr.co.fittnerserver.service.user.ticket;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
+import kr.co.fittnerserver.domain.user.RefundDto;
 import kr.co.fittnerserver.domain.user.TicketDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.domain.user.TrainerProductDto;
 import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
 import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.RelayReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.PlusReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.RefundReqDto;
 import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.RefundInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
@@ -19,7 +21,6 @@ import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
-import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -146,22 +148,8 @@ public class TicketService {
     public AssignToInfoResDto ticketAssignToInfo(String ticketId, String memberId, CustomUserDetails customUserDetails) throws Exception{
         AssignToInfoResDto r = new AssignToInfoResDto();
 
-        //이용권 체크
-        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(ticketId, customUserDetails.getTrainerId());
-        if(ticketDto == null){
-            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
-        }
-
-        //회원 체크
-        Member member = commonMapper.selectMemberByMemberId(memberId);
-        if(member == null){
-            throw new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()); //회원을 찾을 수 없습니다.
-        }
-
-        //동일회원 양도 불가
-        if(ticketDto.getMemberId().equals(memberId)){
-            throw new CommonException(CommonErrorCode.NOT_ASSIGN_SAME_MEMBER.getCode(), CommonErrorCode.NOT_ASSIGN_SAME_MEMBER.getMessage()); //동일회원에게 양도가 불가능합니다.
-        }
+        //양도 정책 체크
+        TicketDto ticketDto = assignChk(ticketId,customUserDetails.getTrainerId(), memberId);
 
         //양도 티켓정보
         r.setTicketId(ticketDto.getTicketId());
@@ -176,19 +164,71 @@ public class TicketService {
         return r;
     }
 
-    public void ticketAssignToOldMember(AssignToOldMemberReqDto assignToOldMemberReqDto, CustomUserDetails customUserDetails) throws Exception{
-        //이용권 등록
-        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(assignToOldMemberReqDto.getOriginalTicketId(),"NORMAL");
-        ticketDto.setMemberId(assignToOldMemberReqDto.getMemberId());
-        ticketDto.setTicketUseCnt("0");
-        ticketDto.setTicketId(commonMapper.selectUUID());
-        ticketDto.setOriginalTicketId(assignToOldMemberReqDto.getOriginalTicketId());
-        ticketDto.setTicketCode("ASSIGN_FROM");
+    public TicketDto assignChk(String ticketId, String trainerId, String memberId) throws Exception{
+        //이용권 체크
+        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(ticketId, "NORMAL");
+        if(ticketDto == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
+        }
 
-        ticketMapper.insertTicket(ticketDto);
+        //이용권 상태확인
+        String[] assignCode = {"ING", "STOP"};
+        boolean assignChk = Arrays.stream(assignCode).anyMatch(ticketDto.getTicketCode()::equals);
+        if(!assignChk){
+            throw new CommonException(CommonErrorCode.NOT_ASSIGN.getCode(), CommonErrorCode.NOT_ASSIGN.getMessage()); //양도가 불가능한 이용권입니다.
+        }
+
+        //회원 체크
+        Member member = commonMapper.selectMemberByMemberId(memberId);
+        if(member == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()); //회원을 찾을 수 없습니다.
+        }
+
+        //본인 양도 불가
+        if(ticketDto.getMemberId().equals(memberId)){
+            throw new CommonException(CommonErrorCode.NOT_ASSIGN_SELF.getCode(), CommonErrorCode.NOT_ASSIGN_SELF.getMessage()); //본인에게는 양도가 불가능합니다.
+        }
+
+        return ticketDto;
+    }
+
+    @Transactional
+    public void ticketAssignToOldMember(AssignToOldMemberReqDto assignToOldMemberReqDto, CustomUserDetails customUserDetails) throws Exception{
+        //양도 정보
+        TicketDto assignInfo = assignChk(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), assignToOldMemberReqDto.getMemberId());
+
+        //상품 등록
+        int trainerProductCount = Integer.parseInt(assignInfo.getTicketTotalCnt()) - Integer.parseInt(assignInfo.getTicketUseCnt());
+        int ticketOneTimePrice = Integer.parseInt(assignInfo.getTicketPrice()) / Integer.parseInt(assignInfo.getTicketTotalCnt());
+        int trainerProductPrice = trainerProductCount * ticketOneTimePrice;
+        TrainerProductDto trainerProductDto = new TrainerProductDto();
+        trainerProductDto.setTrainerProductId(commonMapper.selectUUID());
+        trainerProductDto.setTrainerProductCount(String.valueOf(trainerProductCount)); //기존 금액에서 양도된 횟수만큼 계산
+        trainerProductDto.setTrainerProductPrice(String.valueOf(trainerProductPrice)); //기존 금액에서 양도된 금액만큼 계산
+        trainerProductDto.setTrainerProductName(assignInfo.getTicketName());
+        trainerProductDto.setCenterId(assignInfo.getCenterId());
+        trainerProductDto.setTrainerId(customUserDetails.getTrainerId());
+        trainerProductDto.setMemberId(assignToOldMemberReqDto.getMemberId());
+
+        ticketMapper.insertTrainerProduct(trainerProductDto);
+
+        //이용권 등록
+        TicketDto param = new TicketDto();
+        param.setMemberId(assignToOldMemberReqDto.getMemberId());
+        param.setTicketEndDate(assignInfo.getTicketEndDate());
+        param.setTicketId(commonMapper.selectUUID());
+        param.setTicketStartDate(assignInfo.getTicketStartDate());
+        param.setTrainerId(customUserDetails.getTrainerId());
+        param.setTicketUseCnt("0");
+        param.setOriginalTicketId(assignToOldMemberReqDto.getOriginalTicketId());
+        param.setTicketCode("ASSIGN_FROM");
+        param.setTicketRelayYn("Y"); //TODO 수업이 없는 회원일 경우 고민필요(최초1회 등록후 바로 환불이면 연장하기퍼센트 의미가 없음)
+        param.setTrainerProductId(trainerProductDto.getTrainerProductId());
+
+        ticketMapper.insertTicket(param);
 
         //양도한 이용권 상태 업데이트
-        ticketMapper.updateTicketForAssign(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId());
+        ticketMapper.updateTicketForTicketCode(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_TO");
     }
 
     @Transactional
@@ -201,6 +241,16 @@ public class TicketService {
         String memberId = commonMapper.selectUUID();
         ticketMapper.insertMember(assignToNewMemberReqDto, memberPhoneEnd, customUserDetails.getTrainerId(), memberId);
 
+        //상품 등록
+        TrainerProductDto trainerProductDto = new TrainerProductDto();
+        trainerProductDto.setTrainerProductId(commonMapper.selectUUID());
+        trainerProductDto.setTrainerProductCount(assignToNewMemberReqDto.getProductCount());
+        trainerProductDto.setTrainerProductPrice(assignToNewMemberReqDto.getProductPrice());
+        trainerProductDto.setTrainerProductName(assignToNewMemberReqDto.getProductName());
+        trainerProductDto.setCenterId(assignToNewMemberReqDto.getCenterId());
+        trainerProductDto.setTrainerId(assignToNewMemberReqDto.getTrainerId());
+        trainerProductDto.setMemberId(memberId);
+
         //이용권등록
         TicketDto ticketDto = new TicketDto();
         ticketDto.setTrainerId(assignToNewMemberReqDto.getTrainerId());
@@ -209,42 +259,47 @@ public class TicketService {
         ticketDto.setTicketId(commonMapper.selectUUID());
         ticketDto.setTicketStartDate(assignToNewMemberReqDto.getProductStartDate());
         ticketDto.setTrainerId(assignToNewMemberReqDto.getTrainerId());
-        ticketDto.setTrainerProductId(assignToNewMemberReqDto.getTrainerProductId());
+        ticketDto.setTrainerProductId(trainerProductDto.getTrainerProductId()); //신규로 만든 이용권
         ticketDto.setTicketCode("ASSIGN_FROM");
         ticketDto.setOriginalTicketId(assignToNewMemberReqDto.getOriginalTicketId());
         ticketDto.setTicketUseCnt("0");
+        ticketDto.setTicketRelayYn("N");
         ticketMapper.insertTicket(ticketDto);
 
         //양도한 이용권 상태 업데이트
-        ticketMapper.updateTicketForAssign(assignToNewMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId());
+        ticketMapper.updateTicketForTicketCode(assignToNewMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_TO");
     }
 
     @Transactional
-    public void ticketRelay(RelayReqDto relayReqDto, CustomUserDetails customUserDetails) throws Exception{
+    public void ticketPlus(PlusReqDto plusReqDto, CustomUserDetails customUserDetails) throws Exception{
         //이용권 기간 체크
-        Util.ticketStartEndDateChk(relayReqDto.getProductStartDate(), relayReqDto.getProductEndDate(), true);
+        Util.ticketStartEndDateChk(plusReqDto.getProductStartDate(), plusReqDto.getProductEndDate(), true);
 
-        //센터정보
-        TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
+        //트레이너의 내 회원인지 체크
+        List<Member> memberList = commonMapper.selectMemberByCenterIdAndTrainerId(plusReqDto.getCneterId(), customUserDetails.getTrainerId());
+        if(memberList.size() == 0){
+            throw new CommonException(CommonErrorCode.NOT_ALLOW_TRAINER_MEMBER.getCode(), CommonErrorCode.NOT_ALLOW_TRAINER_MEMBER.getMessage()); //트레이너에 소속된 회원이 아닙니다.
+        }
 
         //상품 등록
         TrainerProductDto trainerProductDto = new TrainerProductDto();
         trainerProductDto.setTrainerProductId(commonMapper.selectUUID());
-        trainerProductDto.setTrainerProductCount(relayReqDto.getProductCount());
-        trainerProductDto.setTrainerProductPrice(relayReqDto.getProductPrice());
-        trainerProductDto.setTrainerProductName(relayReqDto.getProductName());
-        trainerProductDto.setCenterId(trainer.getCenterId());
+        trainerProductDto.setTrainerProductCount(plusReqDto.getProductCount());
+        trainerProductDto.setTrainerProductPrice(plusReqDto.getProductPrice());
+        trainerProductDto.setTrainerProductName(plusReqDto.getProductName());
+        trainerProductDto.setCenterId(plusReqDto.getCneterId());
         trainerProductDto.setTrainerId(customUserDetails.getTrainerId());
+        trainerProductDto.setMemberId(plusReqDto.getMemberId());
 
         ticketMapper.insertTrainerProduct(trainerProductDto);
 
         //이용권 등록
         TicketDto ticketDto = new TicketDto();
         ticketDto.setTrainerId(customUserDetails.getTrainerId());
-        ticketDto.setMemberId(relayReqDto.getMemberId());
-        ticketDto.setTicketEndDate(relayReqDto.getProductEndDate());
+        ticketDto.setMemberId(plusReqDto.getMemberId());
+        ticketDto.setTicketEndDate(plusReqDto.getProductEndDate());
         ticketDto.setTicketId(commonMapper.selectUUID());
-        ticketDto.setTicketStartDate(relayReqDto.getProductStartDate());
+        ticketDto.setTicketStartDate(plusReqDto.getProductStartDate());
         ticketDto.setTrainerProductId(trainerProductDto.getTrainerProductId());
         ticketDto.setTicketCode("ING"); //TODO 이용전으로 할지 고민 필요
         ticketDto.setTicketUseCnt("0");
@@ -262,9 +317,17 @@ public class TicketService {
             throw new CommonException(CommonErrorCode.RESERVATION_TICKET.getCode(), CommonErrorCode.RESERVATION_TICKET.getMessage()); //수업 예정인 이용권입니다.
         }
 
+        //이용권 확인
         TicketDto ticketDto = ticketMapper.selectTicketByTicketId(ticketId,"NORMAL");
         if(ticketDto == null){
             throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
+        }
+
+        //이용권 상태확인 TODO before 코드 사용시 추가
+        String[] refundCode = {"ING", "STOP"};
+        boolean refundCnk = Arrays.stream(refundCode).anyMatch(ticketDto.getTicketCode()::equals);
+        if(!refundCnk){
+            throw new CommonException(CommonErrorCode.NOT_REFUND.getCode(), CommonErrorCode.NOT_REFUND.getMessage()); //환불이 불가능한 이용권입니다.
         }
 
         //이용권 사용금액
@@ -280,7 +343,34 @@ public class TicketService {
         r.setTicketPrice(ticketDto.getTicketPrice());
         r.setTicketUsePrice(String.valueOf(tikcetUsePrice));
         r.setRefundPrice(String.valueOf(Integer.parseInt(ticketDto.getTicketPrice()) - tikcetUsePrice));
+        r.setTicketRemainingCnt(String.valueOf(Integer.parseInt(ticketDto.getTicketTotalCnt()) - Integer.parseInt(ticketDto.getTicketUseCnt())));
 
         return r;
     }
+
+    @Transactional
+    public void ticketRefund(RefundReqDto refundReqDto, CustomUserDetails customUserDetails) throws Exception{
+        //환불 정보 조회
+        RefundInfoResDto refundInfo = ticketRefundInfo(refundReqDto.getTicketId(), customUserDetails);
+
+        //이용권 정보 조회
+        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(refundReqDto.getTicketId(),"NORMAL");
+
+        //환불 저장
+        RefundDto refundDto = new RefundDto();
+        refundDto.setRefundCnt(refundInfo.getTicketRemainingCnt());
+        refundDto.setRefundId(commonMapper.selectUUID());
+        refundDto.setRefundPrice(refundInfo.getRefundPrice());
+        refundDto.setRefundDateTime(Util.getFormattedToday("yyyyMMdd"));
+        refundDto.setCenterId(ticketDto.getCenterId());
+        refundDto.setMemberId(ticketDto.getMemberId());
+        refundDto.setTicketId(ticketDto.getTicketId());
+        refundDto.setTrainerId(ticketDto.getTrainerId());
+
+        ticketMapper.insertRefund(refundDto);
+
+        //이용권 업데잍
+        ticketMapper.updateTicketForTicketCode(ticketDto.getTicketId(), customUserDetails.getTrainerId(), "REFUND");
+    }
+
 }

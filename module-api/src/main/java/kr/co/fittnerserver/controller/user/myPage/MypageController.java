@@ -63,8 +63,11 @@ public class MypageController {
 
     @Operation(summary = "공지사항 조회 API", description = "공지사항 조회 API 입니다.",operationId = "getUserMyPageNotices")
     @GetMapping("/myPage/notices")
-    public ResponseEntity<ApiResponseMessage<List<NoticeResDto>>> getNotices(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildList(myPageService.getNotices(customUserDetails,pageable));
+    public ResponseEntity<ApiResponseMessage<List<NoticeResDto>>> getNotices(@Parameter(description = "센터ID", example = "1")
+                                                                             @RequestParam(value = "centerId") String centerId,
+                                                                             @ModelAttribute FittnerPageable pageable,
+                                                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(myPageService.getNotices(centerId,customUserDetails,pageable));
     }
 
     @Operation(summary = "공지사항 읽음 API", description = "공지사항 읽음 API 입니다.",operationId = "postUserMyPageNoticeRead")

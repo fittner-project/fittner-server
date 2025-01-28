@@ -132,8 +132,8 @@
                   , ticket_use_cnt
                   , ticket_relay_yn
           ) values (
-                    CURRENT_TIMESTAMP
-                  , #{trainerId}
+                    #{trainerId}
+                  , CURRENT_TIMESTAMP
                   , #{memberId}
                   , #{ticketEndDate}
                   , #{ticketId}
@@ -147,10 +147,10 @@
           )
     </insert>
 
-    <update id="updateTicketForAssign">
-        /* TicketMapper.updateTicketForAssign */
+    <update id="updateTicketForTicketCode">
+        /* TicketMapper.updateTicketForTicketCode */
         update ticket
-           set ticket_code = 'ASSIGN_TO'
+           set ticket_code = #{ticketCode}
              , modified_by = #{trainerId}
              , modified_date = CURRENT_TIMESTAMP
          where ticket_id = #{ticketId}
@@ -220,6 +220,33 @@
            set ticket_use_cnt = (ticket_use_cnt+1)
          where ticket_id = #{ticketId}
     </update>
+
+    <insert id="insertRefund">
+        /* TicketMapper.insertRefund */
+        insert into refund(
+                    refund_cnt
+                  , refund_price
+                  , refund_date_time
+                  , center_id
+                  , created_by
+                  , created_date
+                  , member_id
+                  , refund_id
+                  , ticket_id
+                  , trainer_id
+          ) values (
+                    #{refundCnt}
+                  , #{refundPrice}
+                  , #{refundDateTime}
+                  , #{centerId}
+                  , #{trainerId}
+                  , current_timestamp
+                  , #{memberId}
+                  , #{refundId}
+                  , #{ticketId}
+                  , #{trainerId}
+          )
+    </insert>
 </mapper>
 
 

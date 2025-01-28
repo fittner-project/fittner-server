@@ -46,9 +46,8 @@ public class MyPageService {
         return myPageMapper.selectReservationForSalesBodyDetail(ticketId, customUserDetails.getTrainerId(), reservationStartMonth, pageable.getCurrentPageNo());
     }
 
-    public List<NoticeResDto> getNotices(CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception {
-        TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
-        return myPageMapper.selectNoticeByCenterIdAndTrainerId(pageable.getCurrentPageNo(), trainer.getCenterId(), customUserDetails.getTrainerId());
+    public List<NoticeResDto> getNotices(String centerId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception {
+        return myPageMapper.selectNoticeByCenterIdAndTrainerId(pageable.getCurrentPageNo(), centerId, customUserDetails.getTrainerId());
     }
 
     public void noticeRead(NoticeReadReqDto noticeReadReqDto, CustomUserDetails customUserDetails) throws Exception{

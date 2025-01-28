@@ -6,13 +6,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
 import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.RelayReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.PlusReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.RefundReqDto;
 import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.RefundInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
-import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.user.ticket.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -72,10 +72,10 @@ public class TicketController {
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "이용권 연장하기 API", description = "이용권 연장하기 API 입니다.",operationId = "postUserTicketRelay")
-    @PostMapping("/ticket/relay")
-    public ResponseEntity<ApiResponseMessage<Object>> ticketRelay(@RequestBody RelayReqDto relayReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
-        ticketService.ticketRelay(relayReqDto, customUserDetails);
+    @Operation(summary = "이용권 추가등록 API", description = "이용권 추가등록 API 입니다.",operationId = "postUserTicketPlus")
+    @PostMapping("/ticket/plus")
+    public ResponseEntity<ApiResponseMessage<Object>> ticketPlus(@RequestBody PlusReqDto plusReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
+        ticketService.ticketPlus(plusReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 
@@ -85,5 +85,12 @@ public class TicketController {
                                                                                  @RequestParam(name = "ticketId") String ticketId,
                                                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         return FittnerResponse.build(ticketService.ticketRefundInfo(ticketId, customUserDetails));
+    }
+
+    @Operation(summary = "이용권 환불 API", description = "이용권 환불 API 입니다.",operationId = "getUserTicketRefund")
+    @PostMapping("/ticket/refund")
+    public ResponseEntity<ApiResponseMessage<Object>> ticketRefund(@RequestBody RefundReqDto refundReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
+        ticketService.ticketRefund(refundReqDto, customUserDetails);
+        return FittnerResponse.ok();
     }
 }

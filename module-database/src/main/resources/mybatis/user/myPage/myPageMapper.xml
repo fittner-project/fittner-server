@@ -14,7 +14,7 @@
              left join ticket b
                     on a.ticket_id = b.ticket_id
                  where a.trainer_id = #{trainerId}
-                   and a.center_id = '1'
+                   and a.center_id = #{centerId}
                    and substr(a.reservation_start_date, 1, 6) = #{reservationStartMonth}
                    and a.reservation_delete_yn = 'N'
                    and a.reservation_status in ('NOSHOW', 'SIGN')

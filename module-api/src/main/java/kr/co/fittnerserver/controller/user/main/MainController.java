@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.user.reservation.request.ReservationSearchDto;
 import kr.co.fittnerserver.dto.user.reservation.response.GroupedReservationDto;
-import kr.co.fittnerserver.dto.user.reservation.response.MainShortsReservationResDto;
+import kr.co.fittnerserver.dto.user.reservation.response.MainReservationsResDto;
 import kr.co.fittnerserver.dto.user.user.response.MainUserCenterListResDto;
 import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerPageable;
@@ -44,5 +44,11 @@ public class MainController {
     public ResponseEntity<ApiResponseMessage<List<GroupedReservationDto>>> mainShortSchedules(@ModelAttribute ReservationSearchDto reservationSearchDto,
                                                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(mainService.getMainShortSchedules(reservationSearchDto, customUserDetails));
+    }
+
+    @Operation(summary = "메인페이지 상단 수업 표출 단건조회 API", description = "메인페이지 상단 수업 표출 단건조회 API 입니다.", operationId = "getUserMainSchedule")
+    @GetMapping("/main/schedule")
+    public ResponseEntity<ApiResponseMessage<MainReservationsResDto>> mainSchedule(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.build(mainService.getMainSchedule(customUserDetails));
     }
 }

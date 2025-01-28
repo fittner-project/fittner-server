@@ -1,6 +1,6 @@
 package kr.co.fittnerserver.repository.user;
 
-import kr.co.fittnerserver.dto.user.reservation.request.ReservationSearchDto;
+import kr.co.fittnerserver.dto.user.reservation.response.MainReservationsResDto;
 import kr.co.fittnerserver.dto.user.reservation.response.MainShortsReservationResDto;
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto;
 import kr.co.fittnerserver.entity.user.Reservation;
@@ -28,17 +28,17 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
               FROM Reservation r
               LEFT JOIN Trainer t
               ON r.trainer.trainerId = t.trainerId
-              LEFT JOIN Member m
-              ON r.trainer.trainerId = m.trainer.trainerId
               LEFT JOIN Ticket tk
-              ON r.trainer.trainerId = tk.trainer.trainerId
+              ON r.ticket.ticketId = tk.ticketId
+              LEFT JOIN Member m
+              ON r.member.memberId = m.memberId
               WHERE m.memberDeleteYn = 'N'
               AND r.reservationDeleteYn = 'N'
               AND t.trainerStatus != 'DROP'
-              AND r.trainer.trainerId = :trainerId
+              AND t.trainerId = :trainerId
               AND r.reservationStartDate >= :reservationStartDate
               AND r.reservationEndDate <= :reservationEndDate
-              ORDER BY RIGHT(r.reservationStartDate, 2) ASC
+              ORDER BY RIGHT(r.reservationStartDate, 2) ASC,r.reservationStartDate ASC, r.reservationStartTime ASC
 """)
     List<ReservationMemberResDto> getReservationMemberDataList(@Param(value = "reservationStartDate") String reservationStartDate,
                                                                 @Param(value = "reservationEndDate") String reservationEndDate,
@@ -52,10 +52,10 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
               FROM Reservation r
               LEFT JOIN Trainer t
               ON r.trainer.trainerId = t.trainerId
-              LEFT JOIN Member m
-              ON r.trainer.trainerId = m.trainer.trainerId
               LEFT JOIN Ticket tk
-              ON r.trainer.trainerId = tk.trainer.trainerId
+              ON r.ticket.ticketId = tk.ticketId
+              LEFT JOIN Member m
+              ON r.member.memberId = m.memberId
               WHERE m.memberDeleteYn = 'N'
               AND r.reservationDeleteYn = 'N'
               AND t.trainerStatus != 'DROP'
@@ -65,4 +65,36 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
               ORDER BY RIGHT(r.reservationStartDate, 2) ASC
 """)
     List<MainShortsReservationResDto> getMainShortSchedules(String reservationStartDate, String reservationEndDate, String trainerId);
+
+
+    @Query(value = """
+        SELECT new kr.co.fittnerserver.dto.user.reservation.response.MainReservationsResDto(
+            RIGHT(r.reservationStartDate, 4),
+            CAST(r.reservationColor AS string),
+            m.memberName,
+            r.reservationStartDate,
+            r.reservationEndDate,
+            r.reservationStartTime,
+            r.reservationEndTime,
+            tp.trainerProductCount,
+            tk.ticketUseCnt
+        )
+        FROM Reservation r
+        LEFT JOIN Trainer t
+        ON r.trainer.trainerId = t.trainerId
+        LEFT JOIN Ticket tk
+        ON r.ticket.ticketId = tk.ticketId
+        LEFT JOIN TrainerProduct tp
+        ON tp.trainerProductId = tk.trainerProduct.trainerProductId
+        LEFT JOIN Member m
+        ON r.member.memberId = m.memberId
+        WHERE m.memberDeleteYn = 'N'
+        AND r.reservationDeleteYn = 'N'
+        AND t.trainerStatus != 'DROP'
+        AND t.trainerId = :trainerId
+        AND r.reservationStartDate = :startDate
+        ORDER BY RIGHT(r.reservationStartDate, 4) asc , r.reservationStartDate ASC, r.reservationStartTime ASC
+""")
+    List<MainReservationsResDto> getMainSchedules(@Param(value = "trainerId") String trainerId,
+                                                  @Param(value = "startDate") String startDate);
 }

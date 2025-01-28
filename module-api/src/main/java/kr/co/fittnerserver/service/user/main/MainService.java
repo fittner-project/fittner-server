@@ -6,6 +6,8 @@ import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.dto.user.reservation.request.ReservationSearchDto;
 import kr.co.fittnerserver.dto.user.reservation.response.GroupedReservationDto;
+import kr.co.fittnerserver.dto.user.reservation.response.MainReservationResDto;
+import kr.co.fittnerserver.dto.user.reservation.response.MainReservationsResDto;
 import kr.co.fittnerserver.dto.user.reservation.response.MainShortsReservationResDto;
 import kr.co.fittnerserver.dto.user.user.response.MainUserCenterListResDto;
 import kr.co.fittnerserver.entity.user.Trainer;
@@ -20,8 +22,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,5 +77,24 @@ public class MainService {
                         )
                 )
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public MainReservationsResDto getMainSchedule(CustomUserDetails customUserDetails) {
+        String nowDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmm"));
+
+        List<MainReservationsResDto> mainSchedules = reservationRepository.getMainSchedules(customUserDetails.getTrainerId(), nowDate);
+        log.info("mainSchedules : {}",mainSchedules);
+
+        // 인덱스 설정
+        AtomicInteger indexCounter = new AtomicInteger(1);
+        mainSchedules.forEach(mainSchedule -> mainSchedule.setIndex(indexCounter.getAndIncrement()));
+
+        return mainSchedules.stream()
+                .filter(schedule -> nowTime.compareTo(schedule.getReservationStartTime()) >= 0 &&
+                        nowTime.compareTo(schedule.getReservationEndTime()) <= 0)
+                .findFirst()
+                .orElse(null);
     }
 }

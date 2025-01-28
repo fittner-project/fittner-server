@@ -1,3 +1,3 @@
 ### 회원의 수업 리스트 조회
-GET http://localhost:8080/api/v1/user/reservations?reservationStartDate=20250101&reservationEndDate=20250110
+GET http://localhost:8080/api/v1/user/reservations?reservationStartDate=20250101&reservationEndDate=20250113
 Authorization: Bearer {{auth_token}}

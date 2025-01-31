@@ -15,6 +15,7 @@ import kr.co.fittnerserver.results.PageResponseDto;
 import kr.co.fittnerserver.service.user.main.MainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class MainController {
 
     @Operation(summary = "메인에서 트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.", operationId = "getUserMainCenters")
     @GetMapping("/main/centers")
-    public ResponseEntity<ApiResponseMessage<PageResponseDto<MainUserCenterListResDto>>> mainCenterList(@ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+    public ResponseEntity<ApiResponseMessage<PageResponseDto<MainUserCenterListResDto>>> mainCenterList(@ParameterObject FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildPage(mainService.getMainCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
     }
 

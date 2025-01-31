@@ -13,6 +13,7 @@ import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.service.user.push.PushService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class PushController {
     @GetMapping("/pushs")
     public ResponseEntity<ApiResponseMessage<List<PushResDto>>> getPushs(@Parameter(description = "센터ID", example = "1")
                                                                          @RequestParam(value = "centerId") String centerId,
-                                                                         @ModelAttribute FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+                                                                         @ParameterObject FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(pushService.getPushs(centerId, pageable, customUserDetails));
     }
 

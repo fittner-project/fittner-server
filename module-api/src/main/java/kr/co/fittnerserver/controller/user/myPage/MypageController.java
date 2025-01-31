@@ -13,6 +13,7 @@ import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.user.mypage.MyPageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class MypageController {
                                                                                   @RequestParam(name = "reservationStartMonth") String reservationStartMonth,
                                                                                   @Parameter(description = "센터ID", example = "1")
                                                                                   @RequestParam(value = "centerId") String centerId,
-                                                                                  @ModelAttribute FittnerPageable pageable,
+                                                                                  @ParameterObject FittnerPageable pageable,
                                                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getSalesInfo(centerId,reservationStartMonth,customUserDetails,pageable));
     }
@@ -56,7 +57,7 @@ public class MypageController {
                                                                                               @RequestParam(value = "reservationStartMonth") String reservationStartMonth,
                                                                                               @Parameter(description = "티켓ID", example = "dfb99734-ccd9-11ef-b7c9-0242ac190002")
                                                                                               @RequestParam(value = "ticketId") String ticketId,
-                                                                                              @ModelAttribute FittnerPageable pageable,
+                                                                                              @ParameterObject FittnerPageable pageable,
                                                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getSalesInfoDetail(reservationStartMonth,ticketId,customUserDetails,pageable));
     }
@@ -65,7 +66,7 @@ public class MypageController {
     @GetMapping("/myPage/notices")
     public ResponseEntity<ApiResponseMessage<List<NoticeResDto>>> getNotices(@Parameter(description = "센터ID", example = "1")
                                                                              @RequestParam(value = "centerId") String centerId,
-                                                                             @ModelAttribute FittnerPageable pageable,
+                                                                             @ParameterObject FittnerPageable pageable,
                                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getNotices(centerId,customUserDetails,pageable));
     }

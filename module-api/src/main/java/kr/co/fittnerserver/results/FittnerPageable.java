@@ -15,15 +15,13 @@ import java.util.Objects;
 public class FittnerPageable {
     @Schema(hidden = true)
     private Pageable pageable;
-    @Schema(description = "페이지당 레코드 수", example = "15", hidden = true)
+    @Schema(description = "페이지당 레코드 수", example = "15")
     private Integer recordsPerPage;
     @Schema(description = "현재 페이지 번호", example = "1")
     private Integer currentPageNo;
     @Schema(description = "페이지 개수", example = "10", hidden = true)
-    @Hidden
     private Integer pageSize;
     @Schema(description = "정렬", example = "createdDate,desc", hidden = true)
-    @Hidden
     private String sort;
 
     public FittnerPageable(Integer currentPageNo, Integer recordsPerPage, Integer pageSize, String sort) {

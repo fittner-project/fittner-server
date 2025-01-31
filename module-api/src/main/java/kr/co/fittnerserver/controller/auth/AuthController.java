@@ -16,6 +16,7 @@ import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.auth.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,8 @@ public class AuthController {
 
     @PostMapping(value = "/apple-redirect-url")
     @Hidden
-    public RedirectView appleRedirectUrl(@ModelAttribute AppleRedirectReqDto appleRedirectReqDto) throws Exception {
+    public RedirectView appleRedirectUrl(
+            @ModelAttribute AppleRedirectReqDto appleRedirectReqDto) throws Exception {
         return loginService.redirectUrl(appleRedirectReqDto);
     }
 
@@ -66,7 +68,7 @@ public class AuthController {
 
     @Operation(hidden = true)
     @GetMapping("/page-test")
-    public ResponseEntity<?> pageTest(@ModelAttribute FittnerPageable pageable) {
+    public ResponseEntity<?> pageTest(@ParameterObject FittnerPageable pageable) {
         return FittnerResponse.buildPage(loginService.pageTest(pageable.getPageable()), pageable);
     }
 

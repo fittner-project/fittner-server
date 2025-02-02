@@ -78,6 +78,53 @@
          where (a.trainer_id = #{trainerId} or b.trainer_id = #{trainerId})
            and (a.center_id = #{centerId} or b.center_id = #{centerId})
     </select>
+
+    <insert id="insertApiLog">
+        /* CommonMapper.insertApiLog */
+        insert into api_log(
+                    api_log_id
+                  , call_uri
+                  , client_ip
+                  , content_type
+                  , header
+                  , mdc_id
+                  , req_date
+                  , req_method
+                  , req_param
+                  , req_time
+                  , res_code
+                  , res_date
+                  , res_result
+                  , res_time
+          ) values (
+                    #{apiLogId}
+                  , #{callUri}
+                  , #{clientIp}
+                  , #{contentType}
+                  , #{header}
+                  , #{mdcId}
+                  , DATE_FORMAT(NOW(), '%Y%m%d')
+                  , #{reqMethod}
+                  , #{reqParam}
+                  , DATE_FORMAT(NOW(), '%H%i%s')
+                  , #{resCode}
+                  , #{resDate}
+                  , #{resResult}
+                  , #{resTime}
+          )
+    </insert>
+
+    <update id="updateApiLog">
+        /* CommonMapper.updateApiLog */
+        update api_log
+           set res_code = #{resCode}
+             , res_result = #{resResult}
+             , res_date = DATE_FORMAT(NOW(), '%Y%m%d')
+             , res_time = DATE_FORMAT(NOW(), '%H%i%s')
+         where api_log_id = #{apiLogId}
+    </update>
+
+
 </mapper>
 
 

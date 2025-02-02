@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
@@ -136,5 +138,23 @@ public class RequestLogingUtil {
      */
     public static String getContentType(CustomHttpServletRequestWrapper request) {
         return request.getContentType() == null ? "query-string" : request.getContentType();
+    }
+
+    /**
+     * 클라이언트의 header 추출
+     *
+     * @param request HiBallHttpServletRequestWrapper 객체
+     * @return String
+     */
+    public static String getHeader(CustomHttpServletRequestWrapper request) {
+        Map<String, String> headers = new HashMap<>();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        StringBuilder sb = new StringBuilder();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            sb.append(headerName).append("=").append(headerValue).append(", ");
+        }
+        return sb.toString();
     }
 }

@@ -23,7 +23,7 @@ public class RequestLoggingInOutFilter extends OncePerRequestFilter {
     private String RESPONSE_INFO_PRI_FIX = "-----------------------[RESPONSE-INFO]-----------------------";
     private String REQUEST_PRI_FIX = "--->";
     private String RESPONSE_PRI_FIX = "<---";
-    private String[] NOT_ALLOW_LOG = {"/swagger-ui","/v3/api-docs","/api/v1/auth/apple-redirect-url"};
+    private String[] NOT_ALLOW_LOG = {"/swagger-ui","/v3/api-docs"};
 
 
     @Override

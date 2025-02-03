@@ -273,7 +273,8 @@ public class UserService {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             // Bearer 토큰 부분만 추출
             String accessToken = authorizationHeader.substring(7);
-            dropTrainerRepository.save(new DropTrainer(accessToken, customUserDetails.getTrainerId()));
+            //TODO 추후에 주석 풀기
+            //dropTrainerRepository.save(new DropTrainer(accessToken, customUserDetails.getTrainerId()));
         } else {
             throw new JwtException(CommonErrorCode.DROP_FAIL.getCode(), CommonErrorCode.DROP_FAIL.getMessage());
         }

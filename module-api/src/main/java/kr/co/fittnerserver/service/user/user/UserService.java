@@ -64,11 +64,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final PushSetRepository pushSetRepository;
     private final DropTrainerRepository dropTrainerRepository;
-    private final JwtTokenUtil jwtTokenUtil;
-    private final TrainerRefreshTokenRepository trainerRefreshTokenRepository;
 
     @Transactional
-    public TokenResDto joinProcess(JoinReqDto joinReqDto) throws Exception {
+    public void joinProcess(JoinReqDto joinReqDto) throws Exception {
         //이미 가입한 트레이너가 있는지 체크
         joinValidation(joinReqDto);
 
@@ -102,15 +100,6 @@ public class UserService {
 
         pushSetRepository.save(new PushSet(trainer, PushKind.ADVERTISE, termsAgree.getTermsAgreeYn().equals("Y") ? "Y" : "N"));
         pushSetRepository.save(new PushSet(trainer, PushKind.RESERVATION, "Y"));
-
-        //엑세스 토큰 생성
-        String accessToken = jwtTokenUtil.generateAccessToken(trainer.getTrainerId());
-        //리프레시 토큰 생성
-        String refreshToken = jwtTokenUtil.generateRefreshToken(trainer.getTrainerId());
-
-        TrainerRefreshToken trainerRefreshTokenInfo = trainerRefreshTokenRepository.save(new TrainerRefreshToken(trainer, refreshToken));
-
-        return new TokenResDto(accessToken, trainerRefreshTokenInfo.getRefreshTokenId());
     }
 
     private void joinValidation(JoinReqDto joinReqDto) throws Exception {
@@ -234,8 +223,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserCenterListResDto> getCenterListByTrainer(CustomUserDetails customUserDetails, Pageable pageable) {
-        Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())
+    public Page<UserCenterListResDto> getCenterListByTrainer(String userEmail, Pageable pageable) throws Exception {
+        Trainer trainer = trainerRepository.findByTrainerEmail(AES256Cipher.encrypt(userEmail))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
         return new CacheablePage<>(

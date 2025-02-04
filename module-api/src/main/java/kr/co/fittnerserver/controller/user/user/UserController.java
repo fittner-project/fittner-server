@@ -35,8 +35,9 @@ public class UserController {
 
     @Operation(summary = "트레이너 회원가입 API", description = "트레이너 회원가입 API 입니다.", operationId = "postUserJoin")
     @PostMapping("/join")
-    public ResponseEntity<ApiResponseMessage<TokenResDto>> join(@RequestBody JoinReqDto joinReqDto) throws Exception {
-        return FittnerResponse.build(userService.joinProcess(joinReqDto));
+    public ResponseEntity<ApiResponseMessage<Object>> join(@RequestBody JoinReqDto joinReqDto) throws Exception {
+        userService.joinProcess(joinReqDto);
+        return FittnerResponse.ok();
 
     }
 
@@ -88,10 +89,10 @@ public class UserController {
     }
 
     @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.",operationId = "getUserCenters")
-    @GetMapping("/centers")
+    @GetMapping("/centers/{userEmail}")
     public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ParameterObject FittnerPageable pageable,
-                                                                                                @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildPage(userService.getCenterListByTrainer(customUserDetails, pageable.getPageable()), pageable);
+                                                                                                @PathVariable String userEmail) throws Exception {
+        return FittnerResponse.buildPage(userService.getCenterListByTrainer(userEmail, pageable.getPageable()), pageable);
     }
 
     @Operation(summary = "트레이너 본인이 승인요청한걸 승인취소하는 API", description = "트레이너 본인이 승인요청한걸 승인취소하는 API 입니다.",operationId = "deleteUserCenter")

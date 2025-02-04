@@ -49,7 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/v1/user/common/status-chk",
             "/api/v1/user/join",
             "/api/v1/user/center/list",
-            "/api/v1/user/terms"
+            "/api/v1/user/terms",
+            "/api/v1/user/centers/**"
+
     );
 
     @Override

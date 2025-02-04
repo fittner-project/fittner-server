@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/v1/user/common/status-chk", "/api/v1/auth/apple-redirect-url", "/api/v1/user/terms", "/api/v1/user/common/splash", "/api/v1/common/file/show/**", "/api/v1/user/common/app/version-chk", "/api/v1/user/center/list", "/api/v1/user/join", "/actuator/**", "/api/v1/auth/login", "/api/v1/auth/apple-info", "/api/v1/auth/refresh-token", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll().anyRequest().authenticated())
+                        .requestMatchers("/api/v1/user/centers/**","/api/v1/user/common/status-chk", "/api/v1/auth/apple-redirect-url", "/api/v1/user/terms", "/api/v1/user/common/splash", "/api/v1/common/file/show/**", "/api/v1/user/common/app/version-chk", "/api/v1/user/center/list", "/api/v1/user/join", "/actuator/**", "/api/v1/auth/login", "/api/v1/auth/apple-info", "/api/v1/auth/refresh-token", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

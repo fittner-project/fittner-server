@@ -30,6 +30,7 @@ import kr.co.fittnerserver.repository.common.*;
 import kr.co.fittnerserver.repository.user.*;
 import kr.co.fittnerserver.results.CacheablePage;
 import kr.co.fittnerserver.util.AES256Cipher;
+import kr.co.fittnerserver.util.JwtTokenUtil;
 import kr.co.fittnerserver.util.PhoneFormatUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,9 +64,11 @@ public class UserService {
     private final UserMapper userMapper;
     private final PushSetRepository pushSetRepository;
     private final DropTrainerRepository dropTrainerRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final TrainerRefreshTokenRepository trainerRefreshTokenRepository;
 
     @Transactional
-    public void joinProcess(JoinReqDto joinReqDto) throws Exception {
+    public TokenResDto joinProcess(JoinReqDto joinReqDto) throws Exception {
         //이미 가입한 트레이너가 있는지 체크
         joinValidation(joinReqDto);
 
@@ -99,6 +102,15 @@ public class UserService {
 
         pushSetRepository.save(new PushSet(trainer, PushKind.ADVERTISE, termsAgree.getTermsAgreeYn().equals("Y") ? "Y" : "N"));
         pushSetRepository.save(new PushSet(trainer, PushKind.RESERVATION, "Y"));
+
+        //엑세스 토큰 생성
+        String accessToken = jwtTokenUtil.generateAccessToken(trainer.getTrainerId());
+        //리프레시 토큰 생성
+        String refreshToken = jwtTokenUtil.generateRefreshToken(trainer.getTrainerId());
+
+        TrainerRefreshToken trainerRefreshTokenInfo = trainerRefreshTokenRepository.save(new TrainerRefreshToken(trainer, refreshToken));
+
+        return new TokenResDto(accessToken, trainerRefreshTokenInfo.getRefreshTokenId());
     }
 
     private void joinValidation(JoinReqDto joinReqDto) throws Exception {

@@ -14,8 +14,8 @@ Content-Type: application/json
     }
   ],
   "trainerPhone": "01057212058",
-  "trainerName": "킹영재",
-  "trainerEmail": "newy23@naver.com",
+  "trainerName": "이영재",
+  "trainerEmail": "newy243@naver.com",
   "trainerSnsKind": "KAKAO",
   "trainerCiNo": "",
   "trainerFcmToken": "",

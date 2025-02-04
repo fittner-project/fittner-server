@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
+import kr.co.fittnerserver.domain.user.CenterJoinDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
@@ -202,11 +203,27 @@ public class UserService {
     public UserInfoResDto getUserInfo(CustomUserDetails customUserDetails) throws Exception {
         UserInfoResDto r = new UserInfoResDto();
 
+        //트레이너 기본정보
+        UserInfoResDto.DefaultInfo defaultInfo = new UserInfoResDto.DefaultInfo();
         TrainerDto trainer = userMapper.selectTrainerByTrainerId(customUserDetails.getTrainerId());
-        r.setTrainerEmail(AES256Cipher.decrypt(trainer.getTrainerEmail()));
-        r.setTrainerSnsKind(String.valueOf(trainer.getTrainerSnsKind()));
-        //TODO 이름 암호화시 복호화 추가
-        r.setTrainerName(trainer.getTrainerName());
+        defaultInfo.setTrainerId(customUserDetails.getTrainerId());
+        defaultInfo.setTrainerEmail(AES256Cipher.decrypt(trainer.getTrainerEmail()));
+        defaultInfo.setTrainerSnsKind(String.valueOf(trainer.getTrainerSnsKind()));
+        defaultInfo.setTrainerName(trainer.getTrainerName());
+        r.setDefaultInfo(defaultInfo);
+
+        //트레이너 센터정보
+        List<UserInfoResDto.CenterInfo> centerInfoList = new ArrayList<>();
+        List<CenterJoinDto> centerJoinDtoList = userMapper.selectCenterJoinByTrainerId(customUserDetails.getTrainerId());
+        for(CenterJoinDto centerJoinDto : centerJoinDtoList){
+            UserInfoResDto.CenterInfo centerInfo = new UserInfoResDto.CenterInfo();
+            centerInfo.setCenterGroupId(centerJoinDto.getCenterGroupId());
+            centerInfo.setCenterId(centerJoinDto.getCenterId());
+            centerInfo.setCenterName(centerJoinDto.getCenterName());
+            centerInfo.setCenterJoinMainYn(centerJoinDto.getCenterJoinMainYn());
+            centerInfoList.add(centerInfo);
+        }
+        r.setCenterInfo(centerInfoList);
 
         return r;
     }

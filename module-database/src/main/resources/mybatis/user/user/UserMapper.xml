@@ -104,6 +104,22 @@
          where trainer_id = #{trainerId}
            and trainer_settlement_code = #{trainerSettlementCode}
     </select>
+
+    <select id="selectCenterJoinByTrainerId" resultType="CenterJoinDto">
+        /* UserMapper.selectCenterJoinByTrainerId */
+        select a.center_id
+             , c.center_group_id
+             , b.center_name
+             , a.center_join_main_yn
+          from center_join a
+     left join center b
+            on a.center_id = b.center_id
+     left join center_group c
+            on b.center_group_id = c.center_group_id
+         where a.center_join_approval_yn = 'Y'
+           and b.center_delete_yn = 'N'
+           and a.trainer_id = #{trainerId}
+    </select>
 </mapper>
 
 

@@ -223,19 +223,20 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserCenterListResDto> getCenterListByTrainer(String userEmail, Pageable pageable) throws Exception {
+    public List<UserCenterListResDto> getCenterListByTrainer(String userEmail) throws Exception {
         Trainer trainer = trainerRepository.findByTrainerEmail(AES256Cipher.encrypt(userEmail))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
-        return new CacheablePage<>(
-                centerJoinRepository.findAllByTrainer(trainer, pageable)
-                        .map(userCenter -> UserCenterListResDto.builder()
+        return centerJoinRepository.findAllByTrainer(trainer)
+                .stream()
+                .map(userCenter -> UserCenterListResDto.builder()
                                 .centerJoinId(userCenter.getCenterJoinId())
                                 .centerName(userCenter.getCenter().getCenterName())
                                 .centerAddress(userCenter.getTrainer().getCenter().getCenterAddress())
                                 .centerJoinApprovalYn(userCenter.getCenterJoinApprovalYn())
                                 .centerJoinMainYn(userCenter.getCenterJoinMainYn())
-                                .build()));
+                                .build())
+                .toList();
     }
 
     @Transactional

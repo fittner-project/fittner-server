@@ -4,20 +4,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
 import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.*;
 import kr.co.fittnerserver.results.ApiResponseMessage;
-import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.results.FittnerResponse;
-import kr.co.fittnerserver.results.PageResponseDto;
 import kr.co.fittnerserver.service.user.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -90,9 +86,8 @@ public class UserController {
 
     @Operation(summary = "트레이너가 지정한 센터 목록 조회 API", description = "트레이너가 지정한 센터 목록 조회 API 입니다.",operationId = "getUserCenters")
     @GetMapping("/centers/{userEmail}")
-    public ResponseEntity<ApiResponseMessage<PageResponseDto<UserCenterListResDto>>> centerList(@ParameterObject FittnerPageable pageable,
-                                                                                                @PathVariable String userEmail) throws Exception {
-        return FittnerResponse.buildPage(userService.getCenterListByTrainer(userEmail, pageable.getPageable()), pageable);
+    public ResponseEntity<ApiResponseMessage<List<UserCenterListResDto>>> centerList(@PathVariable String userEmail) throws Exception {
+        return FittnerResponse.buildList(userService.getCenterListByTrainer(userEmail));
     }
 
     @Operation(summary = "트레이너 본인이 승인요청한걸 승인취소하는 API", description = "트레이너 본인이 승인요청한걸 승인취소하는 API 입니다.",operationId = "deleteUserCenter")

@@ -50,7 +50,7 @@ public class ApiLog {
     private String reqMethod;
 
     @Comment(value = "컨텐츠타입")
-    @Column(length = 50)
+    @Column(length = 200)
     private String contentType;
 
     @Comment(value = "요청파라미터")

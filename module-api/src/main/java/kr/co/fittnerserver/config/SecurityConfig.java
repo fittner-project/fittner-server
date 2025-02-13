@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin()) // 같은 도메인만 허용
                         .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("frame-ancestors 'self' https://m.fittner.co.kr") // 특정 도메인에서 iframe 허용
+                                .policyDirectives("frame-ancestors 'self' https://m.fittner.co.kr http://localhost:3000") // 특정 도메인에서 iframe 허용
                         )
                 );
         return http.build();

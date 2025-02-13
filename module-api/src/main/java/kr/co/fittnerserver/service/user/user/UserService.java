@@ -7,14 +7,11 @@ import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.user.CenterJoinDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
-import kr.co.fittnerserver.dto.user.user.*;
 import kr.co.fittnerserver.dto.user.user.request.CancelCenterApprovalReqDto;
 import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.*;
-import kr.co.fittnerserver.entity.BlackListToken;
-import kr.co.fittnerserver.entity.DropTrainer;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.entity.common.PushSet;
@@ -29,14 +26,10 @@ import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.repository.DropTrainerRepository;
 import kr.co.fittnerserver.repository.common.*;
 import kr.co.fittnerserver.repository.user.*;
-import kr.co.fittnerserver.results.CacheablePage;
 import kr.co.fittnerserver.util.AES256Cipher;
-import kr.co.fittnerserver.util.JwtTokenUtil;
 import kr.co.fittnerserver.util.PhoneFormatUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +57,6 @@ public class UserService {
     private final TermsRepository termsRepository;
     private final UserMapper userMapper;
     private final PushSetRepository pushSetRepository;
-    private final DropTrainerRepository dropTrainerRepository;
 
     @Transactional
     public void joinProcess(JoinReqDto joinReqDto) throws Exception {

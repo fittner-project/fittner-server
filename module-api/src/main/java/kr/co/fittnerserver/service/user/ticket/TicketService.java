@@ -5,22 +5,21 @@ import kr.co.fittnerserver.common.CommonErrorCode;
 import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.user.RefundDto;
 import kr.co.fittnerserver.domain.user.TicketDto;
-import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.domain.user.TrainerProductDto;
-import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.PlusReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.RefundReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.*;
 import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.RefundInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Refund;
+import kr.co.fittnerserver.entity.user.Ticket;
+import kr.co.fittnerserver.entity.user.enums.TicketCode;
 import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
+import kr.co.fittnerserver.repository.user.TicketRepository;
 import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +43,7 @@ public class TicketService {
     final CommonMapper commonMapper;
     final UserMapper userMapper;
     final ReservationMapper reservationMapper;
+    private final TicketRepository ticketRepository;
 
     public List<TicketListResDto> getTickets(String ticketCode, CustomUserDetails customUserDetails) throws Exception{
         List<TicketListResDto> r = new ArrayList<>();
@@ -97,6 +100,8 @@ public class TicketService {
         ticketInfo.setTicketUseCnt(ticketDto.getTicketUseCnt());
         ticketInfo.setTicketTotalCnt(ticketDto.getTicketTotalCnt());
         ticketInfo.setTicketPrice(ticketDto.getTicketPrice());
+        ticketInfo.setTicketSuspendStartDate(ticketDto.getTicketSuspendStartDate());
+        ticketInfo.setTicketSuspendEndDate(ticketDto.getTicketSuspendEndDate());
         r.setTicketInfo(ticketInfo);
 
         //회원 정보 set
@@ -373,4 +378,41 @@ public class TicketService {
         ticketMapper.updateTicketForTicketCode(ticketDto.getTicketId(), customUserDetails.getTrainerId(), "REFUND");
     }
 
+    @Transactional
+    public void suspendMemberTicket(SuspendTicketReqDto suspendTicketReqDto) {
+        Ticket ticketInfo = ticketRepository.findById(suspendTicketReqDto.getTicketId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()));
+
+        //이미 일시정지된 티켓이면 예외처리
+        if(ticketInfo.getTicketCode().equals(TicketCode.STOP)){
+            throw new CommonException(CommonErrorCode.ALREADY_SUSPEND_TICKET.getCode(), CommonErrorCode.ALREADY_SUSPEND_TICKET.getMessage());
+        }
+
+        //티켓 일시정지 상태로 변경
+        ticketInfo.suspendTicket(suspendTicketReqDto.getSuspendReason(), String.valueOf(LocalDate.now()));
+    }
+
+    @Transactional
+    public void againstSuspendMemberTicket(String ticketId) {
+        Ticket ticketInfo = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()));
+
+        //이미 사용중인 티켓이면 예외처리
+        if(ticketInfo.getTicketCode().equals(TicketCode.ING)){
+            throw new CommonException(CommonErrorCode.ALREADY_ING_TICKET.getCode(), CommonErrorCode.ALREADY_ING_TICKET.getMessage());
+        }
+
+        LocalDate suspendStartDate = LocalDate.parse(ticketInfo.getTicketSuspendStartDate(),DateTimeFormatter.ofPattern("yyyyMMdd"));
+        LocalDate currentDate = LocalDate.now();
+
+        //늘려야 할 일수
+        long daysBetween = ChronoUnit.DAYS.between(suspendStartDate, currentDate);
+        LocalDate ticketEndDate = LocalDate.parse(ticketInfo.getTicketEndDate(),DateTimeFormatter.ofPattern("yyyyMMdd"));
+        LocalDate changeTicketEndDate = ticketEndDate.plusDays(daysBetween);
+
+        String changeTicketEndDateStr = changeTicketEndDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        //티켓 일시정지 상태 해제
+        ticketInfo.againstSuspendTicket(changeTicketEndDateStr, currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+    }
 }

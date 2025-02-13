@@ -44,8 +44,9 @@ public enum CommonErrorCode {
     NOT_ACTIVE_TRAINER("H030","승인 대기중인 트레이너입니다."),
     NOT_ALLOW_TRAINER_MEMBER("H031","트레이너에 소속된 회원이 아닙니다."),
     NOT_REFUND("H032","환불이 불가능한 이용권입니다."),
-    NOT_ASSIGN("H033","양도가 불가능한 이용권입니다.")
-    ;
+    NOT_ASSIGN("H033","양도가 불가능한 이용권입니다."),
+    ALREADY_SUSPEND_TICKET("H034","이미 정지된 이용권입니다."),
+    ALREADY_ING_TICKET("H035","이미 사용중인 이용권입니다.");
 
 
     private final String code;

@@ -1,3 +1,19 @@
 ### 회원의 수업 리스트 조회
 GET http://localhost:8080/api/v1/user/reservations?reservationStartDate=20250101&reservationEndDate=20250113
 Authorization: Bearer {{auth_token}}
+
+### 티켓 일시정지
+POST http://localhost:8080/api/v1/user/ticket/suspend
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "ticketId": "eb0c5a88-d6e1-11ef-b7c9-0242ac190002",
+  "suspendReason" : "일시정지 테스트입니다."
+}
+
+
+
+### 티켓 일시정지 해제
+PUT http://localhost:8080/api/v1/user/ticket/against/suspend/eb0c5a88-d6e1-11ef-b7c9-0242ac190002
+Authorization: Bearer {{auth_token}}

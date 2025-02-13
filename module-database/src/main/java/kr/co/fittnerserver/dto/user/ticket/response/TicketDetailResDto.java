@@ -62,6 +62,12 @@ public class TicketDetailResDto {
         @Schema(description = "이용권종료일", example = "20250411")
         private String ticketEndDate;
 
+        @Schema(description = "이용권정지시작일", example = "20250111")
+        private String ticketSuspendStartDate;
+
+        @Schema(description = "이용권정지종료일", example = "20250411")
+        private String ticketSuspendEndDate;
+
         @Schema(description = "이용권이용횟수", example = "17")
         private String ticketUseCnt;
 

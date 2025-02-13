@@ -4,10 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
-import kr.co.fittnerserver.dto.user.ticket.request.AssignToNewMemberReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.AssignToOldMemberReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.PlusReqDto;
-import kr.co.fittnerserver.dto.user.ticket.request.RefundReqDto;
+import kr.co.fittnerserver.dto.user.ticket.request.*;
 import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.RefundInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
@@ -87,10 +84,24 @@ public class TicketController {
         return FittnerResponse.build(ticketService.ticketRefundInfo(ticketId, customUserDetails));
     }
 
-    @Operation(summary = "이용권 환불 API", description = "이용권 환불 API 입니다.",operationId = "getUserTicketRefund")
+    @Operation(summary = "이용권 환불 API", description = "이용권 환불 API 입니다.",operationId = "postUserTicketRefund")
     @PostMapping("/ticket/refund")
     public ResponseEntity<ApiResponseMessage<Object>> ticketRefund(@RequestBody RefundReqDto refundReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         ticketService.ticketRefund(refundReqDto, customUserDetails);
+        return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "티켓 일시정지 API", description = "티켓 일시정지 API 입니다.",operationId = "postUserTicketSuspend")
+    @PostMapping("/ticket/suspend")
+    public ResponseEntity<ApiResponseMessage<Object>> suspendTicket(@RequestBody SuspendTicketReqDto suspendTicketReqDto) throws Exception {
+        ticketService.suspendMemberTicket(suspendTicketReqDto);
+        return FittnerResponse.ok();
+    }
+
+    @Operation(summary = "티켓 일시정지 해제 API", description = "티켓 일시정지 해제 API 입니다.",operationId = "putUserTicketAgainstSuspend")
+    @PutMapping("/ticket/against/suspend/{ticketId}")
+    public ResponseEntity<ApiResponseMessage<Object>> againstSuspendTicket(@PathVariable("ticketId") String ticketId) throws Exception {
+        ticketService.againstSuspendMemberTicket(ticketId);
         return FittnerResponse.ok();
     }
 }

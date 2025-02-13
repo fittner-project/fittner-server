@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,6 +55,9 @@ public class Ticket extends BaseTimeEntity {
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
     private String ticketRelayYn;
 
+    @Comment(value = "일시정지 사유")
+    private String ticketSuspendReason;
+
     @ManyToOne
     @JoinColumn(name = "trainer_product_id")
     private TrainerProduct trainerProduct;
@@ -72,5 +79,19 @@ public class Ticket extends BaseTimeEntity {
         this.ticketDeleteYn = "N";
         this.trainer = trainer;
         this.member = member;
+    }
+
+    public void suspendTicket(String suspendReason, String suspendStartDate) {
+        this.ticketCode = TicketCode.STOP;
+        this.ticketSuspendReason = suspendReason;
+        this.ticketSuspendStartDate = suspendStartDate;
+    }
+
+    public void againstSuspendTicket(String changeTicketEndDateStr, String suspendEndDate) {
+        this.ticketCode = TicketCode.ING;
+        this.ticketEndDate = changeTicketEndDateStr;
+        this.ticketSuspendReason = "";
+        this.ticketSuspendStartDate = "";
+        this.ticketSuspendEndDate = suspendEndDate;
     }
 }

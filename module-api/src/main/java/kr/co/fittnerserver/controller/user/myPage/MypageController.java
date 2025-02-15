@@ -53,13 +53,13 @@ public class MypageController {
 
     @Operation(summary = "수익관리 바디 상세 조회 API", description = "수익관리 바디 상세 조회 API 입니다.", operationId = "getUserMyPageSalesInfoDetail")
     @GetMapping("/myPage/sales/info/detail")
-    public ResponseEntity<ApiResponseMessage<List<SalesInfoDetailResDto>>> getSalesInfoDetail(@Parameter(name = "reservationStartMonth", description = "예약시작월(202501 or TOTAL)", example = "202501")
-                                                                                              @RequestParam(value = "reservationStartMonth") String reservationStartMonth,
+    public ResponseEntity<ApiResponseMessage<List<SalesInfoDetailResDto>>> getSalesInfoDetail(@Parameter(name = "reservationMonth", description = "예약월(202501 or TOTAL)", example = "202501")
+                                                                                              @RequestParam(value = "reservationMonth") String reservationMonth,
                                                                                               @Parameter(description = "티켓ID", example = "dfb99734-ccd9-11ef-b7c9-0242ac190002")
                                                                                               @RequestParam(value = "ticketId") String ticketId,
                                                                                               @ParameterObject FittnerPageable pageable,
                                                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildList(myPageService.getSalesInfoDetail(reservationStartMonth,ticketId,customUserDetails,pageable));
+        return FittnerResponse.buildList(myPageService.getSalesInfoDetail(reservationMonth,ticketId,customUserDetails,pageable));
     }
 
     @Operation(summary = "공지사항 조회 API", description = "공지사항 조회 API 입니다.",operationId = "getUserMyPageNotices")

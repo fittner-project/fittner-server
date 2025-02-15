@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +44,22 @@ public class MyPageService {
         return myPageMapper.selectReservationForSalesBody(centerId, customUserDetails.getTrainerId(), reservationStartMonth, pageable.getCurrentPageNo());
     }
 
-    public List<SalesInfoDetailResDto> getSalesInfoDetail(String reservationStartMonth, String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
-        return myPageMapper.selectReservationForSalesBodyDetail(ticketId, customUserDetails.getTrainerId(), reservationStartMonth, pageable.getCurrentPageNo());
+    public List<SalesInfoDetailResDto> getSalesInfoDetail(String reservationMonth, String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
+        List<SalesInfoDetailDto> salesInfoDetailDtoList = myPageMapper.selectReservationForSalesBodyDetail(ticketId, customUserDetails.getTrainerId(), reservationMonth, pageable.getCurrentPageNo());
+
+        // 예약월 기준으로 그룹화
+        List<SalesInfoDetailResDto> reservationList = salesInfoDetailDtoList.stream()
+                .collect(Collectors.groupingBy(SalesInfoDetailDto::getReservationMonth)) // 예약월로 그룹화
+                .entrySet().stream()
+                .map(entry -> {
+                    SalesInfoDetailResDto dto = new SalesInfoDetailResDto();
+                    dto.setReservationMonth(entry.getKey());
+                    dto.setReservationListList(entry.getValue());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return reservationList;
     }
 
     public List<NoticeResDto> getNotices(String centerId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception {

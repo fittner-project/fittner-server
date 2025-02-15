@@ -92,10 +92,11 @@
            and all_list.row_num <![CDATA[<=]]> #{currentPageNo}*10
     </select>
 
-    <select id="selectReservationForSalesBodyDetail" resultType="SalesInfoDetailResDto">
+    <select id="selectReservationForSalesBodyDetail" resultType="SalesInfoDetailDto">
         /* MyPageMapper.selectReservationForSalesBodyDetail */
         select all_list.ticket_id
              , all_list.member_name
+             , substr(all_list.reservation_start_date,1,6) as reservation_month
              , all_list.reservation_start_date
              , all_list.reservation_end_date
              , all_list.reservation_start_time
@@ -119,8 +120,8 @@
                 where a.ticket_id = #{ticketId}
                   and a.trainer_id = #{trainerId}
                   and a.reservation_status in ('SIGN','NOSHOW')
-                  <if test="reservationStartMonth != 'TOTAL'">
-                      and substr(a.reservation_start_date,1,6) = #{reservationStartMonth}
+                  <if test="reservationMonth != 'TOTAL'">
+                      and substr(a.reservation_start_date,1,6) = #{reservationMonth}
                   </if>
                   and a.reservation_delete_yn = 'N'
               ) all_list

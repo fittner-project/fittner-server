@@ -14,7 +14,7 @@ public interface MyPageMapper {
 
     List<SalesInfoResDto> selectReservationForSalesBody(String centerId, String trainerId, String reservationStartMonth, int currentPageNo);
 
-    List<SalesInfoDetailResDto> selectReservationForSalesBodyDetail(String ticketId, String trainerId, String reservationStartMonth, int currentPageNo);
+    List<SalesInfoDetailDto> selectReservationForSalesBodyDetail(String ticketId, String trainerId, String reservationMonth, int currentPageNo);
 
     List<NoticeResDto> selectNoticeByCenterIdAndTrainerId(int currentPageNo, String centerId, String trainerId);
 

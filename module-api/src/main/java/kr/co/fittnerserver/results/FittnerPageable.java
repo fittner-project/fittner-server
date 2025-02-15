@@ -15,7 +15,7 @@ import java.util.Objects;
 public class FittnerPageable {
     @Schema(hidden = true)
     private Pageable pageable;
-    @Schema(description = "페이지당 레코드 수", example = "15")
+    @Schema(description = "페이지당 레코드 수", example = "10")
     private Integer recordsPerPage;
     @Schema(description = "현재 페이지 번호", example = "1")
     private Integer currentPageNo;

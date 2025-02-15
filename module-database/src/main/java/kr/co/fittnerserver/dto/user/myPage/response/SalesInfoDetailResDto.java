@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class SalesInfoDetailResDto {
 
-    @Schema(description = "예약월")
+    @Schema(description = "예약월", example = "202501")
     public String reservationMonth;
 
     @Schema(description = "수업리스트")

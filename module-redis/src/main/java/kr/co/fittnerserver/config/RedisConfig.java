@@ -63,6 +63,7 @@ public class RedisConfig {
         redisCacheManager.setTransactionAware(false);
         return redisCacheManager;
     }
+
     @Bean
     public Map<String,RedisCacheConfiguration> customCacheConfig() {
         Map<String,RedisCacheConfiguration> caches = new HashMap<>();

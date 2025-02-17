@@ -122,8 +122,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<MemberListResDto> getMembers() {
-        List<Member> members = memberRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
+    public List<MemberListResDto> getMembers(CustomUserDetails customUserDetails) {
+        List<Member> members = memberRepository.findAllByTrainer(customUserDetails.getTrainerId());
 
         return members.stream().map(member -> {
             try {
@@ -131,6 +131,7 @@ public class UserService {
                         .memberId(member.getMemberId())
                         .memberName(member.getMemberName())
                         .memberPhone(PhoneFormatUtil.formatPhoneNumber(AES256Cipher.decrypt(member.getMemberPhone())))
+                        .memberGender(member.getMemberGender())
                         .memberAge(ageCalculate(member.getMemberBirth()))
                         .memberTotalCount(members.size())
                         .build();

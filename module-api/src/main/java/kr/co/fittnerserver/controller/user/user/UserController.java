@@ -54,8 +54,8 @@ public class UserController {
 
     @Operation(summary = "트레이너의 회원 목록 조회 API", description = "트레이너의 회원 목록 조회 API 입니다.", operationId = "getUserMembers")
     @GetMapping("/members")
-    public ResponseEntity<?> members() {
-        return FittnerResponse.buildList(userService.getMembers());
+    public ResponseEntity<ApiResponseMessage<List<MemberListResDto>>> members(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(userService.getMembers(customUserDetails));
     }
 
     @Operation(summary = "트레이너의 회원 상세 조회 API", description = "트레이너의 회원 상세 조회 API 입니다.", operationId = "getUserMemberMemberId")

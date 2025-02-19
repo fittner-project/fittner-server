@@ -62,11 +62,11 @@ public class TicketService {
             TicketListResDto ticketListResDto = new TicketListResDto();
             ticketListResDto.setTicketId(data.getTicketId());
             ticketListResDto.setTicketCode(data.getTicketCode());
-            ticketListResDto.setMemeberName(data.getMemberName());
+            ticketListResDto.setMemberName(data.getMemberName());
             ticketListResDto.setTicketName(data.getTicketName());
             ticketListResDto.setTicketStartDate(data.getTicketStartDate());
             ticketListResDto.setTicketEndDate(data.getTicketEndDate());
-            ticketListResDto.setMemberPohoneEnd(data.getMemberPhoneEnd());
+            ticketListResDto.setMemberPhoneEnd(data.getMemberPhoneEnd());
             ticketListResDto.setTicketTotalCnt(data.getTicketTotalCnt());
 
             r.add(ticketListResDto);
@@ -107,7 +107,7 @@ public class TicketService {
         //회원 정보 set
         //TODO 회원 개인정보 암호화 누락들 추가(현재 핸드폰만 되어있음)
         TicketDetailResDto.MemberInfo memberInfo = new TicketDetailResDto.MemberInfo();
-        memberInfo.setMemeberName(ticketDto.getMemberName());
+        memberInfo.setMemberName(ticketDto.getMemberName());
         memberInfo.setMemberPhone(AES256Cipher.decrypt(ticketDto.getMemberPhone()));
         memberInfo.setMemberGender(ticketDto.getMemberGender());
         memberInfo.setMemberBirth(ticketDto.getMemberBirth());

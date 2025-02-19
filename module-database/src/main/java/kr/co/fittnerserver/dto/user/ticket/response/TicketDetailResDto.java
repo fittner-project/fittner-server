@@ -23,7 +23,7 @@ public class TicketDetailResDto {
     public static class MemberInfo{
 
         @Schema(description = "회원이름", example = "아무기")
-        private String memeberName;
+        private String memberName;
 
         @Schema(description = "회원핸드폰", example = "01011112222")
         private String memberPhone;

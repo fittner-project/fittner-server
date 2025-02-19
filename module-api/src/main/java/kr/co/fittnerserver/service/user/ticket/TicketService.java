@@ -112,7 +112,7 @@ public class TicketService {
         memberInfo.setMemberGender(ticketDto.getMemberGender());
         memberInfo.setMemberBirth(ticketDto.getMemberBirth());
         memberInfo.setMemberAddress(ticketDto.getMemberAdress());
-        memberInfo.setMemberMomo(ticketDto.getMemberMemo());
+        memberInfo.setMemberMemo(ticketDto.getMemberMemo());
         memberInfo.setMemberJoinPath(ticketDto.getMemberJoinPath());
         r.setMemberInfo(memberInfo);
 

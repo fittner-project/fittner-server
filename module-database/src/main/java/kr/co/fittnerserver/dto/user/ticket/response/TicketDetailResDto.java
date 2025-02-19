@@ -38,7 +38,7 @@ public class TicketDetailResDto {
         private String memberAddress;
 
         @Schema(description = "회원메모", example = "25년 8월 바디프로필 희망")
-        private String memberMomo;
+        private String memberMemo;
 
         @Schema(description = "회원가입경로", example = "지인소개")
         private String memberJoinPath;

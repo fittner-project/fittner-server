@@ -92,7 +92,7 @@ public class MypageController {
     }
 
     @Operation(summary = "푸시 설정 조회 API", description = "푸시 설정 조회 API 입니다.",operationId = "postUserMyPagePush")
-    @PostMapping("/myPage/push")
+    @GetMapping("/myPage/push")
     public ResponseEntity<ApiResponseMessage<List<PushSetResDto>>> getPush(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
         return FittnerResponse.buildList(myPageService.getPush(customUserDetails));
     }

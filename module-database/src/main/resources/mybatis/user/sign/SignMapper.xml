@@ -32,14 +32,15 @@
                      , a.reservation_end_time
                      , a.reservation_memo
                      , a.reservation_status
-                     , (select count(*)
-                          from reservation
-                        where member_id = a.member_id
-                          and ticket_id = a.ticket_id
-                          and reservation_start_date <![CDATA[<=]]> #{reservationStartDate}
-                      group by center_id
-                             , member_id
-                             , ticket_id) as reservation_use_cnt
+                     , (select aa.use_cnt
+                          from (select reservation_id
+                                     , ROW_NUMBER() OVER (ORDER BY reservation_start_date , reservation_start_time) as use_cnt
+                                  from reservation
+                                 where ticket_id = a.ticket_id
+                                   and reservation_delete_yn = 'N'
+                                ) aa
+                          where aa.reservation_id = a.reservation_id
+                       ) as reservation_use_cnt
                      , ROW_NUMBER() OVER (ORDER BY reservation_start_date DESC, reservation_start_time DESC) AS row_num
                   from reservation a
              left join member b
@@ -70,7 +71,7 @@
                      , a.reservation_start_time
                      , a.reservation_end_time
                      , a.reservation_status
-                     , DENSE_RANK() OVER (ORDER BY a.reservation_start_date , a.reservation_start_time) as row_num_asc
+                     , ROW_NUMBER() OVER (ORDER BY a.reservation_start_date , a.reservation_start_time) as row_num_asc
                      , ROW_NUMBER() OVER (ORDER BY a.reservation_start_date DESC, a.reservation_start_time DESC) AS row_num
                      , a.reservation_id
                   from reservation a

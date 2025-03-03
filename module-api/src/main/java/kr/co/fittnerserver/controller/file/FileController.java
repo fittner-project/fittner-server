@@ -2,19 +2,26 @@ package kr.co.fittnerserver.controller.file;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.fittnerserver.auth.CustomUserDetails;
 import kr.co.fittnerserver.dto.file.request.FileReqDto;
+import kr.co.fittnerserver.dto.file.response.FileResDto;
+import kr.co.fittnerserver.dto.user.user.response.UserInfoResDto;
+import kr.co.fittnerserver.results.ApiResponseMessage;
 import kr.co.fittnerserver.results.FittnerResponse;
 import kr.co.fittnerserver.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "파일", description = "파일 처리")
 @Slf4j
@@ -26,8 +33,11 @@ public class FileController {
     final FileService fileService;
 
     @Operation(summary = "이미지 업로드",description = "이미지를 업로드 합니다.",operationId = "postCommonFileUpload")
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadImage(FileReqDto fileReqDto, MultipartHttpServletRequest multipartHttpServletRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
+    @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<ApiResponseMessage<List<FileResDto>>> uploadImage(@ModelAttribute FileReqDto fileReqDto,
+                                                                            @RequestParam("files") List<MultipartFile> files,
+                                                                            MultipartHttpServletRequest multipartHttpServletRequest,
+                                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         return FittnerResponse.buildList(fileService.uploadImage(fileReqDto,multipartHttpServletRequest,customUserDetails));
     }
 

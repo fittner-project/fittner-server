@@ -17,7 +17,6 @@ public class SignReqDto {
     private String memberId;
 
     @Schema(description = "파일그룹ID", example = "d1e679af-d348-11ef-b7c9-0242ac190002")
-    @NotBlank
     private String fileGroupId;
 
     @Schema(description = "서명타입", example = "SIGN | NOSHOW")

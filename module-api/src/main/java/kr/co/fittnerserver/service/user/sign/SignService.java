@@ -64,10 +64,12 @@ public class SignService {
     @Transactional
     public void reservationSign(SignReqDto signReqDto, CustomUserDetails customUserDetails) throws Exception{
         //file 체크
-        FileGroup fileGroupInfo = fileMapper.selectFileGroup(signReqDto.getFileGroupId());
+        if(!StringUtils.isEmpty(signReqDto.getFileGroupId())){
+            FileGroup fileGroupInfo = fileMapper.selectFileGroup(signReqDto.getFileGroupId());
 
-        if(fileGroupInfo==null){
-            throw new CommonException(CommonErrorCode.NOT_FOUND_FILE_GROUP.getCode(), CommonErrorCode.NOT_FOUND_FILE_GROUP.getMessage()); //파일 그룹을 찾을 수 없습니다.
+            if(fileGroupInfo==null){
+                throw new CommonException(CommonErrorCode.NOT_FOUND_FILE_GROUP.getCode(), CommonErrorCode.NOT_FOUND_FILE_GROUP.getMessage()); //파일 그룹을 찾을 수 없습니다.
+            }
         }
 
         //예약 체크

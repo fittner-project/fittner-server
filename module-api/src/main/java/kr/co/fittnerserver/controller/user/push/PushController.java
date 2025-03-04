@@ -42,8 +42,8 @@ public class PushController {
     @GetMapping("/pushs")
     public ResponseEntity<ApiResponseMessage<List<PushResDto>>> getPushs(@Parameter(description = "센터ID", example = "1")
                                                                          @RequestParam(value = "centerId") String centerId,
-                                                                         @ParameterObject FittnerPageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        return FittnerResponse.buildList(pushService.getPushs(centerId, pageable, customUserDetails));
+                                                                         @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
+        return FittnerResponse.buildList(pushService.getPushs(centerId, customUserDetails));
     }
 
     @Operation(summary = "알림 읽음 API", description = "알림 읽음 API 입니다.",operationId = "postUserPushRead")

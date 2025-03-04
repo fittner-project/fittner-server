@@ -23,8 +23,8 @@ public class PushService {
         return pushMapper.selectPushForNew(centerId, customUserDetails.getTrainerId());
     }
 
-    public List<PushResDto> getPushs(String centerId, FittnerPageable pageable, CustomUserDetails customUserDetails){
-        return pushMapper.selectPushByTrainerId(pageable.getCurrentPageNo(), customUserDetails.getTrainerId(), centerId);
+    public List<PushResDto> getPushs(String centerId, CustomUserDetails customUserDetails){
+        return pushMapper.selectPushByTrainerIdNew(customUserDetails.getTrainerId(),centerId);
     }
 
     public void pushRead(PushReadReqDto pushReadReqDto, CustomUserDetails customUserDetails) throws Exception{

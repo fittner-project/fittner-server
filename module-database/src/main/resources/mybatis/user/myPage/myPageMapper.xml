@@ -241,10 +241,14 @@
 
     <select id="selectPushSetByTrainerId" resultType="PushSetResDto">
         /* MyPageMapper.selectPushSetByTrainerId */
-        select push_kind
-             , push_set_yn
-          from push_set
-         where trainer_id = #{trainerId}
+        select b.common_code_name as push_kind_name
+             , a.push_kind
+             , a.push_set_yn
+          from push_set a
+     left join common_code b
+            on a.push_kind = b.common_code
+           and b.grp_common_code = 'PUSH_KIND'
+         where a.trainer_id = #{trainerId}
     </select>
 
 </mapper>

@@ -9,6 +9,9 @@ public class PushSetResDto {
     @Schema(description = "푸시종류", example = "ADVERTISE | RESERVATION")
     private String pushKind;
 
+    @Schema(description = "푸시종류명", example = "광고 동의 알림")
+    private String pushKindName;
+
     @Schema(description = "푸시여부", example = "Y")
     private String pushSetYn;
 }

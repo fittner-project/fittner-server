@@ -23,7 +23,8 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
                     r.reservationEndTime,
                     CAST(r.reservationColor AS string),
                     r.reservationMemo,
-                    tk.ticketUseCnt + 1
+                    tk.ticketUseCnt + 1,
+                    tp.trainerProductCount
               )
               FROM Reservation r
               LEFT JOIN Trainer t
@@ -32,6 +33,8 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
               ON r.ticket.ticketId = tk.ticketId
               LEFT JOIN Member m
               ON r.member.memberId = m.memberId
+              LEFT JOIN TrainerProduct tp
+              on r.trainer.trainerId = tp.trainer.trainerId
               WHERE m.memberDeleteYn = 'N'
               AND r.reservationDeleteYn = 'N'
               AND t.trainerStatus != 'DROP'

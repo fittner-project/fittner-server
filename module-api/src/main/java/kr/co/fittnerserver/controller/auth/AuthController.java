@@ -43,6 +43,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponseMessage<TokenResDto>> login(@RequestBody LoginRequestDto loginRequestDto) throws
             Exception {
+        String decrypt = AES256Cipher.decrypt("3172B3A62EEFAF3A1A0C646C7301842F91E8906E5B7DC9A380B37B4D2121A729");
+        System.out.println(" test= " + decrypt);
         return FittnerResponse.build(loginService.loginProcess(loginRequestDto));
     }
 

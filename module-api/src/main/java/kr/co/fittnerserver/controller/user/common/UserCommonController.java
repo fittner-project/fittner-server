@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Tag(name = "공통", description = "공통")
 public class UserCommonController {
-//test
     private final UserCommonService userCommonService;
 
     @Operation(summary = "앱 버전 확인 조회 API", description = "앱 버전 확인 API 입니다.",operationId = "getUserCommonAppVersionChk")

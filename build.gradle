@@ -82,5 +82,6 @@ project(':module-api') {
         implementation project(':module-database')
         implementation project(':module-redis')
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'com.google.firebase:firebase-admin:9.4.3'
     }
 }

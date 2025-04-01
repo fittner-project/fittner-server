@@ -14,31 +14,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Configuration
-@Slf4j
 public class FirebaseConfig {
 
-
-    @Value("${spring.config.activate.on-profile}")
-    private String profile;
+    @Value("${app.fcm-token-file}")
+    private String value;
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        if(profile.equals("prod")){
-            FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("/app/fittner/fcm")));
-            FirebaseOptions options = FirebaseOptions
-                    .builder()
-                    .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
-                    .build();
-            return FirebaseApp.initializeApp(options);
-        }else{
-            FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("classpath:fittner-88bd2-firebase-adminsdk-fbsvc-e75efcd2f4.json")));
-            FirebaseOptions options = FirebaseOptions
-                    .builder()
-                    .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
-                    .build();
-            return FirebaseApp.initializeApp(options);
-        }
+        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile(value)));
+        FirebaseOptions options = FirebaseOptions
+                .builder()
+                .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
+                .build();
+        return FirebaseApp.initializeApp(options);
     }
+
     @Bean
     public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
         return FirebaseMessaging.getInstance(firebaseApp);

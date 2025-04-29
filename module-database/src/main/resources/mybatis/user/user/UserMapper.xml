@@ -37,49 +37,53 @@
     </select>
 
     <select id="selectMemberTicketDetailInfo" resultType="MemberDetailResDto">
-       with ticket_info_view as (select
-                                    a.member_id  as memberId
-                                  , b.ticket_id as ticketId
-                                  , a.member_name as memberName
-                                  , c.trainer_product_name as productName
-                                  , TIMESTAMPDIFF(MONTH, STR_TO_DATE(b.ticket_start_date, '%Y%m%d'),
-                                                  STR_TO_DATE(b.ticket_end_date, '%Y%m%d')) as productMonth
-                                  , c.trainer_product_count as productTotalCnt
-                                  , c.trainer_product_count - b.ticket_use_cnt as productRemainCnt
-                                  , b.ticket_start_date as ticketStartDate
-                                  , b.ticket_end_date as ticketEndDate
-                                  , sum(if(d.reservation_status = 'SIGN', 1, 0)) as attendanceCnt
-                                  , sum(if(d.reservation_status = 'NOSHOW', 1, 0)) as absenceCnt
-                                  , b.ticket_code as ticketCode
-                             from member a
-                                      inner join ticket b
-                                                 on a.member_id = b.member_id
-                                                     and b.ticket_delete_yn = 'N'
-                                      left join trainer_product c
-                                                on b.trainer_product_id = c.trainer_product_id
-                                      left join reservation d
-                                                on b.ticket_id = d.ticket_id
-                                                    and d.reservation_status in ('SIGN', 'NOSHOW')
-                                                    and d.reservation_delete_yn = 'N'
-                             where a.member_id = #{memberId}
-                             group by b.ticket_id
-                            )
-        select tiv.memberId,
-               tiv.ticketId,
-               tiv.memberName,
-               tiv.productName,
-               tiv.productMonth,
-               tiv.productTotalCnt,
-               tiv.productRemainCnt,
-               tiv.ticketStartDate,
-               tiv.ticketEndDate,
-               tiv.attendanceCnt,
-               tiv.absenceCnt,
-               tiv.ticketCode
+        with ticket_info_view as (
+            select
+                a.member_id  as memberId,
+                b.ticket_id as ticketId,
+                a.member_name as memberName,
+                c.trainer_product_name as productName,
+                COALESCE(TIMESTAMPDIFF(MONTH, STR_TO_DATE(b.ticket_start_date, '%Y%m%d'),
+                                              STR_TO_DATE(b.ticket_end_date, '%Y%m%d')), 0) as productMonth,
+                COALESCE(c.trainer_product_count, 0) as productTotalCnt,
+                COALESCE(c.trainer_product_count - b.ticket_use_cnt, 0) as productRemainCnt,
+                b.ticket_start_date as ticketStartDate,
+                b.ticket_end_date as ticketEndDate,
+                COALESCE(sum(if(d.reservation_status = 'SIGN', 1, 0)), 0) as attendanceCnt,
+                COALESCE(sum(if(d.reservation_status = 'NOSHOW', 1, 0)), 0) as absenceCnt,
+                b.ticket_code as ticketCode
+            from member a
+                     inner join ticket b
+                                on a.member_id = b.member_id
+                                    and b.ticket_delete_yn = 'N'
+                     left join trainer_product c
+                               on b.trainer_product_id = c.trainer_product_id
+                     left join reservation d
+                               on b.ticket_id = d.ticket_id
+                                   and d.reservation_status in ('SIGN', 'NOSHOW')
+                                   and d.reservation_delete_yn = 'N'
+            where a.member_id = #{memberId}
+            group by b.ticket_id
+        )
+        select
+            tiv.memberId,
+            tiv.ticketId,
+            tiv.memberName,
+            tiv.productName,
+            tiv.productMonth,
+            tiv.productTotalCnt,
+            tiv.productRemainCnt,
+            tiv.ticketStartDate,
+            tiv.ticketEndDate,
+            tiv.attendanceCnt,
+            tiv.absenceCnt,
+            tiv.ticketCode
         from ticket_info_view tiv
-        where case when (select count(*) from ticket_info_view) > 1 then STR_TO_DATE(tiv.ticketEndDate, '%Y%m%d') >= CURDATE()
-                   else 1=1
-                  end
+        where case
+                  when (select count(*) from ticket_info_view) > 1
+                      then STR_TO_DATE(tiv.ticketEndDate, '%Y%m%d') >= CURDATE()
+                  else 1=1
+                  end;
     </select>
 
     <select id="selectTrainerSettlementByTrainerSettlementId" resultType="TrainerSettlementDto">

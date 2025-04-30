@@ -84,14 +84,14 @@ public class TicketController {
         return FittnerResponse.build(ticketService.ticketRefundInfo(ticketId, customUserDetails));
     }
 
-    @Operation(summary = "이용권 환불 API", description = "이용권 환불 API 입니다.",operationId = "postUserTicketRefund")
+    @Operation(summary = "이용권 환불 요청 API", description = "이용권 환불 요청 API 입니다.",operationId = "postUserTicketRefundAllow")
     @PostMapping("/ticket/refund")
     public ResponseEntity<ApiResponseMessage<Object>> ticketRefund(@RequestBody RefundReqDto refundReqDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         ticketService.ticketRefund(refundReqDto, customUserDetails);
         return FittnerResponse.ok();
     }
 
-    @Operation(summary = "티켓 일시정지 API", description = "티켓 일시정지 API 입니다.",operationId = "postUserTicketSuspend")
+    @Operation(summary = "티켓 일시정지 요청 API", description = "티켓 일시정지 요청 API 입니다.",operationId = "postUserTicketSuspendAllow")
     @PostMapping("/ticket/suspend")
     public ResponseEntity<ApiResponseMessage<Object>> suspendTicket(@RequestBody SuspendTicketReqDto suspendTicketReqDto) throws Exception {
         ticketService.suspendMemberTicket(suspendTicketReqDto);

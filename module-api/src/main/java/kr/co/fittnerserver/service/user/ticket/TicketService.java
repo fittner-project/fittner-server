@@ -11,6 +11,7 @@ import kr.co.fittnerserver.dto.user.ticket.response.AssignToInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.RefundInfoResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketDetailResDto;
 import kr.co.fittnerserver.dto.user.ticket.response.TicketListResDto;
+import kr.co.fittnerserver.entity.admin.TicketAllow;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Refund;
 import kr.co.fittnerserver.entity.user.Ticket;
@@ -19,6 +20,7 @@ import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
+import kr.co.fittnerserver.repository.user.TicketAllowRepository;
 import kr.co.fittnerserver.repository.user.TicketRepository;
 import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.Util;
@@ -33,6 +35,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +47,8 @@ public class TicketService {
     final UserMapper userMapper;
     final ReservationMapper reservationMapper;
     private final TicketRepository ticketRepository;
+    private final TicketAllowRepository ticketAllowRepository;
+
 
     public List<TicketListResDto> getTickets(String ticketCode, CustomUserDetails customUserDetails) throws Exception{
         List<TicketListResDto> r = new ArrayList<>();
@@ -233,7 +238,7 @@ public class TicketService {
         ticketMapper.insertTicket(param);
 
         //양도한 이용권 상태 업데이트
-        ticketMapper.updateTicketForTicketCode(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_TO");
+        //ticketMapper.updateTicketForTicketCode(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_TO");
     }
 
     @Transactional
@@ -361,6 +366,13 @@ public class TicketService {
         //이용권 정보 조회
         TicketDto ticketDto = ticketMapper.selectTicketByTicketId(refundReqDto.getTicketId(),"NORMAL");
 
+
+        Ticket ticket = ticketRepository.findById(ticketDto.getTicketId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()));
+
+        //관리자에게 환불 요청
+        ticketAllowRepository.save(new TicketAllow("N",TicketCode.REFUND,ticket,ticket.getTrainer()));
+
         //환불 저장
         RefundDto refundDto = new RefundDto();
         refundDto.setRefundCnt(refundInfo.getTicketRemainingCnt());
@@ -374,8 +386,10 @@ public class TicketService {
 
         ticketMapper.insertRefund(refundDto);
 
+
+        //TODO 관리자에 들어갈 프로세스
         //이용권 업데잍
-        ticketMapper.updateTicketForTicketCode(ticketDto.getTicketId(), customUserDetails.getTrainerId(), "REFUND");
+        //ticketMapper.updateTicketForTicketCode(ticketDto.getTicketId(), customUserDetails.getTrainerId(), "REFUND");
     }
 
     @Transactional
@@ -388,8 +402,11 @@ public class TicketService {
             throw new CommonException(CommonErrorCode.ALREADY_SUSPEND_TICKET.getCode(), CommonErrorCode.ALREADY_SUSPEND_TICKET.getMessage());
         }
 
+        ticketAllowRepository.save(new TicketAllow("N",TicketCode.STOP,ticketInfo,ticketInfo.getTrainer()));
+
+        //TODO 관리자에서 처리
         //티켓 일시정지 상태로 변경
-        ticketInfo.suspendTicket(suspendTicketReqDto.getSuspendReason(), String.valueOf(LocalDate.now()));
+        //ticketInfo.suspendTicket(suspendTicketReqDto.getSuspendReason(), String.valueOf(LocalDate.now()));
     }
 
     @Transactional
@@ -402,7 +419,9 @@ public class TicketService {
             throw new CommonException(CommonErrorCode.ALREADY_ING_TICKET.getCode(), CommonErrorCode.ALREADY_ING_TICKET.getMessage());
         }
 
-        LocalDate suspendStartDate = LocalDate.parse(ticketInfo.getTicketSuspendStartDate(),DateTimeFormatter.ofPattern("yyyyMMdd"));
+        ticketAllowRepository.save(new TicketAllow("N", TicketCode.ING, ticketInfo, ticketInfo.getTrainer()));
+
+        /*LocalDate suspendStartDate = LocalDate.parse(ticketInfo.getTicketSuspendStartDate(),DateTimeFormatter.ofPattern("yyyyMMdd"));
         LocalDate currentDate = LocalDate.now();
 
         //늘려야 할 일수
@@ -413,6 +432,6 @@ public class TicketService {
         String changeTicketEndDateStr = changeTicketEndDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         //티켓 일시정지 상태 해제
-        ticketInfo.againstSuspendTicket(changeTicketEndDateStr, currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        ticketInfo.againstSuspendTicket(changeTicketEndDateStr, currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));*/
     }
 }

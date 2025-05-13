@@ -17,9 +17,9 @@ public class MemberRegisterReqDto {
     private String memberAddress;
     @Schema(description = "상품명", example = "프리미엄PT20")
     private String productName;
-    @Schema(description = "상품 시작일", example = "2021-01-01")
+    @Schema(description = "상품 시작일", example = "20210101")
     private String productStartDate;
-    @Schema(description = "상품 종료일", example = "2021-12-31")
+    @Schema(description = "상품 종료일", example = "20211231")
     private String productEndDate;
     @Schema(description = "상품 횟수", example = "20")
     private int productCount;

@@ -3,6 +3,7 @@ package kr.co.fittnerserver.repository.user;
 import kr.co.fittnerserver.dto.user.reservation.response.MainReservationsResDto;
 import kr.co.fittnerserver.dto.user.reservation.response.MainShortsReservationResDto;
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto;
+import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Reservation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -100,4 +101,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
 """)
     List<MainReservationsResDto> getMainSchedules(@Param(value = "trainerId") String trainerId,
                                                   @Param(value = "startDate") String startDate);
+
+    List<Reservation> findByMember(Member member);
 }

@@ -46,7 +46,7 @@ public class ReservationService {
         Member member = memberRepository.findById(reservationReqDto.getMemberId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()));
 
-        Ticket ticket = ticketRepository.findByMember(member)
+        Ticket ticket = ticketRepository.findById(reservationReqDto.getTicketId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()));
 
         Trainer trainer = trainerRepository.findById(customUserDetails.getTrainerId())

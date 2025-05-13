@@ -108,4 +108,8 @@ public class Reservation extends BaseTimeEntity {
         this.trainer = trainer;
         this.center = trainer.getCenter();
     }
+
+    public void delete() {
+        this.reservationDeleteYn = "Y";
+    }
 }

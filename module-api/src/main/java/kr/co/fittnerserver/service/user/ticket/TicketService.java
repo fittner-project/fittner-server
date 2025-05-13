@@ -29,13 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -286,7 +282,7 @@ public class TicketService {
         Util.ticketStartEndDateChk(plusReqDto.getProductStartDate(), plusReqDto.getProductEndDate(), true);
 
         //트레이너의 내 회원인지 체크
-        List<Member> memberList = commonMapper.selectMemberByCenterIdAndTrainerId(plusReqDto.getCneterId(), customUserDetails.getTrainerId());
+        List<Member> memberList = commonMapper.selectMemberByCenterIdAndTrainerId(plusReqDto.getCenterId(), customUserDetails.getTrainerId());
         if(memberList.size() == 0){
             throw new CommonException(CommonErrorCode.NOT_ALLOW_TRAINER_MEMBER.getCode(), CommonErrorCode.NOT_ALLOW_TRAINER_MEMBER.getMessage()); //트레이너에 소속된 회원이 아닙니다.
         }
@@ -297,7 +293,7 @@ public class TicketService {
         trainerProductDto.setTrainerProductCount(plusReqDto.getProductCount());
         trainerProductDto.setTrainerProductPrice(plusReqDto.getProductPrice());
         trainerProductDto.setTrainerProductName(plusReqDto.getProductName());
-        trainerProductDto.setCenterId(plusReqDto.getCneterId());
+        trainerProductDto.setCenterId(plusReqDto.getCenterId());
         trainerProductDto.setTrainerId(customUserDetails.getTrainerId());
         trainerProductDto.setMemberId(plusReqDto.getMemberId());
 

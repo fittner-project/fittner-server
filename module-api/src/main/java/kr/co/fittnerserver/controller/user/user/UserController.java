@@ -103,4 +103,14 @@ public class UserController {
     public ResponseEntity<ApiResponseMessage<List<TermsResDto>>> getJoinTerms() throws Exception {
         return FittnerResponse.buildList(userService.getJoinTerms());
     }
+
+    @Operation(summary = "트레이너가 회원을 삭제하는 API", description = "트레이너가 회원을 삭제하는 API 입니다.",operationId = "deleteUser")
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<ApiResponseMessage<Object>> deleteUser(@PathVariable(value = "memberId") String memberId) throws Exception {
+        userService.deleteUser(memberId);
+        return FittnerResponse.ok();
+    }
+
+
+
 }

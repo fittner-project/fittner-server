@@ -13,6 +13,7 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Entity
@@ -49,7 +50,7 @@ public class Member extends BaseTimeEntity {
     @Column(length = 1, columnDefinition = "char(1) default 'N'")
     private String memberDeleteYn;
     @Comment(value = "회원 삭제일시")
-    private LocalDateTime memberDeleteDatetime;
+    private String memberDeleteDatetime;
     @Comment(value = "회원 메모")
     private String memberMemo;
     @Comment(value = "가입 경로")
@@ -75,5 +76,10 @@ public class Member extends BaseTimeEntity {
         this.memberDeleteYn = "N";
         this.trainer = trainer;
         this.center = trainer.getCenter();
+    }
+
+    public void delete() {
+        this.memberDeleteYn = "Y";
+        this.memberDeleteDatetime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }

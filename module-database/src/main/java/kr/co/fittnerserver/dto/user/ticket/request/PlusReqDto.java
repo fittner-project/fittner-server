@@ -13,7 +13,7 @@ public class PlusReqDto {
 
     @Schema(description = "센터ID", example = "3c7ba936-d4d3-11ef-b7c9-0242ac190002")
     @NotBlank
-    private String cneterId;
+    private String centerId;
 
     @Schema(description = "상품명", example = "프리미엄PT20")
     @NotBlank

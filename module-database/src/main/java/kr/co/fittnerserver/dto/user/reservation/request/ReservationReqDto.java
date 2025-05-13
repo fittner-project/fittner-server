@@ -7,6 +7,10 @@ import lombok.Data;
 public class ReservationReqDto {
     @Schema(description = "회원 키값", example = "1")
     private String memberId;
+
+    @Schema(description = "티켓 키값", example = "1")
+    private String ticketId;
+
     @Schema(description = "예약 시작일자", example = "20250105")
     private String reservationStartDate;
 

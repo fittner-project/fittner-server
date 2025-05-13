@@ -69,4 +69,4 @@ app:
     fcm-token-file: ${APP_FCM_TOKEN_FILE}
 logging:
   level:
-    root: debug
+    root: info

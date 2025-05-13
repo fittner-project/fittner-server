@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +58,7 @@ public class UserService {
     private final TermsRepository termsRepository;
     private final UserMapper userMapper;
     private final PushSetRepository pushSetRepository;
+    private final ReservationRepository reservationRepository;
 
     @Transactional
     public void joinProcess(JoinReqDto joinReqDto) throws Exception {
@@ -290,5 +292,21 @@ public class UserService {
         } else {
             throw new JwtException(CommonErrorCode.DROP_FAIL.getCode(), CommonErrorCode.DROP_FAIL.getMessage());
         }
+    }
+
+    @Transactional
+    public void deleteUser(String memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()));
+
+        List<Ticket> ticketInfos = ticketRepository.findByMember(member);
+
+        List<Reservation> reservationInfos = reservationRepository.findByMember(member);
+
+
+        //회원 삭제, 티켓 삭제, 스케줄 삭제
+        member.delete();
+        ticketInfos.forEach(Ticket::delete);
+        reservationInfos.forEach(Reservation::delete);
     }
 }

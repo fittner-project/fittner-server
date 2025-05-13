@@ -94,4 +94,8 @@ public class Ticket extends BaseTimeEntity {
         this.ticketSuspendStartDate = "";
         this.ticketSuspendEndDate = suspendEndDate;
     }
+
+    public void delete() {
+        this.ticketDeleteYn = "Y";
+    }
 }

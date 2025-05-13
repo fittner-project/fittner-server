@@ -116,7 +116,7 @@ public class UserCommonService {
                         String value = keyValue[1];
                         map.put(key, value); // HashMap에 추가
                     } else if (keyValue.length == 1) {
-                        // 값이 없는 키 처리 (예: "test4="의 경우)
+                        // 값이 없는 키 처리 (예: "test4="의 경우)dd
                         map.put(keyValue[0], "");
                     }
                 }

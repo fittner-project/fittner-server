@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,16 @@ public class ApiControllerAdvice {
         apiResponseMessage.setErrorMessage(CommonErrorCode.EXCEPTION.getMessage());
         return ResponseEntity.status(HttpStatus.OK).body(apiResponseMessage);
     }*/
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ApiResponseMessage> handleDateTimeParseException(DateTimeParseException ex){
+        ApiResponseMessage apiResponseMessage = new ApiResponseMessage();
+        apiResponseMessage.setStatus(CommonErrorCode.FAIL.getCode());
+        apiResponseMessage.setMessage(CommonErrorCode.FAIL.getMessage());
+        apiResponseMessage.setErrorCode(CommonErrorCode.COMMON_FAIL.getCode());
+        apiResponseMessage.setErrorMessage(ex.getMessage());
+        return ResponseEntity.badRequest().body(apiResponseMessage);
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public ResponseEntity<ApiResponseMessage> handleValidationExceptions(MethodArgumentNotValidException ex){

@@ -14,6 +14,7 @@ public interface MemberRepository extends JpaRepository<Member, String> , JpaSpe
     @Query("""
     SELECT m from Member m
     WHERE m.trainer.trainerId = :trainerId
+    AND m.memberDeleteYn = "N"
     order by m.createdDate desc
 """)
     List<Member> findAllByTrainer(@Param(value = "trainerId") String trainerId);

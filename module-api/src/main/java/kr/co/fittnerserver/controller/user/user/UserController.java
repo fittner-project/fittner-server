@@ -54,8 +54,8 @@ public class UserController {
 
     @Operation(summary = "트레이너 목록 조회 API", description = "트레이너 목록 조회 API 입니다.", operationId = "getUserTrainers")
     @GetMapping("/trainers")
-    public ResponseEntity<ApiResponseMessage<List<TrainerListResDto>>> trainers() throws Exception {
-        return FittnerResponse.buildList(userService.getTrainers());
+    public ResponseEntity<ApiResponseMessage<TrainerResDto>> trainers() throws Exception {
+        return FittnerResponse.build(userService.getTrainers());
     }
 
     @Operation(summary = "트레이너의 회원 목록 조회 API", description = "트레이너의 회원 목록 조회 API 입니다.", operationId = "getUserMembers")

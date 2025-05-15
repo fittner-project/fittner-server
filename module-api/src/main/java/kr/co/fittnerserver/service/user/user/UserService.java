@@ -24,14 +24,12 @@ import kr.co.fittnerserver.entity.user.*;
 import kr.co.fittnerserver.entity.user.enums.TrainerStatus;
 import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
-import kr.co.fittnerserver.repository.DropTrainerRepository;
 import kr.co.fittnerserver.repository.common.*;
 import kr.co.fittnerserver.repository.user.*;
 import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.PhoneFormatUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +37,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -312,13 +309,18 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<TrainerListResDto> getTrainers() {
+    public TrainerResDto getTrainers() {
         List<Trainer> trainers = trainerRepository.findAllByTrainerStatus(TrainerStatus.ACTIVE);
-        return trainers.stream()
-                .map(trainer -> TrainerListResDto.builder()
+
+        List<TrainerResultDto> trainerResultDtos = trainers.stream()
+                .map(trainer -> TrainerResultDto.builder()
                         .trainerName(trainer.getTrainerName())
-                        .trainerTotal(trainers.size())
                         .build())
                 .toList();
+
+        return TrainerResDto.builder()
+                .trainerTotal(trainers.size())
+                .trainerInfo(trainerResultDtos)
+                .build();
     }
 }

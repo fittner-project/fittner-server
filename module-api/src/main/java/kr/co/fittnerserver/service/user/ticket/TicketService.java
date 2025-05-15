@@ -20,6 +20,7 @@ import kr.co.fittnerserver.mapper.common.CommonMapper;
 import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
+import kr.co.fittnerserver.repository.user.ReservationRepository;
 import kr.co.fittnerserver.repository.user.TicketAllowRepository;
 import kr.co.fittnerserver.repository.user.TicketRepository;
 import kr.co.fittnerserver.util.AES256Cipher;
@@ -44,6 +45,7 @@ public class TicketService {
     final ReservationMapper reservationMapper;
     private final TicketRepository ticketRepository;
     private final TicketAllowRepository ticketAllowRepository;
+    private final ReservationRepository reservationRepository;
 
 
     public List<TicketListResDto> getTickets(String ticketCode, CustomUserDetails customUserDetails) throws Exception{
@@ -365,6 +367,13 @@ public class TicketService {
 
         Ticket ticket = ticketRepository.findById(ticketDto.getTicketId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()));
+
+        Boolean reservationCheck = reservationRepository.existsByTicket(ticket);
+
+        if(reservationCheck) {
+           throw new CommonException(CommonErrorCode.NOT_REQUEST_REFUND.getCode(), CommonErrorCode.NOT_REQUEST_REFUND.getMessage());
+        }
+
 
         //관리자에게 환불 요청
         ticketAllowRepository.save(new TicketAllow("N",TicketCode.REFUND,ticket,ticket.getTrainer()));

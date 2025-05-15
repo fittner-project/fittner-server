@@ -5,6 +5,7 @@ import kr.co.fittnerserver.dto.user.reservation.response.MainShortsReservationRe
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto;
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Reservation;
+import kr.co.fittnerserver.entity.user.Ticket;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -103,4 +104,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
                                                   @Param(value = "startDate") String startDate);
 
     List<Reservation> findByMember(Member member);
+
+    Boolean existsByTicket(Ticket ticket);
 }

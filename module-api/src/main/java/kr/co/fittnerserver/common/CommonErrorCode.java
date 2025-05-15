@@ -47,7 +47,8 @@ public enum CommonErrorCode {
     NOT_ASSIGN("H033","양도가 불가능한 이용권입니다."),
     ALREADY_SUSPEND_TICKET("H034","이미 정지된 이용권입니다."),
     ALREADY_ING_TICKET("H035","이미 사용중인 이용권입니다."),
-    PUSH_ERROR("H036","푸시 전송 중 에러가 발생하였습니다.");
+    PUSH_ERROR("H036","푸시 전송 중 에러가 발생하였습니다."),
+    NOT_REQUEST_REFUND("H037","남아있는 예약이 있어 환불을 진행할수가없습니다.");
 
 
     private final String code;

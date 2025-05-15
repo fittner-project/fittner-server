@@ -15,10 +15,10 @@ import java.util.List;
 @Slf4j
 public class FcmTokenUtil {
 
-    private final FirebaseMessaging firebaseMessaging;
+    //private final FirebaseMessaging firebaseMessaging;
 
 
-    public void sendPush(String title, String body, List<String> targetToken) {
+/*    public void sendPush(String title, String body, List<String> targetToken) {
         List<MulticastMessage> multicastMessages = makeMultiMessages(title, body, targetToken);
         multicastMessages.forEach(message -> {
             try {
@@ -29,7 +29,7 @@ public class FcmTokenUtil {
             }
         });
 
-    }
+    }*/
 
     public static List<MulticastMessage> makeMultiMessages(String title, String body, List<String> targetToken) {
         List<MulticastMessage> multicastMessages = new ArrayList<>();

@@ -21,6 +21,7 @@ import kr.co.fittnerserver.entity.common.enums.PushKind;
 import kr.co.fittnerserver.entity.common.enums.TermsKind;
 import kr.co.fittnerserver.entity.common.enums.TermsState;
 import kr.co.fittnerserver.entity.user.*;
+import kr.co.fittnerserver.entity.user.enums.TrainerStatus;
 import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.repository.DropTrainerRepository;
@@ -308,5 +309,16 @@ public class UserService {
         member.delete();
         ticketInfos.forEach(Ticket::delete);
         reservationInfos.forEach(Reservation::delete);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TrainerListResDto> getTrainers() {
+        List<Trainer> trainers = trainerRepository.findAllByTrainerStatus(TrainerStatus.ACTIVE);
+        return trainers.stream()
+                .map(trainer -> TrainerListResDto.builder()
+                        .trainerName(trainer.getTrainerName())
+                        .trainerTotal(trainers.size())
+                        .build())
+                .toList();
     }
 }

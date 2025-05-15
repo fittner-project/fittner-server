@@ -16,7 +16,7 @@ import java.io.IOException;
 @Configuration
 public class FirebaseConfig {
 
-    @Value("${app.fcm-token-file}")
+   /* @Value("${app.fcm-token-file}")
     private String value;
 
     @Bean
@@ -32,7 +32,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
         return FirebaseMessaging.getInstance(firebaseApp);
-    }
+    }*/
 }
 
 

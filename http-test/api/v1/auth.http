@@ -3,7 +3,7 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "trainerEmail" : "lch92458@gmail.com"
+  "trainerEmail" : "dpldpl123456@naver.com"
 }
 > {% client.global.set("auth_token", response.body.result.accessToken); %}
 

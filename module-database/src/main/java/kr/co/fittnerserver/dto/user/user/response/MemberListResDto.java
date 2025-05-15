@@ -24,4 +24,6 @@ public class MemberListResDto {
     private MemberGender memberGender;
     @Schema(description = "회원 총 수", example = "10")
     private long memberTotalCount;
+    @Schema(description = "예약데이터가 있는지 유무", example = "true")
+    private boolean reservation;
 }

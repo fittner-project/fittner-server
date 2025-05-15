@@ -106,4 +106,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
     List<Reservation> findByMember(Member member);
 
     Boolean existsByTicket(Ticket ticket);
+
+    Boolean existsByMember(Member member);
 }

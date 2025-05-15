@@ -125,6 +125,8 @@ public class UserService {
     public List<MemberListResDto> getMembers(CustomUserDetails customUserDetails) {
         List<Member> members = memberRepository.findAllByTrainer(customUserDetails.getTrainerId());
 
+
+
         return members.stream().map(member -> {
             try {
                 return MemberListResDto.builder()
@@ -134,6 +136,7 @@ public class UserService {
                         .memberGender(member.getMemberGender())
                         .memberAge(ageCalculate(member.getMemberBirth()))
                         .memberTotalCount(members.size())
+                        .reservation(reservationRepository.existsByMember(member))
                         .build();
             } catch (Exception e) {
                 throw new RuntimeException(e);

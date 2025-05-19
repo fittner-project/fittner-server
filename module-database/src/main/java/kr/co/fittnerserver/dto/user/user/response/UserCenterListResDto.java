@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class UserCenterListResDto {
     @Schema(description = "센터 가입 ID", example = "1")
     private String centerJoinId;
+    @Schema(description = "센터 ID", example = "1")
+    private String centerId;
     @Schema(description = "센터 이름", example = "피트너 센터")
     private String centerName;
     @Schema(description = "센터 주소", example = "서울시 강남구")

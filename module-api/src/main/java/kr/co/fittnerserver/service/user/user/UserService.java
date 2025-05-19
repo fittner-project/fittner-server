@@ -126,7 +126,6 @@ public class UserService {
         List<Member> members = memberRepository.findAllByTrainer(customUserDetails.getTrainerId());
 
 
-
         return members.stream().map(member -> {
             try {
                 return MemberListResDto.builder()
@@ -211,7 +210,7 @@ public class UserService {
         //트레이너 센터정보
         List<UserInfoResDto.CenterInfo> centerInfoList = new ArrayList<>();
         List<CenterJoinDto> centerJoinDtoList = userMapper.selectCenterJoinByTrainerId(customUserDetails.getTrainerId());
-        for(CenterJoinDto centerJoinDto : centerJoinDtoList){
+        for (CenterJoinDto centerJoinDto : centerJoinDtoList) {
             UserInfoResDto.CenterInfo centerInfo = new UserInfoResDto.CenterInfo();
             centerInfo.setCenterGroupId(centerJoinDto.getCenterGroupId());
             centerInfo.setCenterId(centerJoinDto.getCenterId());
@@ -243,12 +242,13 @@ public class UserService {
         return centerJoinRepository.findAllByTrainer(trainer)
                 .stream()
                 .map(userCenter -> UserCenterListResDto.builder()
-                                .centerJoinId(userCenter.getCenterJoinId())
-                                .centerName(userCenter.getCenter().getCenterName())
-                                .centerAddress(userCenter.getTrainer().getCenter().getCenterAddress())
-                                .centerJoinApprovalYn(userCenter.getCenterJoinApprovalYn())
-                                .centerJoinMainYn(userCenter.getCenterJoinMainYn())
-                                .build())
+                        .centerJoinId(userCenter.getCenterJoinId())
+                        .centerId(userCenter.getCenter().getCenterId())
+                        .centerName(userCenter.getCenter().getCenterName())
+                        .centerAddress(userCenter.getTrainer().getCenter().getCenterAddress())
+                        .centerJoinApprovalYn(userCenter.getCenterJoinApprovalYn())
+                        .centerJoinMainYn(userCenter.getCenterJoinMainYn())
+                        .build())
                 .toList();
     }
 

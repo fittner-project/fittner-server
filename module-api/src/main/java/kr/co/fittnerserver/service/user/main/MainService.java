@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -92,9 +93,9 @@ public class MainService {
         mainSchedules.forEach(mainSchedule -> mainSchedule.setIndex(indexCounter.getAndIncrement()));
 
         return mainSchedules.stream()
-                .filter(schedule -> nowTime.compareTo(schedule.getReservationStartTime()) >= 0 &&
-                        nowTime.compareTo(schedule.getReservationEndTime()) <= 0)
-                .findFirst()
+                .filter(schedule -> nowTime.compareTo(schedule.getReservationStartTime()) <= 0) // 현재 시간 이후 스케줄만
+                .min(Comparator.comparing(MainReservationsResDto::getReservationStartTime))     // 가장 가까운 시작 시간 선택
                 .orElse(null);
+
     }
 }

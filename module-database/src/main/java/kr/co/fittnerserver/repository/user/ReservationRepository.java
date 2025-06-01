@@ -103,6 +103,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
         AND t.trainerStatus != 'DROP'
         AND t.trainerId = :trainerId
         AND r.reservationStartDate = :startDate
+        AND r.reservationStatus != 'NOSHOW'
         ORDER BY RIGHT(r.reservationStartDate, 4) asc , r.reservationStartDate ASC, r.reservationStartTime ASC
 """)
     List<MainReservationsResDto> getMainSchedules(@Param(value = "trainerId") String trainerId,

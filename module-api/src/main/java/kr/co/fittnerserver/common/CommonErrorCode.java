@@ -50,7 +50,8 @@ public enum CommonErrorCode {
     PUSH_ERROR("H036","푸시 전송 중 에러가 발생하였습니다."),
     NOT_REQUEST_REFUND("H037","남아있는 예약이 있어 환불을 진행할수가없습니다."),
     DATE_ERROR("H038","시작일자와 종료일자를 확인해주세요."),
-    PRICE_ERROR("H039","상품횟수 및 상품금액을 확인해주세요.");
+    PRICE_ERROR("H039","상품횟수 및 상품금액을 확인해주세요."),
+    SIGN_DATE_ERROR("H040","수업 시작전 서몀이 불가합니다.");
 
 
     private final String code;

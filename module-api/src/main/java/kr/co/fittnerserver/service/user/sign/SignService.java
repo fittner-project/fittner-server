@@ -20,6 +20,7 @@ import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
 import kr.co.fittnerserver.results.FittnerPageable;
 import kr.co.fittnerserver.service.file.FileService;
+import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -99,6 +100,16 @@ public class SignService {
         TrainerSettlementDto trainerSettlementDto = userMapper.selectTrainerSettlementByTrainerIdAndSettlementCode(customUserDetails.getTrainerId(), settlementCode);
         if(trainerSettlementDto == null){
             throw new CommonException(CommonErrorCode.NOT_FOUND_SETTLEMENT.getCode(), CommonErrorCode.NOT_FOUND_SETTLEMENT.getMessage()); //정산 정책을 찾을 수 없습니다.
+        }
+
+        //서명은 수업이 시작해야만 가능하도록 변경
+        if("SIGN".equals(signReqDto.getSignType())){
+            String reservationStartDateTime = reservationDto.getReservationStartDate() + reservationDto.getReservationStartTime();
+            String nowDate = Util.getFormattedToday("yyyyMMddHHmmss");
+
+            if(Integer.parseInt(reservationStartDateTime) > Integer.parseInt(nowDate)){
+                throw new CommonException(CommonErrorCode.SIGN_DATE_ERROR.getCode(), CommonErrorCode.SIGN_DATE_ERROR.getMessage()); //수업 시작전 서몀이 불가합니다.
+            }
         }
 
         //서명 저장

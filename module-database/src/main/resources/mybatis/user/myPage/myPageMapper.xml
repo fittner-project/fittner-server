@@ -36,9 +36,7 @@
                             on a.ticket_id = b.ticket_id
                      left join trainer_settlement c
                             on c.trainer_id = c.trainer_id
-                           and c.trainer_settlement_code = case when b.ticket_relay_yn = 'Y' then c.trainer_settlement_code = 'RE'
-                                                                else c.trainer_settlement_code = 'NEW'
-                                                            end
+                           and a.trainer_settlement_id = c.trainer_settlement_id
                      left join trainer_product d
                             on b.trainer_product_id = d.trainer_product_id
                          where a.trainer_id = #{trainerId}

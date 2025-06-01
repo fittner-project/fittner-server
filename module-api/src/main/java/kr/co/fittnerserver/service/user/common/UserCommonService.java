@@ -170,10 +170,6 @@ public class UserCommonService {
             r.setTextTypeG("#191F28");
         }
 
-        if(1==1){
-            throw new Exception("123123123");
-        }
-
         return r;
     }
 }

@@ -49,7 +49,8 @@ public enum CommonErrorCode {
     ALREADY_ING_TICKET("H035","이미 사용중인 이용권입니다."),
     PUSH_ERROR("H036","푸시 전송 중 에러가 발생하였습니다."),
     NOT_REQUEST_REFUND("H037","남아있는 예약이 있어 환불을 진행할수가없습니다."),
-    DATE_ERROR("H038","시작일자와 종료일자를 확인해주세요.");
+    DATE_ERROR("H038","시작일자와 종료일자를 확인해주세요."),
+    PRICE_ERROR("H039","상품횟수 및 상품금액을 확인해주세요.");
 
 
     private final String code;

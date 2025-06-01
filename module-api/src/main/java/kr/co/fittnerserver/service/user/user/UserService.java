@@ -125,10 +125,12 @@ public class UserService {
     }
 
     private void dataValidation(MemberRegisterReqDto memberRegisterReqDto) {
-        if(Integer.parseInt(memberRegisterReqDto.getProductStartDate()) > Integer.parseInt(memberRegisterReqDto.getProductEndDate())) {
-           throw new CommonException(CommonErrorCode.DATE_ERROR.getCode(), CommonErrorCode.DATE_ERROR.getMessage()));
+        if (Integer.parseInt(memberRegisterReqDto.getProductStartDate()) > Integer.parseInt(memberRegisterReqDto.getProductEndDate())) {
+            throw new CommonException(CommonErrorCode.DATE_ERROR.getCode(), CommonErrorCode.DATE_ERROR.getMessage());
         }
-
+        if (memberRegisterReqDto.getProductCount() == 0 || memberRegisterReqDto.getProductPrice() == 0) {
+            throw new CommonException(CommonErrorCode.PRICE_ERROR.getCode(), CommonErrorCode.PRICE_ERROR.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -268,7 +270,7 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_CENTER_JOIN.getCode(), CommonErrorCode.NOT_FOUND_CENTER_JOIN.getMessage()));
 
         //승인 되지않은 센터조인과 동시에 본인이 요청한 센터조인인지 체크
-        if (centerJoin.getCenterJoinApprovalYn().equals("N") && centerJoin.getTrainer().getTrainerEmail().equals(AES256Cipher.encrypt(cancelCenterApprovalReqDto.getUserEmail()))){
+        if (centerJoin.getCenterJoinApprovalYn().equals("N") && centerJoin.getTrainer().getTrainerEmail().equals(AES256Cipher.encrypt(cancelCenterApprovalReqDto.getUserEmail()))) {
             centerJoinRepository.deleteById(cancelCenterApprovalReqDto.getCenterJoinId());
         } else {
             throw new CommonException(CommonErrorCode.NOT_MATCH_TRAINER.getCode(), CommonErrorCode.NOT_MATCH_TRAINER.getMessage());

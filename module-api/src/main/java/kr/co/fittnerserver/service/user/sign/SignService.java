@@ -108,7 +108,7 @@ public class SignService {
             String nowDate = Util.getFormattedToday("yyyyMMddHHmmss");
 
             if(Integer.parseInt(reservationStartDateTime) > Integer.parseInt(nowDate)){
-                throw new CommonException(CommonErrorCode.SIGN_DATE_ERROR.getCode(), CommonErrorCode.SIGN_DATE_ERROR.getMessage()); //수업 시작전 서몀이 불가합니다.
+                throw new CommonException(CommonErrorCode.SIGN_DATE_ERROR.getCode(), CommonErrorCode.SIGN_DATE_ERROR.getMessage()); //수업 시작전 서명이 불가합니다.
             }
         }
 

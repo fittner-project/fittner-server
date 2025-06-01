@@ -144,13 +144,13 @@ public class UserCommonService {
                 r.setGreyTypeB("#B0B8C1");
                 r.setGreyTypeC("#7F848D");
                 r.setGreyTypeD("#4D5662");
-                r.setTextTypeA("#191F28");
-                r.setTextTypeB("#191F28");
-                r.setTextTypeC("#191F28");
-                r.setTextTypeD("#191F28");
-                r.setTextTypeE("#191F28");
-                r.setTextTypeF("#191F28");
-                r.setTextTypeG("#191F28");
+                r.setTextTypeA("#191f28");
+                r.setTextTypeB("#ffffff");
+                r.setTextTypeC("#b0b8c1");
+                r.setTextTypeD("#7f848d");
+                r.setTextTypeE("#4d5662");
+                r.setTextTypeF("#4c6aff");
+                r.setTextTypeG("#ff8194");
 
             }
         }catch (Exception e){

@@ -88,7 +88,7 @@ public class UserCommonService {
         return r;
     }
 
-    public BrandColorResDto getBrandColor(CustomUserDetails customUserDetails){
+    public BrandColorResDto getBrandColor(CustomUserDetails customUserDetails) throws  Exception{
 
         BrandColorResDto r = new BrandColorResDto();
 
@@ -168,6 +168,10 @@ public class UserCommonService {
             r.setTextTypeE("#191F28");
             r.setTextTypeF("#191F28");
             r.setTextTypeG("#191F28");
+        }
+
+        if(1==1){
+            throw new Exception("123123123");
         }
 
         return r;

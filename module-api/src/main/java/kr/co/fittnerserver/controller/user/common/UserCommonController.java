@@ -50,7 +50,7 @@ public class UserCommonController {
 
     @Operation(summary = "브랜드컬러 조회 API", description = "브랜드컬러 조회 API 입니다.",operationId = "getUserCommonBrandColor")
     @GetMapping("/brand-color")
-    public ResponseEntity<ApiResponseMessage<BrandColorResDto>> getBrandColor(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<ApiResponseMessage<BrandColorResDto>> getBrandColor(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         return FittnerResponse.build(userCommonService.getBrandColor(customUserDetails));
     }
 }

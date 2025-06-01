@@ -110,7 +110,7 @@ public class Util {
      * @return date 포맷 일자
      */
     public static String getFormattedToday(String format){
-        if(!StringUtils.isEmpty(format)){
+        if(StringUtils.isEmpty(format)){
             format = "yyyyMMdd";
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);

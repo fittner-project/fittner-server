@@ -115,11 +115,20 @@ public class UserService {
 
         Member member = memberRepository.save(new Member(memberRegisterReqDto, trainer, memberPhoneEnd));
 
+        dataValidation(memberRegisterReqDto);
+
+
         //trainerproduct 테이블 추가
         TrainerProduct trainerProduct = trainerProductRepository.save(new TrainerProduct(memberRegisterReqDto, trainer, member));
-
         //ticket 테이블 추가
         ticketRepository.save(new Ticket(memberRegisterReqDto, trainerProduct, trainer, member));
+    }
+
+    private void dataValidation(MemberRegisterReqDto memberRegisterReqDto) {
+        if(Integer.parseInt(memberRegisterReqDto.getProductStartDate()) > Integer.parseInt(memberRegisterReqDto.getProductEndDate())) {
+           throw new CommonException(CommonErrorCode.DATE_ERROR.getCode(), CommonErrorCode.DATE_ERROR.getMessage()));
+        }
+
     }
 
     @Transactional(readOnly = true)

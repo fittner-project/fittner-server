@@ -4,48 +4,27 @@
 <mapper namespace="kr.co.fittnerserver.mapper.user.myPage.MyPageMapper">
     <select id="selectReservationForSalesHeader" resultType="SalesResDto">
         /* MyPageMapper.selectReservationForSalesHeader */
-        select concat(sum(price),'') as projection_sales_price
-             , concat(sum(case when reservation_status = 'SIGN' or reservation_status = 'NOSHOW' then price
-                                                                                                 else 0
-                           end),'') as now_sales_price
-          from (select a.reservation_status
-                     , IFNULL(sum(truncate(a.trainer_settlement_amount, 0)), 0) as price
-                  from reservation a
-             left join ticket b
-                    on a.ticket_id = b.ticket_id
-                 where a.trainer_id = #{trainerId}
-                   and a.center_id = #{centerId}
-                   and substr(a.reservation_start_date, 1, 6) = #{reservationStartMonth}
-                   and a.reservation_delete_yn = 'N'
-                   and a.reservation_status in ('NOSHOW', 'SIGN')
-              group by a.reservation_status
-
-             union all
-
-                select 'WATING'
-                     , ifnull(sum(truncate(all_list.one_time_price * (all_list.trainer_settlement_percent / 100), 0)),0)
-                  from (select a.reservation_status
-                             , b.ticket_relay_yn
-                             , c.trainer_settlement_code
-                             , c.trainer_settlement_percent
-                             , d.trainer_product_price
-                             , d.trainer_product_count
-                             , truncate(d.trainer_product_price / d.trainer_product_count, 0) as one_time_price
-                          from reservation a
-                     left join ticket b
-                            on a.ticket_id = b.ticket_id
-                     left join trainer_settlement c
-                            on c.trainer_id = c.trainer_id
-                           and a.trainer_settlement_id = c.trainer_settlement_id
-                     left join trainer_product d
-                            on b.trainer_product_id = d.trainer_product_id
-                         where a.trainer_id = #{trainerId}
-                           and a.center_id = #{centerId}
-                           and substr(a.reservation_start_date, 1, 6) = #{reservationStartMonth}
-                           and a.reservation_delete_yn = 'N'
-                           and a.reservation_status = 'WAITING'
-                       ) all_list
-                ) a
+        select SUM(IF(reservation_status != 'WAITING', trainer_settlement_amount, 0)) as now_sales_price
+             , SUM(for_wating_price) + SUM(IF(reservation_status != 'WAITING', trainer_settlement_amount, 0))  as projection_sales_price
+        from (select a.reservation_id
+                   , truncate(d.trainer_product_price / d.trainer_product_count, 0) as one_time_price
+                   , a.reservation_status
+                   , b.trainer_settlement_percent
+                   , a.trainer_settlement_amount
+                   , IF(reservation_status = 'WAITING', truncate(d.trainer_product_price / d.trainer_product_count, 0) * (b.trainer_settlement_percent / 100) , 0) as for_wating_price
+                from reservation a
+           left join trainer_settlement b
+                  on a.trainer_id = b.trainer_id
+                 and a.trainer_settlement_id = b.trainer_settlement_id
+           left join ticket c
+                  on a.ticket_id = c.ticket_id
+           left join trainer_product d
+                  on c.trainer_product_id = d.trainer_product_id
+               where a.trainer_id = #{trainerId}
+                 and a.center_id = #{centerId}
+                 and substr(a.reservation_start_date, 1, 6) = #{reservationStartMonth}
+                 and a.reservation_delete_yn = 'N'
+              ) all_list
     </select>
 
     <select id="selectReservationForSalesBody" resultType="SalesInfoResDto">

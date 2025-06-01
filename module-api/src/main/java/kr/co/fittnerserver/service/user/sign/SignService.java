@@ -105,9 +105,9 @@ public class SignService {
         //서명은 수업이 시작해야만 가능하도록 변경
         if("SIGN".equals(signReqDto.getSignType())){
             String reservationStartDateTime = reservationDto.getReservationStartDate() + reservationDto.getReservationStartTime();
-            String nowDate = Util.getFormattedToday("yyyyMMddHHmmss");
+            String nowDate = Util.getFormattedToday("yyyyMMddHHmm");
 
-            if(Integer.parseInt(reservationStartDateTime) > Integer.parseInt(nowDate)){
+            if(reservationStartDateTime.compareTo(nowDate) > 0){
                 throw new CommonException(CommonErrorCode.SIGN_DATE_ERROR.getCode(), CommonErrorCode.SIGN_DATE_ERROR.getMessage()); //수업 시작전 서명이 불가합니다.
             }
         }

@@ -119,7 +119,7 @@
                   and a.trainer_id = #{trainerId}
                   and a.reservation_status in ('SIGN','NOSHOW')
                   <if test="reservationMonth != 'TOTAL'">
-                      and substr(a.reservation_start_date,1,6) = REGEXP_REPLACE(#{reservationMonth}, '[^0-9]', '')
+                      and substr(a.reservation_start_date,1,6) = #{reservationMonth}
                   </if>
                   and a.reservation_delete_yn = 'N'
               ) all_list

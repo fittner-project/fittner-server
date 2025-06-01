@@ -111,6 +111,7 @@ public class UserService {
 
         //member 테이블 추가, 전화번호 암호화
         memberRegisterReqDto.setMemberPhone(AES256Cipher.encrypt(memberRegisterReqDto.getMemberPhone()));
+        memberRegisterReqDto.setMemberBirth(AES256Cipher.encrypt(memberRegisterReqDto.getMemberBirth()));
 
         Member member = memberRepository.save(new Member(memberRegisterReqDto, trainer, memberPhoneEnd));
 
@@ -133,7 +134,7 @@ public class UserService {
                         .memberName(member.getMemberName())
                         .memberPhone(PhoneFormatUtil.formatPhoneNumber(AES256Cipher.decrypt(member.getMemberPhone())))
                         .memberGender(member.getMemberGender())
-                        .memberAge(ageCalculate(member.getMemberBirth()))
+                        .memberAge(ageCalculate(AES256Cipher.decrypt(member.getMemberBirth())))
                         .memberTotalCount(members.size())
                         .reservation(reservationRepository.existsByMember(member))
                         .build();

@@ -98,9 +98,8 @@ public class UserController {
 
     @Operation(summary = "트레이너 본인이 승인요청한걸 승인취소하는 API", description = "트레이너 본인이 승인요청한걸 승인취소하는 API 입니다.",operationId = "deleteUserCenter")
     @DeleteMapping("/center")
-    public ResponseEntity<ApiResponseMessage<Object>> cancelCenterApproval(@RequestBody CancelCenterApprovalReqDto cancelCenterApprovalReqDto,
-                                                                           @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception {
-        userService.cancelCenterApproval(cancelCenterApprovalReqDto, customUserDetails);
+    public ResponseEntity<ApiResponseMessage<Object>> cancelCenterApproval(@RequestBody CancelCenterApprovalReqDto cancelCenterApprovalReqDto) throws Exception {
+        userService.cancelCenterApproval(cancelCenterApprovalReqDto);
         return FittnerResponse.ok();
     }
 

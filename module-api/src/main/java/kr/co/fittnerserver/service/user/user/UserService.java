@@ -254,12 +254,12 @@ public class UserService {
     }
 
     @Transactional
-    public void cancelCenterApproval(CancelCenterApprovalReqDto cancelCenterApprovalReqDto, CustomUserDetails customUserDetails) {
+    public void cancelCenterApproval(CancelCenterApprovalReqDto cancelCenterApprovalReqDto) throws Exception {
         CenterJoin centerJoin = centerJoinRepository.findById(cancelCenterApprovalReqDto.getCenterJoinId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_CENTER_JOIN.getCode(), CommonErrorCode.NOT_FOUND_CENTER_JOIN.getMessage()));
 
         //승인 되지않은 센터조인과 동시에 본인이 요청한 센터조인인지 체크
-        if (centerJoin.getCenterJoinApprovalYn().equals("N") && centerJoin.getTrainer().getTrainerId().equals(customUserDetails.getTrainerId())) {
+        if (centerJoin.getCenterJoinApprovalYn().equals("N") && centerJoin.getTrainer().getTrainerEmail().equals(AES256Cipher.encrypt(cancelCenterApprovalReqDto.getUserEmail()))){
             centerJoinRepository.deleteById(cancelCenterApprovalReqDto.getCenterJoinId());
         } else {
             throw new CommonException(CommonErrorCode.NOT_MATCH_TRAINER.getCode(), CommonErrorCode.NOT_MATCH_TRAINER.getMessage());

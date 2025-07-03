@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.entity.user;
 
 import jakarta.persistence.*;
+import kr.co.fittnerserver.dto.user.ticket.request.SuspendTicketReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.entity.common.BaseTimeEntity;
 import kr.co.fittnerserver.entity.user.enums.TicketCode;
@@ -97,5 +98,10 @@ public class Ticket extends BaseTimeEntity {
 
     public void delete() {
         this.ticketDeleteYn = "Y";
+    }
+
+    public void updateSuspendDate(SuspendTicketReqDto suspendTicketReqDto) {
+        this.ticketSuspendStartDate = suspendTicketReqDto.getTicketSuspendStartDate();
+        this.ticketSuspendEndDate = suspendTicketReqDto.getTicketSuspendEndDate();
     }
 }

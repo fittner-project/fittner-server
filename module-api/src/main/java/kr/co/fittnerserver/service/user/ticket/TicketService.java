@@ -407,6 +407,9 @@ public class TicketService {
             throw new CommonException(CommonErrorCode.ALREADY_SUSPEND_TICKET.getCode(), CommonErrorCode.ALREADY_SUSPEND_TICKET.getMessage());
         }
 
+        //티켓 일시정지 기간 등록
+        ticketInfo.updateSuspendDate(suspendTicketReqDto);
+
         ticketAllowRepository.save(new TicketAllow("N",TicketCode.STOP,ticketInfo,ticketInfo.getTrainer()));
 
         //TODO 관리자에서 처리

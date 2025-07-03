@@ -13,7 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainerResultDto {
+    @Schema(description = "트레이너키값", example = "키값")
+    private String trainerId;
     @Schema(description = "트레이너이름", example = "김영재")
     private String trainerName;
-
+    @Schema(description = "트레이너폰번호", example = "김영재")
+    private String trainerPhone;
 }

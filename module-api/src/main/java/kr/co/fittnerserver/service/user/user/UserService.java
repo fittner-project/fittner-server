@@ -328,9 +328,17 @@ public class UserService {
         List<Trainer> trainers = trainerRepository.findAllByTrainerStatus(TrainerStatus.ACTIVE);
 
         List<TrainerResultDto> trainerResultDtos = trainers.stream()
-                .map(trainer -> TrainerResultDto.builder()
-                        .trainerName(trainer.getTrainerName())
-                        .build())
+                .map(trainer -> {
+                    try {
+                        return TrainerResultDto.builder()
+                                .trainerId(trainer.getTrainerId())
+                                .trainerName(trainer.getTrainerName())
+                                .trainerPhone(AES256Cipher.decrypt(trainer.getTrainerPhone()))
+                                .build();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
 
         return TrainerResDto.builder()

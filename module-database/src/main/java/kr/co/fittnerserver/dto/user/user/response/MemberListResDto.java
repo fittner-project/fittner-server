@@ -20,6 +20,8 @@ public class MemberListResDto {
     private String memberPhone;
     @Schema(description = "회원 나이", example = "30")
     private String memberAge;
+    @Schema(description = "회원 메모", example = "메모입니다.")
+    private String memberMemo;
     @Schema(description = "회원 성별", example = "M")
     private MemberGender memberGender;
     @Schema(description = "회원 총 수", example = "10")

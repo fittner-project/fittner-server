@@ -144,6 +144,7 @@ public class UserService {
                         .memberId(member.getMemberId())
                         .memberName(member.getMemberName())
                         .memberPhone(PhoneFormatUtil.formatPhoneNumber(AES256Cipher.decrypt(member.getMemberPhone())))
+                        .memberMemo(member.getMemberMemo())
                         .memberGender(member.getMemberGender())
                         .memberAge(ageCalculate(AES256Cipher.decrypt(member.getMemberBirth())))
                         .memberTotalCount(members.size())

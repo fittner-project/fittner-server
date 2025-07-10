@@ -9,6 +9,7 @@
              , a.ticket_start_date
              , a.ticket_end_date
              , a.ticket_code
+             , '' ticket_code_name
              , a.ticket_suspend_start_date
              , a.ticket_suspend_end_date
              , a.ticket_use_cnt
@@ -25,6 +26,9 @@
              , c.member_phone_end
              , c.member_birth
              , c.member_memo
+             , c.member_gender
+             , c.member_address
+             , c.member_join_path
              , d.center_id
              , d.center_name
              , d.center_tel

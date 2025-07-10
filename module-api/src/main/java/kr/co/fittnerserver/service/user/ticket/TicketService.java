@@ -96,7 +96,7 @@ public class TicketService {
         //이용권 정보 set
         TicketDetailResDto.TicketInfo ticketInfo = new TicketDetailResDto.TicketInfo();
         ticketInfo.setTicketCode(ticketDto.getTicketCode());
-        ticketInfo.setTicketCodeName(ticketDto.getTicketCodeName());
+        ticketInfo.setTicketCodeName(ticketDto.getTicketCodeName()); //TODO 공통코드로 이름 관리 추가
         ticketInfo.setTicketName(ticketDto.getTicketName());
         ticketInfo.setTicketStartDate(ticketDto.getTicketStartDate());
         ticketInfo.setTicketEndDate(ticketDto.getTicketEndDate());
@@ -111,10 +111,10 @@ public class TicketService {
         //TODO 회원 개인정보 암호화 누락들 추가(현재 핸드폰만 되어있음)
         TicketDetailResDto.MemberInfo memberInfo = new TicketDetailResDto.MemberInfo();
         memberInfo.setMemberName(ticketDto.getMemberName());
-        memberInfo.setMemberPhone(AES256Cipher.decrypt(ticketDto.getMemberPhone()));
+        memberInfo.setMemberPhone(AES256Cipher.decrypt(ticketDto.getMemberPhone())); //복호화
         memberInfo.setMemberGender(ticketDto.getMemberGender());
-        memberInfo.setMemberBirth(ticketDto.getMemberBirth());
-        memberInfo.setMemberAddress(ticketDto.getMemberAdress());
+        memberInfo.setMemberBirth(AES256Cipher.decrypt(ticketDto.getMemberBirth())); //복호화
+        memberInfo.setMemberAddress(ticketDto.getMemberAddress());
         memberInfo.setMemberMemo(ticketDto.getMemberMemo());
         memberInfo.setMemberJoinPath(ticketDto.getMemberJoinPath());
         r.setMemberInfo(memberInfo);

@@ -31,7 +31,7 @@ public class TicketDto {
     private String memberMemo;
     private String memberJoinPath;
     private String memberGender;
-    private String memberAdress;
+    private String memberAddress;
 
     //센터정보
     private String centerId;

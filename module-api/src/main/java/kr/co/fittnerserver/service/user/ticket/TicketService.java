@@ -258,6 +258,7 @@ public class TicketService {
         trainerProductDto.setCenterId(assignToNewMemberReqDto.getCenterId());
         trainerProductDto.setTrainerId(assignToNewMemberReqDto.getTrainerId());
         trainerProductDto.setMemberId(memberId);
+        ticketMapper.insertTrainerProduct(trainerProductDto);
 
         //이용권등록
         TicketDto ticketDto = new TicketDto();

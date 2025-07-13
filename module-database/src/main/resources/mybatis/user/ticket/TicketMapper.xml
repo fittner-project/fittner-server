@@ -169,8 +169,8 @@
                   , member_address
                   , member_phone
                   , center_id
-                  , create_by
-                  , create_date
+                  , created_by
+                  , created_date
                   , member_join_path
                   , member_memo
                   , trainer_id

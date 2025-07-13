@@ -21,8 +21,14 @@ public class BrandColorResDto {
     @Schema(description = "브랜드컬러", example = "헥사값")
     private String primary;
 
+    @Schema(description = "브랜드컬러2", example = "헥사값")
+    private String primaryTypeB;
+
     @Schema(description = "브랜드 서브컬러", example = "헥사값")
     private String sub;
+
+    @Schema(description = "브랜드 서브컬러2", example = "헥사값")
+    private String subTypeB;
 
     @Schema(description = "텍스트컬러1", example = "헥사값")
     private String textTypeA;

@@ -122,7 +122,9 @@ public class UserCommonService {
                 }
 
                 r.setPrimary(map.get("primary"));
+                r.setPrimaryTypeB(map.get("primaryTypeB"));
                 r.setSub(map.get("sub"));
+                r.setSubTypeB(map.get("subTypeB"));
                 r.setGreyTypeA(map.get("greyTypeA"));
                 r.setGreyTypeB(map.get("greyTypeB"));
                 r.setGreyTypeC(map.get("greyTypeC"));
@@ -139,7 +141,9 @@ public class UserCommonService {
 
                 //기본 컬러
                 r.setPrimary("#4C6AFF");
+                r.setPrimaryTypeB("#D8E2FF");
                 r.setSub("#FF8194");
+                r.setSubTypeB("#FFE5EB");
                 r.setGreyTypeA("#F2F4F6");
                 r.setGreyTypeB("#B0B8C1");
                 r.setGreyTypeC("#7F848D");
@@ -156,7 +160,9 @@ public class UserCommonService {
         }catch (Exception e){
             //기본 컬러
             r.setPrimary("#4C6AFF");
+            r.setPrimaryTypeB("#D8E2FF");
             r.setSub("#FF8194");
+            r.setSubTypeB("#FFE5EB");
             r.setGreyTypeA("#F2F4F6");
             r.setGreyTypeB("#B0B8C1");
             r.setGreyTypeC("#7F848D");

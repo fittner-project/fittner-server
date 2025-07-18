@@ -30,8 +30,8 @@ public enum ReservationColor {
     public static List<ReservationColorResDto.Color> getColorCodes() {
         return Arrays.stream(ReservationColor.values())
                 .map(colorEnum -> new ReservationColorResDto.Color(
-                        colorEnum.getColorName(),
-                        colorEnum.getColorCode()
+                        colorEnum.getColorCode(),
+                        colorEnum.getColorName()
                 ))
                 .collect(Collectors.toList());
     }

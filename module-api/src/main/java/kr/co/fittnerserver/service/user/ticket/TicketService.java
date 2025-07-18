@@ -247,6 +247,8 @@ public class TicketService {
         //회원등록
         String memberPhoneEnd = assignToNewMemberReqDto.getMemberPhone().substring(8);
         String memberId = commonMapper.selectUUID();
+        assignToNewMemberReqDto.setMemberBirth(AES256Cipher.encrypt(assignToNewMemberReqDto.getMemberBirth())); //생년월일 암호화
+        assignToNewMemberReqDto.setMemberPhone(AES256Cipher.encrypt(assignToNewMemberReqDto.getMemberPhone())); //핸드폰번호 암호화
         ticketMapper.insertMember(assignToNewMemberReqDto, memberPhoneEnd, customUserDetails.getTrainerId(), memberId);
 
         //상품 등록

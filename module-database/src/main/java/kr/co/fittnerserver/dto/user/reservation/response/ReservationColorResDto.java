@@ -10,5 +10,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationColorResDto {
-    private List<String> colors;
+    private List<Color> colors;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Color{
+        String colorHex;
+        String colorName;
+    }
 }

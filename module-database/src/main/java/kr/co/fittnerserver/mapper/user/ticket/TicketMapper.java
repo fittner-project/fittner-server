@@ -33,4 +33,6 @@ public interface TicketMapper {
 
     void insertRefund(RefundDto refundDto);
 
+    TicketDto selectTicketByMemberIdForNowTicket(String memberId, String reservationStartDate);
+
 }

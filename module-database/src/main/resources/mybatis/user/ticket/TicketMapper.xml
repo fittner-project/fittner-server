@@ -251,6 +251,16 @@
                   , #{trainerId}
           )
     </insert>
+
+    <select id="selectTicketByMemberIdForNowTicket" resultType="TicketDto">
+        /* TicketMapper.selectTicketByMemberIdForNowTicket */
+        select a.ticket_id
+          from ticket a
+         where a.ticket_delete_yn = 'N'
+           and a.member_id = #{memberId}
+           and a.ticket_start_date <![CDATA[<=]]> #{reservationStartDate}
+           and a.ticket_end_date <![CDATA[>=]]> #{reservationStartDate}
+    </select>
 </mapper>
 
 

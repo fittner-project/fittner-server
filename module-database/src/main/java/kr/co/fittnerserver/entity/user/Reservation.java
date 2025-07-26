@@ -93,7 +93,7 @@ public class Reservation extends BaseTimeEntity {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-    public Reservation(ReservationReqDto reservationReqDto, Member member, Ticket ticket, Trainer trainer) {
+    public Reservation(ReservationReqDto reservationReqDto, Member member, Ticket ticket, Trainer trainer, TrainerSettlement trainerSettlement) {
         this.reservationStartDate = reservationReqDto.getReservationStartDate();
         this.reservationEndDate = reservationReqDto.getReservationEndDate();
         this.reservationStartTime = reservationReqDto.getReservationStartTime();
@@ -107,6 +107,7 @@ public class Reservation extends BaseTimeEntity {
         this.ticket = ticket;
         this.trainer = trainer;
         this.center = trainer.getCenter();
+        this.trainerSettlement = trainerSettlement;
     }
 
     public void delete() {

@@ -20,12 +20,13 @@ import kr.co.fittnerserver.repository.user.MemberRepository;
 import kr.co.fittnerserver.repository.user.ReservationRepository;
 import kr.co.fittnerserver.repository.user.TicketRepository;
 import kr.co.fittnerserver.repository.user.TrainerRepository;
-import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,9 +48,7 @@ public class ReservationService {
 
     @Transactional
     public void reservation(ReservationReqDto reservationReqDto, CustomUserDetails customUserDetails) {
-        //이용권 기간 체크
-        //TODO 시간체크도 필요함 (기간체크도 기존 유틸로 방어로직 임시 대체)
-        Util.ticketStartEndDateChk(reservationReqDto.getReservationStartDate(), reservationReqDto.getReservationEndDate(), true);
+        reservationTimeValidation(reservationReqDto);
 
         Member member = memberRepository.findById(reservationReqDto.getMemberId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()));
@@ -69,6 +68,21 @@ public class ReservationService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER.getCode(), CommonErrorCode.NOT_FOUND_TRAINER.getMessage()));
 
         reservationRepository.save(new Reservation(reservationReqDto,member,ticket,trainer));
+    }
+
+    private void reservationTimeValidation(ReservationReqDto dto) {
+        String startDateTimeStr = dto.getReservationStartDate() + dto.getReservationStartTime();
+        String endDateTimeStr = dto.getReservationEndDate() + dto.getReservationEndTime();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        LocalDateTime startDateTime = LocalDateTime.parse(startDateTimeStr, formatter);
+        LocalDateTime endDateTime = LocalDateTime.parse(endDateTimeStr, formatter);
+
+        // 비교 및 예외 처리
+        if (startDateTime.isAfter(endDateTime)) {
+            throw new IllegalArgumentException("예약 시작 시간이 종료 시간보다 늦을 수 없습니다.");
+        }
+
     }
 
     @Transactional(readOnly = true)

@@ -88,7 +88,7 @@ public class ReservationService {
 
         // 비교 및 예외 처리
         if (startDateTime.isAfter(endDateTime)) {
-            throw new IllegalArgumentException("예약 시작 시간이 종료 시간보다 늦을 수 없습니다.");
+            throw new CommonException(CommonErrorCode.NOT_RESERVATION_ADD.getCode(), CommonErrorCode.NOT_RESERVATION_ADD.getMessage());
         }
 
     }

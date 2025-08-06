@@ -107,3 +107,20 @@ Authorization: Bearer {{auth_token}}
 POST http://localhost:8080/api/v1/user/drop
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
+
+
+### 트레이너의 회원 수업등록
+POST http://localhost:8080/api/v1/user/reservation
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "memberId": "94e7ffea-aa05-4a4c-9fe5-a44f285fe729",
+  "reservationColor": "FFD220",
+  "reservationStartDate": "20250806",
+  "reservationStartTime": "2224",
+  "reservationEndDate": "20250807",
+  "reservationEndTime": "2224",
+  "reservationMemo": "",
+  "reservationPush": "before_5m"
+}

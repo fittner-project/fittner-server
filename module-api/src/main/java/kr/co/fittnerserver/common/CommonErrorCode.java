@@ -54,7 +54,8 @@ public enum CommonErrorCode {
     SIGN_DATE_ERROR("H040", "수업 시작전 서명이 불가합니다."),
     NOT_ING_TICKET("H041", "수업예약일에 이용중인 이용권 기간이 없습니다."),
 
-    NOT_FOUND_TRAINER_SETTLE("H042", "트레이너 정산 비율을 알수없습니다.");
+    NOT_FOUND_TRAINER_SETTLE("H042", "트레이너 정산 비율을 알수없습니다."),
+    NOT_RESERVATION_ADD("H-43","예약 시작 시간이 종료 시간보다 늦을 수 없습니다.");
 
 
     private final String code;

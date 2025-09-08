@@ -29,6 +29,6 @@ public class TicketTask {
     public void updateTicketStatusJob() {
         String today = LocalDate.now().format(FORMATTER);
         int updated = ticketRepository.updateExpiredTickets(today);
-        log.info("만료 범위 밖 티켓 STOP 처리: {}건", updated);
+        log.info("만료 범위 밖 티켓 AFTER 처리: {}건", updated);
     }
 }

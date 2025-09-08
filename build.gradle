@@ -85,3 +85,13 @@ project(':module-api') {
         implementation 'com.google.firebase:firebase-admin:9.4.3'
     }
 }
+
+project(':module-batch') {
+    bootJar { enabled = true }
+    jar { enabled = true }
+
+    dependencies {
+        implementation project(':module-database')
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    }
+}

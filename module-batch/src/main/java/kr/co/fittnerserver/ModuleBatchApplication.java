@@ -5,9 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ModuleApiApplication {
+public class ModuleBatchApplication {
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(ModuleApiApplication.class, args);
+        //배포 테스xm
+        SpringApplication.run(ModuleBatchApplication.class, args);
     }
 
 }

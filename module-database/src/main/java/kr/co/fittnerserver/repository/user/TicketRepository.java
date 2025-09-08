@@ -18,11 +18,11 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
     @Modifying
     @Query(value = """
         UPDATE ticket 
-        SET ticket_code = 'STOP'
+        SET ticket_code = 'AFTER'
         WHERE STR_TO_DATE(:today, '%Y%m%d') NOT BETWEEN 
               STR_TO_DATE(ticket_start_date, '%Y%m%d') 
               AND STR_TO_DATE(ticket_end_date, '%Y%m%d')
-          AND ticket_code <> 'STOP'
+          AND ticket_code <> 'AFTER'
         """, nativeQuery = true)
     int updateExpiredTickets(@Param("today") String today);
 }

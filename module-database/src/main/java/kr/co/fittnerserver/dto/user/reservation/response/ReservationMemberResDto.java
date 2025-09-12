@@ -26,8 +26,10 @@ public class ReservationMemberResDto {
     private int ptnCnt;
     @Schema(description = "전체회차", example = "10")
     private int totalCnt;
+    @Schema(description = "예약ID", example = "3c약7ba936-d4d3-11ef-b7c9-0242ac190002")
+    private String reservationId;
 
-    public ReservationMemberResDto(String lastTwoDigits, String memberName, String reservationStartDate, String reservationEndDate, String reservationStartTime,String reservationEndTime,String reservationColor, String reservationMemo, int ptnCnt, int totalCnt) {
+    public ReservationMemberResDto(String lastTwoDigits, String memberName, String reservationStartDate, String reservationEndDate, String reservationStartTime,String reservationEndTime,String reservationColor, String reservationMemo, int ptnCnt, int totalCnt, String reservationId) {
         this.lastTwoDigits = lastTwoDigits;
         this.memberName = memberName;
         this.reservationStartDate = reservationStartDate;
@@ -38,5 +40,6 @@ public class ReservationMemberResDto {
         this.reservationMemo = reservationMemo;
         this.ptnCnt = ptnCnt;
         this.totalCnt = totalCnt;
+        this.reservationId = reservationId;
     }
 }

@@ -26,7 +26,8 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
                 CAST(r.reservationColor AS string),
                 r.reservationMemo,
                 tk.ticketUseCnt + 1,
-                tp.trainerProductCount
+                tp.trainerProductCount,
+                r.reservationId
           )
           FROM Reservation r
           LEFT JOIN Trainer t

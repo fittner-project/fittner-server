@@ -195,4 +195,39 @@ public class Util {
 
         return resultCd;
     }
+
+    /**
+     * 시간 체크
+     *
+     * @param starTime(hhmm), endTime(hhmm), throwTf
+     * @return String or Throw
+     */
+    public static String startEndTimeChk(String starTime, String endTime, boolean throwTf, String type){
+        String resultCd = CommonErrorCode.SUCCESS.getCode();
+
+        String throwCd = "";
+        String throwMsg = "";
+
+        //예외 메세지 타입
+        if("RESERVATION".equals(type)){
+            throwCd = CommonErrorCode.NOT_RESERVATION_ADD.getCode();
+            throwMsg = CommonErrorCode.NOT_RESERVATION_ADD.getMessage(); //예약 시작 간이 종료 시간보다 늦을 수 없습니다.
+        }
+
+        try {
+
+            if(Integer.parseInt(starTime) >= Integer.parseInt(endTime)){
+                throw new CommonException(throwCd, throwMsg);
+            }
+
+        }catch (CommonException e){
+            if(throwTf){
+                throw new CommonException(e.getCode(), e.getMessage());
+            }
+
+            resultCd = e.getCode();
+        }
+
+        return resultCd;
+    }
 }

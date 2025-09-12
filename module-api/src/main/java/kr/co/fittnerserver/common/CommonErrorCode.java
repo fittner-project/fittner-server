@@ -55,7 +55,9 @@ public enum CommonErrorCode {
     NOT_ING_TICKET("H041", "수업예약일에 이용중인 이용권 기간이 없습니다."),
 
     NOT_FOUND_TRAINER_SETTLE("H042", "트레이너 정산 비율을 알수없습니다."),
-    NOT_RESERVATION_ADD("H-43","예약 시작 시간이 종료 시간보다 늦을 수 없습니다.");
+    NOT_RESERVATION_ADD("H43","예약 시작 간이 종료 시간보다 늦을 수 없습니다."),
+    NOT_RESERVATION_UPDATE_FOR_TIME("H44","이미 지난 수업은 수정이 불가합니다."),
+    NOT_RESERVATION_UPDATE("H45","예약 변경에 실패했습니다.");
 
 
     private final String code;

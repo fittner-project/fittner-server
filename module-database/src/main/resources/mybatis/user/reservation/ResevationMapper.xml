@@ -10,7 +10,7 @@
     </select>
 
     <select id="selectReservationByReservationId" resultType="ReservationDto">
-        /* TicketMapper.selectReservationByReservationId */
+        /* ReservationMapper.selectReservationByReservationId */
         select reservation_id
              , reservation_start_date
              , reservation_end_date
@@ -34,7 +34,7 @@
     </select>
 
     <update id="updateReservationForSign">
-        /* TicketMapper.updateReservationForSign */
+        /* ReservationMapper.updateReservationForSign */
         update reservation
            set reservation_status = #{reservationStatus}
              , modified_by = #{trainerId}
@@ -43,10 +43,26 @@
     </update>
 
     <update id="updateReservationForSettlement">
-        /* TicketMapper.updateReservationForSettlement */
+        /* ReservationMapper.updateReservationForSettlement */
         update reservation
            set trainer_settlement_amount = #{settlementPrice}
              , trainer_settlement_id = #{trainerSettlementId}
+             , modified_by = #{trainerId}
+             , modified_date = CURRENT_TIMESTAMP
+         where reservation_id = #{reservationId}
+    </update>
+
+    <update id="updateReservation">
+        /* ReservationMapper.updateReservation */
+        update reservation
+           set reservation_start_date = #{reservationStartDate}
+             , reservation_end_date = #{reservationEndDate}
+             , reservation_start_time = #{reservationStartTime}
+             , reservation_end_time = #{reservationEndTime}
+             , reservation_color = #{reservationColor}
+             , reservation_push = #{reservationPush}
+             , reservation_memo = #{reservationMemo}
+             , reservation_delete_yn = #{reservationDeleteYn}
              , modified_by = #{trainerId}
              , modified_date = CURRENT_TIMESTAMP
          where reservation_id = #{reservationId}

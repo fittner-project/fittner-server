@@ -1,6 +1,7 @@
 package kr.co.fittnerserver.mapper.user.reservation;
 
 import kr.co.fittnerserver.domain.user.ReservationDto;
+import kr.co.fittnerserver.dto.user.reservation.request.ReservationUpdateReqDto;
 import org.apache.ibatis.annotations.Mapper;
 
 
@@ -14,5 +15,7 @@ public interface ReservationMapper {
     void updateReservationForSign(String reservationId, String reservationStatus, String trainerId);
 
     void updateReservationForSettlement(String reservationId, String trainerId, String settlementPrice, String trainerSettlementId);
+
+    int updateReservation(ReservationDto reservationDto);
 
 }

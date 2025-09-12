@@ -20,7 +20,6 @@
              , center_id
           from trainer
          where trainer_id = #{trainerId}
-           and trainer_drop_yn = 'N'
     </select>
 
     <select id="selectTermsForJoin" resultType="TermsResDto">

@@ -44,7 +44,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/v1/auth/refresh-token",
             "/api/v1/auth/apple-redirect-url",
             "/api/v1/common/file/show/**",
-            "/api/v1/common/file/upload",
             "/api/v1/user/common/app/version-chk",
             "/api/v1/user/common/splash",
             "/api/v1/user/common/status-chk",

@@ -3,10 +3,20 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "trainerEmail" : "newy12@naver.com"
+  "trainerEmail" : "dpldpl123456@naver.com"
 }
 > {% client.global.set("auth_token", response.body.result.accessToken); %}
 
+
+### test
+POST /http://localhost:8080/api/v1/common/file
+
+
+
+
+###push test
+POST http://localhost:8080/api/v1/push/send
+Authorization: Bearer {{auth_token}}
 
 ### test
 GET http://localhost:8080/api/v1/user/pushs?centerId=1

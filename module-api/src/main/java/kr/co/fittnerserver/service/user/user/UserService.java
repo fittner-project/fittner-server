@@ -113,6 +113,8 @@ public class UserService {
         memberRegisterReqDto.setMemberPhone(AES256Cipher.encrypt(memberRegisterReqDto.getMemberPhone()));
         memberRegisterReqDto.setMemberBirth(AES256Cipher.encrypt(memberRegisterReqDto.getMemberBirth()));
 
+        //기존 등록된 회원 중복방지
+        validationRegisterUser(memberRegisterReqDto.getMemberPhone());
         Member member = memberRepository.save(new Member(memberRegisterReqDto, trainer, memberPhoneEnd));
 
         dataValidation(memberRegisterReqDto);
@@ -122,6 +124,12 @@ public class UserService {
         TrainerProduct trainerProduct = trainerProductRepository.save(new TrainerProduct(memberRegisterReqDto, trainer, member));
         //ticket 테이블 추가
         ticketRepository.save(new Ticket(memberRegisterReqDto, trainerProduct, trainer, member));
+    }
+
+    private void validationRegisterUser(String memberPhone) throws Exception {
+        if (memberRepository.existsByMemberPhone(AES256Cipher.encrypt(memberPhone))) {
+            throw new CommonException(CommonErrorCode.ALREADY_MEMBER.getCode(), CommonErrorCode.ALREADY_MEMBER.getMessage());
+        }
     }
 
     private void dataValidation(MemberRegisterReqDto memberRegisterReqDto) {

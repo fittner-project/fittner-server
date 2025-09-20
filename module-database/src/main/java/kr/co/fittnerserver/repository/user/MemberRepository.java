@@ -18,4 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, String> , JpaSpe
     order by m.createdDate desc
 """)
     List<Member> findAllByTrainer(@Param(value = "trainerId") String trainerId);
+
+    boolean existsByMemberPhone(String encrypt);
 }

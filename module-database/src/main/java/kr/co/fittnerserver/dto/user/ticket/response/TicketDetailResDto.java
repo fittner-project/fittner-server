@@ -47,7 +47,7 @@ public class TicketDetailResDto {
     @Data
     public static class TicketInfo{
 
-        @Schema(description = "이용권코드", example = "ING | STOP | ASSIGN_TO | ASSIGN_FROM | REFUND | AFTER")
+        @Schema(description = "이용권코드", example = "ING | STOP | ASSIGN_TO | ASSIGN_FROM | REFUND | AFTER | END")
         private String ticketCode;
 
         @Schema(description = "이용권코드명", example = "이용중")

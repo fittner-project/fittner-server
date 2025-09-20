@@ -1,6 +1,10 @@
 package kr.co.fittnerserver.service.user.push;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.MulticastMessage;
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.config.FirebaseConfig;
 import kr.co.fittnerserver.dto.user.push.request.PushReadReqDto;
 import kr.co.fittnerserver.dto.user.push.response.PushChkResDto;
 import kr.co.fittnerserver.dto.user.push.response.PushResDto;
@@ -17,7 +21,9 @@ import java.util.List;
 @Slf4j
 public class PushService {
 
-    final PushMapper pushMapper;
+    private final PushMapper pushMapper;
+    private final FirebaseMessaging firebaseMessaging;
+
 
     public PushChkResDto pushChk(String centerId, CustomUserDetails customUserDetails){
         return pushMapper.selectPushForNew(centerId, customUserDetails.getTrainerId());
@@ -29,5 +35,11 @@ public class PushService {
 
     public void pushRead(PushReadReqDto pushReadReqDto, CustomUserDetails customUserDetails) throws Exception{
         pushMapper.updatePushByPushId(pushReadReqDto.getPushId(), customUserDetails.getTrainerId());
+    }
+
+    public void sendPush(List<MulticastMessage> multicastMessages) throws FirebaseMessagingException {
+        for (MulticastMessage multicastMessage : multicastMessages) {
+            firebaseMessaging.sendEachForMulticast(multicastMessage);
+        }
     }
 }

@@ -15,11 +15,11 @@ import java.util.List;
 @Slf4j
 public class FcmTokenUtil {
 
-    //private final FirebaseMessaging firebaseMessaging;
+    private final FirebaseMessaging firebaseMessaging;
 
 
-/*    public void sendPush(String title, String body, List<String> targetToken) {
-        List<MulticastMessage> multicastMessages = makeMultiMessages(title, body, targetToken);
+    public void sendPush(String title, String body, List<String> targetToken, int badge) {
+        List<MulticastMessage> multicastMessages = makeMultiMessages(title, body, targetToken, badge);
         multicastMessages.forEach(message -> {
             try {
                 firebaseMessaging.sendEachForMulticast(message);
@@ -29,22 +29,23 @@ public class FcmTokenUtil {
             }
         });
 
-    }*/
+    }
 
-    public static List<MulticastMessage> makeMultiMessages(String title, String body, List<String> targetToken) {
+    public static List<MulticastMessage> makeMultiMessages(String title, String body, List<String> targetToken, int badge) {
         List<MulticastMessage> multicastMessages = new ArrayList<>();
         int batchSize = 100;
         for (int i = 0; i < targetToken.size(); i += batchSize) {
             List<String> batchTokens = targetToken.subList(i, Math.min(i + batchSize, targetToken.size()));
-            MulticastMessage message = makeMultiMessage(title, body, batchTokens);
+            MulticastMessage message = makeMultiMessage(title, body, batchTokens, badge);
             multicastMessages.add(message);
         }
 
         return multicastMessages;
     }
 
-    public static MulticastMessage makeMultiMessage(String title, String body, List<String> targetToken) {
+    public static MulticastMessage makeMultiMessage(String title, String body, List<String> targetToken, int badge) {
         Aps aps = Aps.builder()
+                .setBadge(badge)
                 .putCustomData("sound", "default")
                 .putCustomData("vibrate", "default")
                 .build();
@@ -63,7 +64,7 @@ public class FcmTokenUtil {
                 .setNotification(notification)
                 .setAndroidConfig(AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build())
                 .setApnsConfig(apnsConfig)
-                //.putData("msgGroupId", msgGroupId)
+                .putData("url", "/my/notice/공지제목12?content=공지내용12&date=20250124")
                 .addAllTokens(targetToken)
                 .build();
     }

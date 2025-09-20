@@ -97,8 +97,10 @@ public class ReservationService {
         LocalDateTime endDateTime = LocalDateTime.parse(endDateTimeStr, formatter);
 
         // 비교 및 예외 처리
-        if (startDateTime.isAfter(endDateTime)) {
-            throw new CommonException(CommonErrorCode.NOT_RESERVATION_ADD.getCode(), CommonErrorCode.NOT_RESERVATION_ADD.getMessage());
+        if (!startDateTime.isBefore(endDateTime)) {
+            // start >= end 인 경우 (같거나 늦으면)
+            throw new CommonException(CommonErrorCode.NOT_RESERVATION_ADD.getCode(), CommonErrorCode.NOT_RESERVATION_ADD.getMessage()
+            );
         }
 
     }

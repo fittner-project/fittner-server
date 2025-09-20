@@ -6,6 +6,8 @@ import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto
 import kr.co.fittnerserver.entity.user.Member;
 import kr.co.fittnerserver.entity.user.Reservation;
 import kr.co.fittnerserver.entity.user.Ticket;
+import kr.co.fittnerserver.entity.user.enums.ReservationPush;
+import kr.co.fittnerserver.entity.user.enums.ReservationStatus;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -115,4 +117,6 @@ public interface ReservationRepository extends JpaRepository<Reservation,String>
     Boolean existsByTicket(Ticket ticket);
 
     Boolean existsByMember(Member member);
+
+    List<Reservation> findAllByReservationPushAndReservationStatus(ReservationPush reservationPush, ReservationStatus reservationStatus);
 }

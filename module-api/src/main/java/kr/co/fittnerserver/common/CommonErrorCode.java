@@ -58,7 +58,10 @@ public enum CommonErrorCode {
     NOT_RESERVATION_ADD("H43","예약 시작 간이 종료 시간보다 늦을 수 없습니다"),
     NOT_RESERVATION_UPDATE_FOR_TIME("H44","이미 지난 수업은 수정이 불가합니다"),
     NOT_RESERVATION_UPDATE("H45","예약 변경에 실패했습니다"),
-    ALREADY_MEMBER("H46","이미 등록한 이력이 있는 유저입니다");
+    ALREADY_MEMBER("H46","이미 등록한 이력이 있는 유저입니다"),
+    NOT_ADD_RESERVATION("H47","예약등록을 할수 없습니다.");
+
+
 
 
     private final String code;

@@ -15,20 +15,14 @@ import kr.co.fittnerserver.dto.user.reservation.response.ReservationDetailResDto
 import kr.co.fittnerserver.dto.user.reservation.response.ReservationMemberResDto;
 import kr.co.fittnerserver.entity.admin.TrainerSettlement;
 import kr.co.fittnerserver.entity.admin.enums.TrainerSettlementCode;
-import kr.co.fittnerserver.entity.user.Member;
-import kr.co.fittnerserver.entity.user.Reservation;
-import kr.co.fittnerserver.entity.user.Ticket;
-import kr.co.fittnerserver.entity.user.Trainer;
+import kr.co.fittnerserver.entity.user.*;
 import kr.co.fittnerserver.entity.user.enums.ReservationColor;
 import kr.co.fittnerserver.entity.user.enums.ReservationStatus;
 import kr.co.fittnerserver.mapper.user.reservation.ReservationMapper;
 import kr.co.fittnerserver.mapper.user.ticket.TicketMapper;
 import kr.co.fittnerserver.repository.TrainerSettlementRepository;
 import kr.co.fittnerserver.repository.common.CenterRepository;
-import kr.co.fittnerserver.repository.user.MemberRepository;
-import kr.co.fittnerserver.repository.user.ReservationRepository;
-import kr.co.fittnerserver.repository.user.TicketRepository;
-import kr.co.fittnerserver.repository.user.TrainerRepository;
+import kr.co.fittnerserver.repository.user.*;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +44,7 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final TrainerSettlementRepository trainerSettlementRepository;
+    private final TrainerProductRepository trainerProductRepository;
     private final MemberRepository memberRepository;
     private final TicketRepository ticketRepository;
     private final TrainerRepository trainerRepository;
@@ -63,7 +58,6 @@ public class ReservationService {
     @Transactional
     public void reservation(ReservationReqDto reservationReqDto, CustomUserDetails customUserDetails) {
         reservationTimeValidation(reservationReqDto);
-
 
         Member member = memberRepository.findById(reservationReqDto.getMemberId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()));
@@ -85,7 +79,19 @@ public class ReservationService {
         TrainerSettlement trainerSettlement = trainerSettlementRepository.findByTrainerAndTrainerSettlementCode(trainer, TrainerSettlementCode.NEW)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER_SETTLE.getCode(), CommonErrorCode.NOT_FOUND_TRAINER_SETTLE.getMessage()));
 
+        TrainerProduct trainerProduct = trainerProductRepository.findById(ticket.getTrainerProduct().getTrainerProductId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_TRAINER_PRODUCT.getCode(), CommonErrorCode.NOT_FOUND_TRAINER_PRODUCT.getMessage()));
+
+        //전체상품횟수보다 사용카운트가 같거나, 넘어가면 수업등록 못하도록 방지
+        validationReservationCount(ticket.getTicketUseCnt(),trainerProduct.getTrainerProductCount());
+
         reservationRepository.save(new Reservation(reservationReqDto, member, ticket, trainer, trainerSettlement));
+    }
+
+    private void validationReservationCount(int ticketUseCnt, int trainerProductCount) {
+        if(trainerProductCount <= ticketUseCnt) {
+            throw new CommonException(CommonErrorCode.NOT_ADD_RESERVATION.getCode(), CommonErrorCode.NOT_ADD_RESERVATION.getMessage()); //수업예약일에 이용중인 이용권 기간이 없습니다.
+        }
     }
 
     private void reservationTimeValidation(ReservationReqDto dto) {

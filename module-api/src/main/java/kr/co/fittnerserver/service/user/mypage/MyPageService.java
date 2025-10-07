@@ -1,6 +1,8 @@
 package kr.co.fittnerserver.service.user.mypage;
 
 import kr.co.fittnerserver.auth.CustomUserDetails;
+import kr.co.fittnerserver.common.CommonErrorCode;
+import kr.co.fittnerserver.common.CommonException;
 import kr.co.fittnerserver.domain.user.TermsDto;
 import kr.co.fittnerserver.domain.user.TrainerDto;
 import kr.co.fittnerserver.dto.user.myPage.requset.NoticeReadReqDto;
@@ -19,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +46,11 @@ public class MyPageService {
     }
 
     public List<SalesInfoDetailResDto> getSalesInfoDetail(String reservationMonth, String ticketId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception{
+        /**
+         * 날짜에 - 있으면 진행못하도록 방어코드 추가
+         */
+        validationDate(reservationMonth);
+
         List<SalesInfoDetailDto> salesInfoDetailDtoList = myPageMapper.selectReservationForSalesBodyDetail(ticketId, customUserDetails.getTrainerId(), reservationMonth, pageable.getCurrentPageNo());
 
         // 예약월 기준으로 그룹화
@@ -60,6 +66,15 @@ public class MyPageService {
                 .collect(Collectors.toList());
 
         return reservationList;
+    }
+
+    private void validationDate(String reservationMonth) {
+        /**
+         * 날짜형식에 -가 있는지 판단
+         */
+        if(reservationMonth.contains("-")){
+            throw new CommonException(CommonErrorCode.CHECK_DATE_FORMAT.getCode(), CommonErrorCode.CHECK_DATE_FORMAT.getMessage());
+        }
     }
 
     public List<NoticeResDto> getNotices(String centerId, CustomUserDetails customUserDetails, FittnerPageable pageable) throws Exception {

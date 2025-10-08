@@ -27,6 +27,7 @@ import kr.co.fittnerserver.util.AES256Cipher;
 import kr.co.fittnerserver.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -162,8 +163,14 @@ public class TicketService {
     public AssignToInfoResDto ticketAssignToInfo(String ticketId, String memberId, CustomUserDetails customUserDetails) throws Exception{
         AssignToInfoResDto r = new AssignToInfoResDto();
 
+        //이용권 체크
+        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(ticketId, "NORMAL");
+        if(ticketDto == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
+        }
+
         //양도 정책 체크
-        TicketDto ticketDto = assignChk(ticketId,customUserDetails.getTrainerId(), memberId);
+        assignChk(ticketDto, memberId);
 
         //양도 티켓정보
         r.setTicketId(ticketDto.getTicketId());
@@ -178,49 +185,58 @@ public class TicketService {
         return r;
     }
 
-    public TicketDto assignChk(String ticketId, String trainerId, String memberId) throws Exception{
-        //이용권 체크
-        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(ticketId, "NORMAL");
-        if(ticketDto == null){
-            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
-        }
+    public void assignChk(TicketDto ticketDto, String toMemberId) throws Exception{
 
         //이용권 상태확인
         String[] assignCode = {"ING", "STOP"};
         boolean assignChk = Arrays.stream(assignCode).anyMatch(ticketDto.getTicketCode()::equals);
         if(!assignChk){
-            throw new CommonException(CommonErrorCode.NOT_ASSIGN.getCode(), CommonErrorCode.NOT_ASSIGN.getMessage()); //양도가 불가능한 이용권입니다.
+            if(TicketCode.ASSIGN_TO.toString().equals(ticketDto.getTicketCode())){
+                throw new CommonException(CommonErrorCode.NOT_ASSIGN_FOR_TO_TICKET.getCode(), CommonErrorCode.NOT_ASSIGN_FOR_TO_TICKET.getMessage()); //양도받은 이용권은 양도가 불가합니다
+            }else if(TicketCode.ASSIGN_FROM.toString().equals(ticketDto.getTicketCode())){
+                throw new CommonException(CommonErrorCode.NOT_ASSIGN_FOR_ALREADY.getCode(), CommonErrorCode.NOT_ASSIGN_FOR_ALREADY.getMessage()); //이미 양도된 이용권입니다
+            }else{
+                throw new CommonException(CommonErrorCode.NOT_ASSIGN.getCode(), CommonErrorCode.NOT_ASSIGN.getMessage()); //양도가 불가능한 이용권입니다.
+            }
         }
 
         //회원 체크
-        Member member = commonMapper.selectMemberByMemberId(memberId);
-        if(member == null){
-            throw new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()); //회원을 찾을 수 없습니다.
+        //(신규양도는 회원 신규 생성이므로 체크 x)
+        if(!StringUtils.isEmpty(toMemberId)){
+            Member member = commonMapper.selectMemberByMemberId(toMemberId);
+            if(member == null){
+                throw new CommonException(CommonErrorCode.NOT_FOUND_MEMBER.getCode(), CommonErrorCode.NOT_FOUND_MEMBER.getMessage()); //회원을 찾을 수 없습니다.
+            }
+
+            //본인 양도 불가
+            if(ticketDto.getMemberId().equals(toMemberId)){
+                throw new CommonException(CommonErrorCode.NOT_ASSIGN_SELF.getCode(), CommonErrorCode.NOT_ASSIGN_SELF.getMessage()); //본인에게는 양도가 불가능합니다.
+            }
         }
 
-        //본인 양도 불가
-        if(ticketDto.getMemberId().equals(memberId)){
-            throw new CommonException(CommonErrorCode.NOT_ASSIGN_SELF.getCode(), CommonErrorCode.NOT_ASSIGN_SELF.getMessage()); //본인에게는 양도가 불가능합니다.
-        }
-
-        return ticketDto;
     }
 
     @Transactional
     public void ticketAssignToOldMember(AssignToOldMemberReqDto assignToOldMemberReqDto, CustomUserDetails customUserDetails) throws Exception{
-        //양도 정보
-        TicketDto assignInfo = assignChk(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), assignToOldMemberReqDto.getMemberId());
+        //이용권 체크
+        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(assignToOldMemberReqDto.getOriginalTicketId(), "NORMAL");
+        if(ticketDto == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
+        }
+
+        //양도 정책 체크
+        assignChk(ticketDto, assignToOldMemberReqDto.getMemberId());
 
         //상품 등록
-        int trainerProductCount = Integer.parseInt(assignInfo.getTicketTotalCnt()) - Integer.parseInt(assignInfo.getTicketUseCnt());
-        int ticketOneTimePrice = Integer.parseInt(assignInfo.getTicketPrice()) / Integer.parseInt(assignInfo.getTicketTotalCnt());
+        int trainerProductCount = Integer.parseInt(ticketDto.getTicketTotalCnt()) - Integer.parseInt(ticketDto.getTicketUseCnt());
+        int ticketOneTimePrice = Integer.parseInt(ticketDto.getTicketPrice()) / Integer.parseInt(ticketDto.getTicketTotalCnt());
         int trainerProductPrice = trainerProductCount * ticketOneTimePrice;
         TrainerProductDto trainerProductDto = new TrainerProductDto();
         trainerProductDto.setTrainerProductId(commonMapper.selectUUID());
         trainerProductDto.setTrainerProductCount(String.valueOf(trainerProductCount)); //기존 금액에서 양도된 횟수만큼 계산
         trainerProductDto.setTrainerProductPrice(String.valueOf(trainerProductPrice)); //기존 금액에서 양도된 금액만큼 계산
-        trainerProductDto.setTrainerProductName(assignInfo.getTicketName());
-        trainerProductDto.setCenterId(assignInfo.getCenterId());
+        trainerProductDto.setTrainerProductName(ticketDto.getTicketName());
+        trainerProductDto.setCenterId(ticketDto.getCenterId());
         trainerProductDto.setTrainerId(customUserDetails.getTrainerId());
         trainerProductDto.setMemberId(assignToOldMemberReqDto.getMemberId());
 
@@ -229,9 +245,9 @@ public class TicketService {
         //이용권 등록
         TicketDto param = new TicketDto();
         param.setMemberId(assignToOldMemberReqDto.getMemberId());
-        param.setTicketEndDate(assignInfo.getTicketEndDate());
+        param.setTicketEndDate(ticketDto.getTicketEndDate());
         param.setTicketId(commonMapper.selectUUID());
-        param.setTicketStartDate(assignInfo.getTicketStartDate());
+        param.setTicketStartDate(ticketDto.getTicketStartDate());
         param.setTrainerId(customUserDetails.getTrainerId());
         param.setTicketUseCnt("0");
         param.setOriginalTicketId(assignToOldMemberReqDto.getOriginalTicketId());
@@ -242,12 +258,21 @@ public class TicketService {
         ticketMapper.insertTicket(param);
 
         //양도한 이용권 상태 업데이트
-        //TODO 관리자에서 승인후 상태 변경되어야함 (승인전 상태 추가해야됨)
-        //ticketMapper.updateTicketForTicketCode(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_FROM");
+        //TODO 관리자에서 승인후 상태 변경되어야함 (승인전 상태 추가해야됨 / 일단은 상태값에 따른 정책 적용위해 변경)
+        ticketMapper.updateTicketForTicketCode(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_FROM");
     }
 
     @Transactional
     public void ticketAssignToNewMember(AssignToNewMemberReqDto assignToNewMemberReqDto, CustomUserDetails customUserDetails) throws Exception{
+        //이용권 체크
+        TicketDto ticketDto = ticketMapper.selectTicketByTicketId(assignToNewMemberReqDto.getOriginalTicketId(), "NORMAL");
+        if(ticketDto == null){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_TICKET.getCode(), CommonErrorCode.NOT_FOUND_TICKET.getMessage()); //티켓을 찾을 수 없습니다.
+        }
+
+        //양도 정책 체크
+        assignChk(ticketDto, null);
+
         //이용권 기간 체크
         Util.ticketStartEndDateChk(assignToNewMemberReqDto.getProductStartDate(), assignToNewMemberReqDto.getProductEndDate(), true);
 
@@ -270,23 +295,23 @@ public class TicketService {
         ticketMapper.insertTrainerProduct(trainerProductDto);
 
         //이용권등록
-        TicketDto ticketDto = new TicketDto();
-        ticketDto.setTrainerId(assignToNewMemberReqDto.getTrainerId());
-        ticketDto.setMemberId(memberId);
-        ticketDto.setTicketEndDate(assignToNewMemberReqDto.getProductEndDate());
-        ticketDto.setTicketId(commonMapper.selectUUID());
-        ticketDto.setTicketStartDate(assignToNewMemberReqDto.getProductStartDate());
-        ticketDto.setTrainerId(assignToNewMemberReqDto.getTrainerId());
-        ticketDto.setTrainerProductId(trainerProductDto.getTrainerProductId()); //신규로 만든 이용권
-        ticketDto.setTicketCode("ASSIGN_TO");
-        ticketDto.setOriginalTicketId(assignToNewMemberReqDto.getOriginalTicketId());
-        ticketDto.setTicketUseCnt("0");
-        ticketDto.setTicketRelayYn("N");
-        ticketMapper.insertTicket(ticketDto);
+        TicketDto param = new TicketDto();
+        param.setTrainerId(assignToNewMemberReqDto.getTrainerId());
+        param.setMemberId(memberId);
+        param.setTicketEndDate(assignToNewMemberReqDto.getProductEndDate());
+        param.setTicketId(commonMapper.selectUUID());
+        param.setTicketStartDate(assignToNewMemberReqDto.getProductStartDate());
+        param.setTrainerId(assignToNewMemberReqDto.getTrainerId());
+        param.setTrainerProductId(trainerProductDto.getTrainerProductId()); //신규로 만든 이용권
+        param.setTicketCode("ASSIGN_TO");
+        param.setOriginalTicketId(assignToNewMemberReqDto.getOriginalTicketId());
+        param.setTicketUseCnt("0");
+        param.setTicketRelayYn("N");
+        ticketMapper.insertTicket(param);
 
         //양도한 이용권 상태 업데이트
-        //TODO 관리자에서 승인후 상태 변경되어야함 (승인전 상태 추가해야됨)
-        //ticketMapper.updateTicketForTicketCode(assignToNewMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_FROM");
+        //TODO 관리자에서 승인후 상태 변경되어야함 (승인전 상태 추가해야됨 / 일단은 상태값에 따른 정책 적용위해 변경)
+        ticketMapper.updateTicketForTicketCode(assignToNewMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_FROM");
     }
 
     @Transactional

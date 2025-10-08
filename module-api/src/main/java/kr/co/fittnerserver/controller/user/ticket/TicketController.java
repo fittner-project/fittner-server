@@ -49,7 +49,7 @@ public class TicketController {
     @GetMapping("/ticket/assign-info")
     public ResponseEntity<ApiResponseMessage<AssignToInfoResDto>> ticketAssignToInfo(@Parameter(name = "ticketId", description = "티켓ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
                                                                                      @RequestParam(name = "ticketId") String ticketId,
-                                                                                     @Parameter(name = "memberId", description = "회원ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
+                                                                                     @Parameter(name = "memberId", description = "양수 회원ID", example = "ec4b8eb6-d01e-11ef-b7c9-0242ac190002")
                                                                                      @RequestParam(name = "memberId") String memberId,
                                                                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) throws Exception{
         return FittnerResponse.build(ticketService.ticketAssignToInfo(ticketId, memberId, customUserDetails));

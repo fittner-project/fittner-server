@@ -25,6 +25,7 @@
              , all_list.reservation_memo
              , all_list.reservation_status
              , all_list.reservation_use_cnt
+             , all_list.reservation_color
           from (select a.ticket_id
                      , a.reservation_id
                      , b.member_name
@@ -42,6 +43,7 @@
                           where aa.reservation_id = a.reservation_id
                        ) as reservation_use_cnt
                      , ROW_NUMBER() OVER (ORDER BY reservation_start_date DESC, reservation_start_time DESC) AS row_num
+                     , a.reservation_color
                   from reservation a
              left join member b
                     on a.member_id = b.member_id

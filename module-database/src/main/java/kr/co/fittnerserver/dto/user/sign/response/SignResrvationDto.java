@@ -30,4 +30,7 @@ public class SignResrvationDto {
     @Schema(description = "예약상태", example = "NOSHOW | SIGN | WATING")
     private String reservationStatus;
 
+    @Schema(description = "예약색상", example = "COLOR_007AFF")
+    private String reservationColor;
+
 }

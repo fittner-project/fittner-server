@@ -122,10 +122,16 @@ public class TicketService {
         //이용권 코드에 따른 추가정보(양도,환불)
         TicketDto assign = null;
         Refund refund = null;
-        if("ASSIGN_FROM".equals(ticketDto.getTicketCode())){
-            assign = ticketMapper.selectTicketByTicketId(ticketDto.getOriginalTicketId(), "NORMAL");
-        }else if("ASSIGN_TO".equals(ticketDto.getTicketCode())){
-            assign = ticketMapper.selectTicketByTicketId(ticketDto.getTicketId(), "ORIGINAL");
+
+        //양도받은 이용권
+        if("ASSIGN_TO".equals(ticketDto.getTicketCode())){
+            assign = ticketMapper.selectTicketByTicketId(ticketDto.getOriginalTicketId(), "ORIGINAL");
+
+        //양도한 이용권
+        }else if("ASSIGN_FROM".equals(ticketDto.getTicketCode())){
+            assign = ticketMapper.selectTicketByTicketId(ticketDto.getTicketId(), "NORMAL");
+
+        //환불한 이용권
         }else if("REFUND".equals(ticketDto.getTicketCode())){
             refund = ticketMapper.selectRefund(ticketDto.getTicketId());
         }
@@ -229,14 +235,15 @@ public class TicketService {
         param.setTrainerId(customUserDetails.getTrainerId());
         param.setTicketUseCnt("0");
         param.setOriginalTicketId(assignToOldMemberReqDto.getOriginalTicketId());
-        param.setTicketCode("ASSIGN_FROM");
+        param.setTicketCode("ASSIGN_TO");
         param.setTicketRelayYn("Y"); //TODO 수업이 없는 회원일 경우 고민필요(최초1회 등록후 바로 환불이면 연장하기퍼센트 의미가 없음)
         param.setTrainerProductId(trainerProductDto.getTrainerProductId());
 
         ticketMapper.insertTicket(param);
 
         //양도한 이용권 상태 업데이트
-        //ticketMapper.updateTicketForTicketCode(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_TO");
+        //TODO 관리자에서 승인후 상태 변경되어야함 (승인전 상태 추가해야됨)
+        //ticketMapper.updateTicketForTicketCode(assignToOldMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_FROM");
     }
 
     @Transactional
@@ -271,14 +278,15 @@ public class TicketService {
         ticketDto.setTicketStartDate(assignToNewMemberReqDto.getProductStartDate());
         ticketDto.setTrainerId(assignToNewMemberReqDto.getTrainerId());
         ticketDto.setTrainerProductId(trainerProductDto.getTrainerProductId()); //신규로 만든 이용권
-        ticketDto.setTicketCode("ASSIGN_FROM");
+        ticketDto.setTicketCode("ASSIGN_TO");
         ticketDto.setOriginalTicketId(assignToNewMemberReqDto.getOriginalTicketId());
         ticketDto.setTicketUseCnt("0");
         ticketDto.setTicketRelayYn("N");
         ticketMapper.insertTicket(ticketDto);
 
         //양도한 이용권 상태 업데이트
-        ticketMapper.updateTicketForTicketCode(assignToNewMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_TO");
+        //TODO 관리자에서 승인후 상태 변경되어야함 (승인전 상태 추가해야됨)
+        //ticketMapper.updateTicketForTicketCode(assignToNewMemberReqDto.getOriginalTicketId(), customUserDetails.getTrainerId(), "ASSIGN_FROM");
     }
 
     @Transactional

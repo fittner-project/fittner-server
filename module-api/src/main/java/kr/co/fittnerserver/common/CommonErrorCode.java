@@ -60,7 +60,10 @@ public enum CommonErrorCode {
     NOT_RESERVATION_UPDATE("H45","예약 변경에 실패했습니다"),
     ALREADY_MEMBER("H46","이미 등록한 이력이 있는 유저입니다"),
     NOT_ADD_RESERVATION("H47","예약등록을 할수 없습니다."),
-    CHECK_DATE_FORMAT("H48","날짜 형식을 확인해주세요.");
+    CHECK_DATE_FORMAT("H48","날짜 형식을 확인해주세요."),
+    NOT_ASSIGN_FOR_ALREADY("H049", "이미 양도된 이용권입니다"),
+    NOT_ASSIGN_FOR_TO_TICKET("H050", "양도받은 이용권은 양도가 불가합니다")
+    ;
 
 
 

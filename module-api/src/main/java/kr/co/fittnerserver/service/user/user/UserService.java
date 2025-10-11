@@ -12,6 +12,7 @@ import kr.co.fittnerserver.dto.user.user.request.CenterRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.request.JoinReqDto;
 import kr.co.fittnerserver.dto.user.user.request.MemberRegisterReqDto;
 import kr.co.fittnerserver.dto.user.user.response.*;
+import kr.co.fittnerserver.entity.DropTrainer;
 import kr.co.fittnerserver.entity.admin.Center;
 import kr.co.fittnerserver.entity.common.FileGroup;
 import kr.co.fittnerserver.entity.common.PushSet;
@@ -24,6 +25,7 @@ import kr.co.fittnerserver.entity.user.*;
 import kr.co.fittnerserver.entity.user.enums.TrainerStatus;
 import kr.co.fittnerserver.exception.JwtException;
 import kr.co.fittnerserver.mapper.user.user.UserMapper;
+import kr.co.fittnerserver.repository.DropTrainerRepository;
 import kr.co.fittnerserver.repository.common.*;
 import kr.co.fittnerserver.repository.user.*;
 import kr.co.fittnerserver.util.AES256Cipher;
@@ -57,6 +59,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PushSetRepository pushSetRepository;
     private final ReservationRepository reservationRepository;
+    private final DropTrainerRepository dropTrainerRepository;
 
     @Transactional
     public void joinProcess(JoinReqDto joinReqDto) throws Exception {
@@ -309,8 +312,7 @@ public class UserService {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             // Bearer 토큰 부분만 추출
             String accessToken = authorizationHeader.substring(7);
-            //TODO 추후에 주석 풀기
-            //dropTrainerRepository.save(new DropTrainer(accessToken, customUserDetails.getTrainerId()));
+            dropTrainerRepository.save(new DropTrainer(accessToken, customUserDetails.getTrainerId()));
         } else {
             throw new JwtException(CommonErrorCode.DROP_FAIL.getCode(), CommonErrorCode.DROP_FAIL.getMessage());
         }
